@@ -1,5 +1,5 @@
-# <img align="top" width="45" height="45" src="img/hermes.png"> Hermes
-<!-- # Hermes <img align="top" width="45" height="45" src="img/hermes.png"> -->
+<!-- # <img align="top" width="45" height="45" src="img/hermes.png"> Hermes -->
+# Hermes <img align="right|top" width="45" height="45" src="img/hermes.png">
 <!-- ![Icon](img/hermes.png) -->
 
 
