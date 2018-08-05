@@ -1,4 +1,5 @@
-# ![alt text](https://github.com/fedecaccia/hermes/img/hermes.png) Hermes
+# Hermes
+![Icon](https://github.com/fedecaccia/hermes/img/hermes.png) 
 
 
 <!-- ## Icons license
