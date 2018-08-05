@@ -1,4 +1,4 @@
-# <img align="left" width="30" height="30" src="img/hermes.png"> Hermes
+# <img align="left" width="50" height="50" src="img/hermes.png"> Hermes
 ![Icon](img/hermes.png) 
 
 
