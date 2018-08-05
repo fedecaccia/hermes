@@ -1,5 +1,5 @@
 # Hermes
-![Icon](https://github.com/fedecaccia/hermes/img/hermes.png) 
+![Icon](img/hermes.png) 
 
 
 <!-- ## Icons license
