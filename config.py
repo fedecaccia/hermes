@@ -85,40 +85,40 @@ class Config (object):
 
     def _build_useful_variables(self):
 
-        # symbols
+        # tickers
 
         try:
-            self.symbols = set()
+            self.tickers = set()
             for strategy in self.strategies:
-                self.symbols.update(elem["symbol"] for elem in self.strategies[strategy].values())
+                self.tickers.update(elem["ticker"] for elem in self.strategies[strategy].values())
         except Exception as err:
             print(err)
-            raise ValueError("I can't build symbols from settings.strategy")
+            raise ValueError("I can't build tickers from settings.strategy")
 
-        # exchange ids per symbol
+        # exchange ids per ticker
         
         self.exchange_ids = {
-            symbol:set() for symbol in self.symbols
+            ticker:set() for ticker in self.tickers
         }
         try:
             for strategy in self.strategies:
-                self.exchange_ids[strategy["symbol"]].update(strategy["exchange_ids"])
+                self.exchange_ids[strategy["ticker"]].update(strategy["exchange_ids"])
         except Exception as err:
             print(err)
             raise ValueError("I can't build exchange_ids from settings.strategies")
 
-        # data type per symbol and per exchange id
+        # data type per ticker and per exchange id
 
         self.data_type_ids = {
-            symbol: {
-                exchange_id: set() for exchange_id in self.exchange_ids[symbol]
-            } for symbol in self.symbols
+            ticker: {
+                exchange_id: set() for exchange_id in self.exchange_ids[ticker]
+            } for ticker in self.tickers
         }
         try:
             for strategy in self.strategies:
-                for symbol in self.data_type_ids.keys():
-                    for exchange_id in self.data_type_ids[symbol].keys():
-                        self.data_type_ids[symbol][exchange_id].update(strategy["data_type_id"])
+                for ticker in self.data_type_ids.keys():
+                    for exchange_id in self.data_type_ids[ticker].keys():
+                        self.data_type_ids[ticker][exchange_id].update(strategy["data_type_id"])
         except Exception as err:
             print(err)
             raise ValueError("I can't build data_type_ids from settings.strategies")

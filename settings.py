@@ -163,24 +163,24 @@ data_type = [
 strategies = {
     "virtual_transfers":[
         {
-            "symbol":"BTC/USD",
+            "ticker":"BTC/USD",
             "exchange_ids":[0,1,2,3],
             "data_type_id":[0]
         },
         {
-            "symbol":"ETH/BTC",
+            "ticker":"ETH/BTC",
             "exchange_ids":[0,1,2],
             "data_type_id":[0]
         },
         {
-            "symbol":"DASH/BTC",
+            "ticker":"DASH/BTC",
             "exchange_ids":[2,3],
             "data_type_id":[0,1]
         }
     ],
     "volume":[
         {
-            "symbol":"BTC/USD",
+            "ticker":"BTC/USD",
             "exchange_ids":[0],
             "data_type_id":[0, 1]
         }

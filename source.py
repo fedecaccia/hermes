@@ -13,11 +13,11 @@ class Source (object):
         self.config = config
 
     @abstractmethod
-    def request_order_books(self, symbol, exchanges):
+    def request_order_books(self, ticker, exchanges):
         pass
 
     @abstractmethod
-    def request_candles(self, symbol, exchanges):
+    def request_candles(self, ticker, exchanges):
         pass
 
     @abstractmethod
@@ -58,14 +58,14 @@ class DBSource(Source):
         output: -
         """
 
-        # data as object per data type, per exchange id, per symbol
+        # data as object per data type, per exchange id, per ticker
 
         self.data = {
-            symbol:{
+            ticker:{
                 exchange_id:{
-                    data_type_id:None for data_type_id in self.config.data_type_ids[symbol].values()
-                } for exchange_id in self.config.data_type_ids[symbol].keys()
-            } for symbol in self.config.data_type_ids.keys()
+                    data_type_id:None for data_type_id in self.config.data_type_ids[ticker].values()
+                } for exchange_id in self.config.data_type_ids[ticker].keys()
+            } for ticker in self.config.data_type_ids.keys()
         }
 
     def _load_data_from_csv(self):
@@ -74,24 +74,24 @@ class DBSource(Source):
         _load_data_from_csv:
         load data from csv into a dict of pandas elements.
         input: config object.
-        output: dict data. For each data[symbol][exchange] a pandas object or a None object is saved.
+        output: dict data. For each data[ticker][exchange] a pandas object or a None object is saved.
         Eeach element is a pandas dataframe or a None
         """
 
-        for symbol, symbol_content in zip(self.data.keys(), self.data.values()):
-            for exchange_id, data_types in zip(symbol_content.keys(), symbol_content.values()):
+        for ticker, ticker_content in zip(self.data.keys(), self.data.values()):
+            for exchange_id, data_types in zip(ticker_content.keys(), ticker_content.values()):
                 for data_type_id in data_types:
                     filename = self.config.csv_dir\
                             + self.config.data_type_by_id[data_type_id]\
                             + self.config.exchange_name_by_id[exchange_id]\
-                            + symbol.replace("/", "")\
+                            + ticker.replace("/", "")\
                             + ".csv"
                     if os.path.exists(filename):
-                        self.data[symbol][exchange_id][data_type_id]\
+                        self.data[ticker][exchange_id][data_type_id]\
                         = pd.read_csv(filename, parse_dates=True)
-                        self.data[symbol][exchange_id][data_type_id]["datetime"]\
-                        = pd.to_datetime(self.data[symbol][exchange_id][data_type_id]["datetime"])
-                        self.data[symbol][exchange_id][data_type_id].set_index("datetime", inplace=True)
+                        self.data[ticker][exchange_id][data_type_id]["datetime"]\
+                        = pd.to_datetime(self.data[ticker][exchange_id][data_type_id]["datetime"])
+                        self.data[ticker][exchange_id][data_type_id].set_index("datetime", inplace=True)
                     else:
                         raise ValueError("I can't find csv file: "+filename+".")
 
@@ -101,7 +101,7 @@ class DBSource(Source):
         _load_data_from_sql:
         load data from sql into a dict of pandas elements.
         input: config object.
-        output: dict data. For each data[symbol][exchange] a pandas object or a None object is saved.
+        output: dict data. For each data[ticker][exchange] a pandas object or a None object is saved.
         Eeach element is a pandas dataframe or a None
         """
 
@@ -113,16 +113,16 @@ class DBSource(Source):
         _load_data_from_nosql:
         load data from mongodb into a dict of pandas elements.
         input: config object.
-        output: dict data. For each data[symbol][exchange] a pandas object or a None object is saved.
+        output: dict data. For each data[ticker][exchange] a pandas object or a None object is saved.
         Eeach element is a pandas dataframe or a None
         """
 
         pass
 
-    def request_order_books(self, symbol, exchanges, time):
+    def request_order_books(self, ticker, exchanges, time):
         pass
 
-    def request_candles(self, symbol, exchanges, time):
+    def request_candles(self, ticker, exchanges, time):
         pass
 
     def request_tickers(self, exchanges, time):
@@ -139,10 +139,10 @@ class OnlineSource(Source):
     def __init__(self, config):
         super(Source, self).__init__(config)
 
-    def request_order_books(self, symbol, exchanges, time):
+    def request_order_books(self, ticker, exchanges, time):
         pass
 
-    def request_candles(self, symbol, exchanges, time):
+    def request_candles(self, ticker, exchanges, time):
         pass
 
     def request_tickers(self, exchanges, time):
