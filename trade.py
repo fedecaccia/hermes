@@ -4,14 +4,15 @@ class Trade(object):
     Trade: Trading instance which takes care of trading orders.
     """
 
-    def __init__(self):
+    def __init__(self, world, portfolio):
 
         """
-        + Description: constructor
+        + Description: constructor.
         + Input:
-        -
+        - world
+        - portfolio
         + Output:
         -
         """
-
-        pass
+        self.world = world
+        self.portfolio = portfolio

@@ -1,3 +1,5 @@
+import definitions
+
 from abc import ABC, abstractmethod
 
 
@@ -47,7 +49,7 @@ class RealWorld(World):
     Inherit from World.
     """
 
-    def __init__(self):
+    def __init__(self, mode):
 
         """
         + Description: constructor
@@ -58,6 +60,12 @@ class RealWorld(World):
         """
 
         super().__init__()
+        self.mode = mode
+        if self.mode == self.definitions.real:
+            self._create_clients_with_private_connections()
+
+    def _create_clients_with_private_connections(self):
+        pass
 
 
 class Oracle(World):
@@ -67,12 +75,12 @@ class Oracle(World):
     Inherit from World.
     """
 
-    def __init__(self):
+    def __init__(self, world):
 
         """
         + Description: constructor
         + Input:
-        -
+        - current world
         + Output:
         -
         """
