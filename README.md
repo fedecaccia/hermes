@@ -11,7 +11,7 @@ Under development.
 Under development.
 
 ## Contact
-Any questions or suggestions feel free to contact me at federicoagustincaccia@gmail.com
+Any questions or suggestions feel free to contact me at federico.caccia@coinfabrik.com
 
 ## Licensing
 Copyright (C) 2018 Federico A. Caccia
