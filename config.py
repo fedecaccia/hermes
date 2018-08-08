@@ -7,32 +7,50 @@ from definitions import *
 
 # Data modules
 
-data_modules = [
+data_elements = [
   {
     data_id: 0,
-    description: btcusd,
+    description: ethbtc,
     source: bittrex,
-    datatype: candles
+    data_type: candles,
+    data_format: csv,
+    header_format: cdm,
+    file_name: "./data/candlesbittrexETHBTC.csv"
   },
   {
     data_id: 1,
     description: ethbtc,
     source: bittrex,
-    datatype: orderbook
+    data_type: orderbook,
+    data_format: csv,
+    header_format: cdm,
+    file_name: "./data/orderbookbittrexETHBTC.csv"
   },
   {
     data_id: 2,
     description: ethbtc,
     source: binance,
-    datatype: orderbook
+    data_type: orderbook,
+    data_format: csv,
+    header_format: cdm,
+    file_name: "./data/orderbookbinanceETHBTC.csv"
+  },
+  {
+    data_id: 3,
+    description: tweets_count,
+    source: twitter,
+    data_type: tweets_histogram,
+    data_format: csv,
+    header_format: tdm,
+    file_name: "./data/tweetsBTC.csv"
   }
 ]
 
 # Algorithms
 
-algorithms = [
+algorithms_elements = [
   {
-    algorithm: crossing_ema,
+    algorithm: crossing_ma,
     parameters: {
       ema_low: 10,
       ema_fast: 20,
@@ -51,6 +69,15 @@ algorithms = [
     data_modules_array: [0]
   },
   {
+    algorithm: twitter_analysis,
+    parameters: {
+      tweets_growth:0.3,
+      trade_amount_coin: usd,
+      trade_amount_value: 200
+    },
+    data_modules_array: [3]
+  },
+  {
     algorithm: virtual_transfer,
     parameters: {
       min_profit:0.1,
@@ -63,10 +90,10 @@ algorithms = [
 
 # Strategies definition
 
-strategies = [
+strategies_elements = [
   {
     strategy_id: 0,
-    algorithms_array: [crossing_ema, volume]
+    algorithms_array: [crossing_ema, volume, twitter]
   },
   {
     strategy_id: 1,
@@ -83,25 +110,7 @@ trading_mode = backtest
 #                  BACKTEST SECTION
 #######################################################
 
-# Backtest data format
 
-backtest_datatype = csv
-
-# Backtest data path
-
-csv_dir = "./data/"
-sql_dir = ""
-mongo_port = ""
-
-# Backtest data file names format
-
-table_name_format = cdm
-
-# Backtest data format
-
-db_format = cdm
-
-# Accounts
 
 
 #######################################################
@@ -115,3 +124,8 @@ db_format = cdm
 #                 REAL TRADING SECTION
 #######################################################
 
+api_keys_files = {
+    binance: "./keys/binance.key",
+    bitfinex: "./keys/bitfinex.key",
+    bittrex: "./keys/bittrex.key"
+}

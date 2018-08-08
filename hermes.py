@@ -1,10 +1,14 @@
 import definitions
 import config
 
-from world import EmulatedWorld, RealWorld, Oracle
+from world import EmulatedExchangeWorld, RealExchangeWorld, Oracle
+from data_module import Candles, Orderbook, Tickers, Tweets
+from algorithm import CrossingMA, Volume, TwitterAnalysis, VirtualTransfer
 from portfolio import Portfolio
 from trade import Trade
 from strategy import Strategy
+
+from pprint import pprint
 
 
 class Hermes(object):
@@ -16,7 +20,7 @@ class Hermes(object):
     def __init__(self):
 
         """
-        + Description: constructor.
+        + Description: Constructor. Builds main system.
         + Input:
         -
         + Output:
@@ -24,13 +28,13 @@ class Hermes(object):
         """
 
         self._load_config()
-        self._build_system()
         self._connect_to_world()
-        self._create_portfolio()
-        self._create_trading_platform()
-        self._build_tables()
+        self._create_oracle()
+        self._build_data_modules()
         self._build_algorithms()
         self._build_strategies()
+        self._build_portfolio()
+        self._build_trading_platform()
 
     def _load_config(self):
 
@@ -43,9 +47,9 @@ class Hermes(object):
         """
 
         self._load_trading_mode()
-        self._load_data_modules()
-        self._load_algorithms()
-        self._load_strategies()
+        self._load_data_elements()
+        self._load_algorithms_elements()
+        self._load_strategies_elements()
 
     def _load_trading_mode(self):
 
@@ -64,114 +68,23 @@ class Hermes(object):
         if self.mode not in [definitions.backtest, definitions.paper, definitions.real]:
             raise ValueError("Bad trading mode.")
 
-        if self.mode == definitions.backtest:
-            self._load_backtesting_parameters()
-        
-        elif self.mode in [definitions.paper, definitions.real]:
-            pass
-
-
-    def _load_backtesting_parameters(self):
-
-        """
-        + Description: load backtesting parameters from user's input.
-        + Input:
-        -
-        + Output:
-        -
-        """
-
-        self._load_backtest_datatype()
-        self._load_table_name_format()
-        self._load_db_format()
-
-    def _load_backtest_datatype(self):
-
-        """
-        + Description: load backtest data type.
-        + Input:
-        -
-        + Output:
-        -
-        """
-
-        try:
-            self.backtest_datatype = config.backtest_datatype
-        except:
-            raise ValueError("Error trying to read backtest_datatype from config.py.")
-        if self.backtest_datatype not in [definitions.csv, definitions.sql, definitions.nosql]:
-            raise ValueError("Bad backtest_datatype.")
-
-        if self.backtest_datatype == definitions.csv:
-            try:
-                self.csv_dir = config.csv_dir
-            except:
-                raise ValueError("Error trying to read csv_dir from config.py.")
-        
-        elif self.backtest_datatype == definitions.sql:
-            try:
-                self.sql_dir = config.sql_dir
-            except:
-                raise ValueError("Error trying to read sql_dir from config.py.")
-
-        elif self.backtest_datatype == definitions.nosql:
-            try:
-                self.mogo_port = config.mongo_port
-            except:
-                raise ValueError("Error trying to read mongo_port from config.py.")
-
-    def _load_table_name_format(self):
-
-        """
-        + Description: load table name format.
-        + Input:
-        -
-        + Output:
-        -
-        """
-
-        try:
-            self.table_name_format = config.table_name_format
-        except:
-            raise ValueError("Error trying to read table_name_format from config.py.")
-        if self.table_name_format not in [definitions.cdm]:
-            raise ValueError("Bad table_name_format.")
-
-
-    def _load_db_format(self):
-
-        """
-        + Description: load data base format.
-        + Input:
-        -
-        + Output:
-        -
-        """
-
-        try:
-            self.db_format = config.db_format
-        except:
-            raise ValueError("Error trying to read table_name_format from config.py.")
-        if self.db_format not in [definitions.cdm]:
-            raise ValueError("Bad db_format.")
-
-    def _load_data_modules(self):
+    def _load_data_elements(self):
         
         """
-        + Description: load data modules.
+        + Description: load data elements.
         + Input:
         -
         + Output:
         -
         """
-        
-        self.data_modules = config.data_modules
-        self._check_data_modules_consistency()
 
-    def _check_data_modules_consistency(self):
+        self.data_elements = config.data_elements
+        self._check_data_elements_consistency()
+
+    def _check_data_elements_consistency(self):
 
         """
-        + Description: check consistency in data modules.
+        + Description: check consistency in data elements.
         + Input:
         -
         + Output:
@@ -179,24 +92,23 @@ class Hermes(object):
         """
         pass
 
-
-    def _load_algorithms(self):
+    def _load_algorithms_elements(self):
         
         """
-        + Description: load algorithms.
+        + Description: load algorithms elements.
         + Input:
         -
         + Output:
         -
         """
 
-        self.algorithms = config.algorithms
-        self._check_algorithms_consistency()
+        self.algorithms_elements = config.algorithms_elements
+        self._check_algorithms_elements_consistency()
 
-    def _check_algorithms_consistency(self):
+    def _check_algorithms_elements_consistency(self):
 
         """
-        + Description: check consistency in algorithms.
+        + Description: check consistency in algorithms elements.
         + Input:
         - 
         + Output:
@@ -204,45 +116,29 @@ class Hermes(object):
         """
         pass
         
-    def _load_strategies(self):
+    def _load_strategies_elements(self):
         
         """
-        + Description: load strategies.
+        + Description: load strategies elements.
         + Input:
         -
         + Output:
         -
         """
 
-        self.strategies = config.strategies
-        self._check_strategies_consistency()
+        self.strategies_elements = config.strategies_elements
+        self._check_strategies_elements_consistency()
 
-    def _check_strategies_consistency(self):
+    def _check_strategies_elements_consistency(self):
 
         """
-        + Description: check consistency in strategies.
+        + Description: check consistency in strategies elements.
         + Input:
         -
         + Output:
         -
         """
         pass
-
-
-    def _build_system(self):
-
-        """
-        + Description: build userful variables from config, like list of all exchanges, tickers, etc.
-        + Input:
-        -
-        + Output:
-        -
-        """
-
-        self.exchanges = set()
-        for module in self.data_modules:
-            if module[definitions.source] in definitions.all_exchanges:
-                self.exchanges.update([module[definitions.source]])
 
     def _connect_to_world(self):
 
@@ -254,19 +150,119 @@ class Hermes(object):
         -
         """
 
-        if self.mode == definitions.backtest:
-            self.world = EmulatedWorld()
-        
-        else:
-            self.world = RealWorld(self.mode)
-        
-        self.oracle = Oracle(self.world)
-        
+        self.world = None
 
-    def _create_portfolio(self):
+        if self.mode == definitions.backtest:
+            self.world = EmulatedExchangeWorld(self.data_elements)
+
+        else:
+            exchanges_names = set()
+        
+            if self.mode == definitions.paper:
+                self.world = RealExchangeWorld(self.mode, exchanges_names)
+            
+            else:
+                self.world = RealExchangeWorld(self.mode, exchanges_names, config.api_keys_files)
+
+    def _create_oracle(self):
 
         """
-        + Description: create portfolio based on individual wallets.
+        + Description: initialize oracle to fast queries.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        self.oracle = Oracle(self.world)
+
+    def _build_data_modules(self):
+        
+        """
+        + Description: build data modules.
+        + Input:
+        -
+        + Output:
+        -
+        """        
+        
+        self.data_modules = {}
+        for element in self.data_elements:
+
+            key = element[definitions.data_id]
+            
+            if element[definitions.data_type] == definitions.candles:                
+                self.data_modules[key] = Candles(element, self.world)
+            
+            elif element[definitions.data_type] == definitions.orderbook:
+                self.data_modules[key] = Orderbook(element, self.world)
+            
+            elif element[definitions.data_type] == definitions.tickers:
+                self.data_modules[key] = Tickers(element, self.world)
+            
+            elif element[definitions.data_type] == definitions.tweets_histogram:
+                self.data_modules[key] = Tweets(element, self.world)
+
+            else:
+                raise ValueError("Bad data_type: '"
+                +element[definitions.data_type]
+                +' in module id: '+str(element[definitions.data_id])) 
+        
+        print("Data modules:")
+        pprint(self.data_modules)     
+
+    def _build_algorithms(self):
+
+        """
+        + Description: build algorithms based on data modules.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        self.algorithms = {}
+        for element in self.algorithms_elements:
+
+            key = element[definitions.algorithm]
+            data_ids = element[definitions.data_modules_array]
+            data_modules = [self.data_modules[data_id] for data_id in data_ids]
+
+            if element[definitions.algorithm] == definitions.crossing_ma:
+                self.algorithms[key] = CrossingMA(data_modules)
+
+            elif element[definitions.algorithm] == definitions.volume:
+                self.algorithms[key] = Volume(data_modules)
+
+            elif element[definitions.algorithm] == definitions.twitter_analysis:
+                self.algorithms[key] = TwitterAnalysis(data_modules)
+
+            elif element[definitions.algorithm] == definitions.virtual_transfer:
+                self.algorithms[key] = VirtualTransfer(data_modules) 
+
+            else:
+                raise ValueError("Bad algorithm: '"
+                +element[definitions.data_type])
+
+        print("Algorithms:")
+        pprint(self.algorithms) 
+
+    def _build_strategies(self):
+
+        """
+        + Description: build strategies based on algorithms.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        pass
+
+    def _build_portfolio(self):
+
+        """
+        + Description: build portfolio based on individual wallets.
         + Input:
         -
         + Output:
@@ -276,10 +272,10 @@ class Hermes(object):
 
         pass
 
-    def _create_trading_platform(self):
+    def _build_trading_platform(self):
 
         """
-        + Description: create trading platform.
+        + Description: build trading platform.
         + Input:
         -
         + Output:
@@ -287,42 +283,6 @@ class Hermes(object):
         """
 
         self.trading = Trade(self.world, self.portfolio)
-
-    def _build_tables(self):
-
-        """
-        + Description: create tables from data modules.
-        + Input:
-        -
-        + Output:
-        -
-        """
-
-        pass
-
-    def _build_algorithms(self):
-
-        """
-        + Description: create algorithms based on tables.
-        + Input:
-        -
-        + Output:
-        -
-        """
-
-        pass
-
-    def _build_strategies(self):
-
-        """
-        + Description: create strategies based on algorithms.
-        + Input:
-        -
-        + Output:
-        -
-        """
-
-        pass
 
     def run(self):
 
