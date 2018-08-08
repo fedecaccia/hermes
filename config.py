@@ -93,7 +93,7 @@ algorithms_elements = [
 strategies_elements = [
   {
     strategy_id: 0,
-    algorithms_array: [crossing_ema, volume, twitter]
+    algorithms_array: [crossing_ma, volume, twitter_analysis]
   },
   {
     strategy_id: 1,

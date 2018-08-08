@@ -8,18 +8,18 @@ class Strategy(ABC):
     Based on a sum over individual algorithm punctuation values, takes a trading decision.
     """
 
-    def __init__(self, world, portfolio, trading):
+    def __init__(self, algorithms, portfolio, trading):
 
         """
         + Description: constructor
         + Input:
-        - world
-        - portfolio
-        - strategy
+        - algorithms: Array of algorithm objects.
+        - portfolio: portfolio object.
+        - trading: trading platform object.
         + Output:
         -
         """
 
-        self.world = world
+        self.algorithms = algorithms
         self.portfolio = portfolio
         self.trading = trading

@@ -4,6 +4,7 @@ import config
 from world import EmulatedExchangeWorld, RealExchangeWorld, Oracle
 from data_module import Candles, Orderbook, Tickers, Tweets
 from algorithm import CrossingMA, Volume, TwitterAnalysis, VirtualTransfer
+from strategy import Strategy
 from portfolio import Portfolio
 from trade import Trade
 from strategy import Strategy
@@ -28,13 +29,14 @@ class Hermes(object):
         """
 
         self._load_config()
+        self._unique_exchanges()
         self._connect_to_world()
         self._create_oracle()
         self._build_data_modules()
-        self._build_algorithms()
-        self._build_strategies()
+        self._build_algorithms()        
         self._build_portfolio()
         self._build_trading_platform()
+        self._build_strategies()
 
     def _load_config(self):
 
@@ -140,6 +142,24 @@ class Hermes(object):
         """
         pass
 
+    def _unique_exchanges(self):
+        
+        """
+        + Description: unique list of exchanges.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        self.exchanges_names = set()
+        for element in self.data_elements:
+            if element[definitions.source] in definitions.all_exchanges:
+                self.exchanges_names.update([element[definitions.source]])
+
+        print("Unique list of exchanges")
+        print(self.exchanges_names)
+
     def _connect_to_world(self):
 
         """
@@ -155,14 +175,13 @@ class Hermes(object):
         if self.mode == definitions.backtest:
             self.world = EmulatedExchangeWorld(self.data_elements)
 
-        else:
-            exchanges_names = set()
+        else:            
         
             if self.mode == definitions.paper:
-                self.world = RealExchangeWorld(self.mode, exchanges_names)
+                self.world = RealExchangeWorld(self.mode, self.exchanges_names)
             
             else:
-                self.world = RealExchangeWorld(self.mode, exchanges_names, config.api_keys_files)
+                self.world = RealExchangeWorld(self.mode, self.exchanges_names, config.api_keys_files)
 
     def _create_oracle(self):
 
@@ -247,18 +266,6 @@ class Hermes(object):
         print("Algorithms:")
         pprint(self.algorithms) 
 
-    def _build_strategies(self):
-
-        """
-        + Description: build strategies based on algorithms.
-        + Input:
-        -
-        + Output:
-        -
-        """
-
-        pass
-
     def _build_portfolio(self):
 
         """
@@ -268,7 +275,7 @@ class Hermes(object):
         + Output:
         -
         """
-        self.portfolio = Portfolio(self.world)
+        self.portfolio = Portfolio(self.world, self.exchanges_names)
 
         pass
 
@@ -283,6 +290,28 @@ class Hermes(object):
         """
 
         self.trading = Trade(self.world, self.portfolio)
+
+    def _build_strategies(self):
+
+        """
+        + Description: build strategies based on algorithms.
+        + Input:
+        -
+        + Output:
+        -
+        """
+        
+        self.strategies = {}
+        for element in self.strategies_elements:
+
+            key = element[definitions.strategy_id]
+            algorithm_ids = element[definitions.algorithms_array]
+            algorithms = [self.algorithms[algo_id] for algo_id in algorithm_ids]
+
+            self.strategies[key] = Strategy(algorithms, self.portfolio, self.trading)
+
+        print("Strategies:")
+        pprint(self.strategies) 
 
     def run(self):
 

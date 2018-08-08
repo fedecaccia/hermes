@@ -83,6 +83,12 @@ min_profit = "min_profit"
 trade_amount_coin = "trade_amount_coin"
 trade_amount_value = "trade_amount_value"
 
+# Account types
+
+trading = "trading"
+funding = "funding"
+margin_trading = "margin_trading"
+
 # Useful definitions
 
 data_id = "data_id"
