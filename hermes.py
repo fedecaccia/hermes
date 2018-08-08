@@ -157,7 +157,7 @@ class Hermes(object):
             if element[definitions.source] in definitions.all_exchanges:
                 self.exchanges_names.update([element[definitions.source]])
 
-        print("Unique list of exchanges")
+        print("\nUnique list of exchanges")
         print(self.exchanges_names)
 
     def _connect_to_world(self):
@@ -227,7 +227,7 @@ class Hermes(object):
                 +element[definitions.data_type]
                 +' in module id: '+str(element[definitions.data_id])) 
         
-        print("Data modules:")
+        print("\nData modules:")
         pprint(self.data_modules)     
 
     def _build_algorithms(self):
@@ -263,7 +263,7 @@ class Hermes(object):
                 raise ValueError("Bad algorithm: '"
                 +element[definitions.data_type])
 
-        print("Algorithms:")
+        print("\nAlgorithms:")
         pprint(self.algorithms) 
 
     def _build_portfolio(self):
@@ -276,8 +276,8 @@ class Hermes(object):
         -
         """
         self.portfolio = Portfolio(self.world, self.exchanges_names)
-
-        pass
+        print("\nPortfolio")
+        pprint(self.portfolio.balance)
 
     def _build_trading_platform(self):
 
@@ -290,6 +290,8 @@ class Hermes(object):
         """
 
         self.trading = Trade(self.world, self.portfolio)
+        print("\nTrading platform")
+        pprint(self.trading)
 
     def _build_strategies(self):
 
@@ -310,7 +312,7 @@ class Hermes(object):
 
             self.strategies[key] = Strategy(algorithms, self.portfolio, self.trading)
 
-        print("Strategies:")
+        print("\nStrategies:")
         pprint(self.strategies) 
 
     def run(self):

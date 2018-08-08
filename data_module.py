@@ -82,7 +82,6 @@ class Orderbook(DataModule):
         """
 
         super().__init__(element, world)
-        print("Creating orderbook module")
 
     def _check_element_consistency(self, element):
         

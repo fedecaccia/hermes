@@ -58,6 +58,10 @@ class ExchangeWorld(World):
     @abstractmethod
     def request_tickers(self, exchanges):
         pass
+    
+    @abstractmethod
+    def request_balance(self, exchange):
+        pass
 
 
 class EmulatedExchangeWorld(ExchangeWorld):
@@ -108,9 +112,10 @@ class EmulatedExchangeWorld(ExchangeWorld):
         -
         """
 
-        print("Initializing data module:")
+        print("\nInitializing data module:")
         print("Description:", data_element[definitions.description])
         print("Source:", data_element[definitions.source])
+        print("Data type:", data_element[definitions.data_type])
         if data_element[definitions.data_format] == definitions.csv:
             return self._load_data_from_csv(data_element)
 
@@ -223,6 +228,46 @@ class EmulatedExchangeWorld(ExchangeWorld):
 
         pass
 
+    def request_balance(self, exchange):
+
+        """
+        + Description: query to request exchange balances.
+        + Input:
+        - exchange: string
+        + Output:
+        - balance: dict with accounts balances.
+        """
+
+        return self._get_test_balance()
+
+    def _get_test_balance(self):
+        
+        """
+        + Description: test balance.
+        + Input:
+        -
+        + Output:
+        - balance: dict with accounts balances.
+        """        
+        
+        balance = {
+            definitions.trading:{
+                definitions.usd:100,
+                definitions.btc:100,
+                definitions.eth:100
+            },
+            definitions.funding:{
+                definitions.usd:0
+            },
+            definitions.margin_trading:{
+                definitions.usd:100,
+                definitions.btc:100,
+                definitions.eth:100,
+                definitions.margin:100
+            }
+        }
+
+        return balance
 
 class RealExchangeWorld(ExchangeWorld):
 
@@ -345,6 +390,18 @@ class RealExchangeWorld(ExchangeWorld):
         - exchanges: array of string of exchanges
         + Output:
         - tickers: array of dicts
+        """
+
+        pass
+
+    def request_balance(self, exchange):
+
+        """
+        + Description: query to request exchange balances.
+        + Input:
+        - exchange: string
+        + Output:
+        - balance: dict with accounts balances.
         """
 
         pass

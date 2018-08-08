@@ -19,28 +19,26 @@ class Wallet(object):
         """
 
         self.world = world
-        self.exchange = exchange_name
+        self.exchange = exchange_name        
         self.accounts = {
-            definitions.trading: Account(),
-            definitions.funding: Account(),
-            definitions.margin_trading: Account()
+            definitions.trading: None,
+            definitions.funding: None,
+            definitions.margin_trading: None
         }
+        self.update()
 
-
-class Account(object):
-
-    """
-    Account: Balance of assets in a particular account for a given exchange.
-    """
-
-    def __init__(self):
+    def update(self):
 
         """
-        Description: constructor.
+        + Description: balance update function.
         + Input:
         -
         + Output:
         -
         """
-
-        self.assets = {}
+        accounts = self.world.request_balance(self.exchange)
+        self.accounts = {
+            definitions.trading: accounts[definitions.trading],
+            definitions.funding: accounts[definitions.funding],
+            definitions.margin_trading: accounts[definitions.margin_trading]
+        }

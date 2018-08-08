@@ -31,6 +31,7 @@ all_tickers = [btcusd, ethusd, ethbtc]
 usd = "USD"
 eur = "EUR"
 btc = "BTC"
+eth = "ETH"
 
 # Other data descriptions
 
@@ -89,6 +90,10 @@ trading = "trading"
 funding = "funding"
 margin_trading = "margin_trading"
 
+# Margin trading specifics
+
+margin = "margin"
+
 # Useful definitions
 
 data_id = "data_id"
@@ -99,4 +104,3 @@ algorithms_array = "algorithms_array"
 parameters = "parameters"
 data_modules_array = "data_modules_array"
 strategy_id = "strategy_id"
-values = "values"
