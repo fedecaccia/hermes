@@ -12,11 +12,12 @@ class Algorithm(ABC):
     Shoots a punctuation to Strategy.
     """
 
-    def __init__(self, data_modules):
+    def __init__(self, valuation, data_modules):
 
         """
         + Description: constructor
         + Input:
+        - valuation: Dictionary with passed and reprobed values.
         - data_modules: array of data module objects.
         + Output:
         -
@@ -24,20 +25,22 @@ class Algorithm(ABC):
         
         self.data_modules = data_modules
         self._check_data_modules()
+        self._define_valuation(valuation[definitions.passed],
+                               valuation[definitions.reprobed])
 
-    def _define_valuation(self, pass_value, reprobe_value):
+    def _define_valuation(self, passed_value, reprobed_value):
 
         """
         + Description: define valuation parameters
         + Input:
-        - pass_value: punctutation in case algorithm pass test
-        - reprobe_value: punctutation in case algorithm reprobe test
+        - passed_value: punctutation in case algorithm pass test
+        - reprobed_value: punctutation in case algorithm reprobe test
         + Output:
         -
         """
         
-        self.pass_value = pass_value
-        self.reprobe_value = reprobe_value
+        self._passed_value = passed_value
+        self._reprobed_value = reprobed_value
 
     @abstractmethod
     def _check_data_modules(self):        
@@ -67,18 +70,19 @@ class Algorithm(ABC):
 
 class CrossingMA(Algorithm):
 
-    def __init__(self, data_modules):
+    def __init__(self, valuation, data_modules, parameters):
 
         """
         + Description: Trading strategy based on moving average crossings.
         + Input:
-        - data_modules: array of data module objects.
+        - valuation: Dictionary with passed and reprobed values.
+        - data_modules: Array of data module objects.
+        - parameters: Dictionary of specific algorithm parameters.
         + Output:
         -
         """
         
-        super().__init__(data_modules)
-        self._define_valuation(pass_value = 2, reprobe_value = -1)
+        super().__init__(valuation, data_modules)
 
     def _check_data_modules(self):
 
@@ -151,27 +155,28 @@ class CrossingMA(Algorithm):
         """
         
         if 1>0:
-            valuation = self.reprobe_value
+            valuation = self._reprobed_value
         else:
-            valuation = self.pass_value
+            valuation = self._passed_value
 
         return valuation
 
 
 class Volume(Algorithm):
 
-    def __init__(self, data_modules):
+    def __init__(self, valuation, data_modules, parameters):
 
         """
         + Description: Trading strategy based on volume analysis.
         + Input:
-        - data_modules: array of data module objects.
+        - valuation: Dictionary with passed and reprobed values.
+        - data_modules: Array of data module objects.
+        - parameters: Dictionary of specific algorithm parameters.
         + Output:
         -
         """
         
-        super().__init__(data_modules)
-        self._define_valuation(pass_value = 1, reprobe_value = -1)
+        super().__init__(valuation, data_modules)
 
     def _check_data_modules(self):
 
@@ -244,27 +249,28 @@ class Volume(Algorithm):
         """
         
         if 1>0:
-            valuation = self.reprobe_value
+            valuation = self._reprobed_value
         else:
-            valuation = self.pass_value
+            valuation = self._passed_value
 
         return valuation
 
 
 class VirtualTransfer(Algorithm):
 
-    def __init__(self, data_modules):
+    def __init__(self, valuation, data_modules, parameters):
 
         """
         + Description: Trading strategy based on statistical arbitrage.
         + Input:
-        - data_modules: array of data module objects.
+        - valuation: Dictionary with passed and reprobed values.
+        - data_modules: Array of data module objects.
+        - parameters: Dictionary of specific algorithm parameters.
         + Output:
         -
         """
         
-        super().__init__(data_modules)
-        self._define_valuation(pass_value = 1, reprobe_value = 0)
+        super().__init__(valuation, data_modules)
 
     def _check_data_modules(self):
 
@@ -337,27 +343,28 @@ class VirtualTransfer(Algorithm):
         """
         
         if 1>0:
-            valuation = self.reprobe_value
+            valuation = self._reprobed_value
         else:
-            valuation = self.pass_value
+            valuation = self._passed_value
 
         return valuation
 
 
 class TwitterAnalysis(Algorithm):
 
-    def __init__(self, data_modules):
+    def __init__(self, valuation, data_modules, parameters):
 
         """
         + Description: Trading strategy based on twitter analysis.
         + Input:
-        - data_modules: array of data module objects.
+        - valuation: Dictionary with passed and reprobed values.
+        - data_modules: Array of data module objects.
+        - parameters: Dictionary of specific algorithm parameters.
         + Output:
         -
         """
         
-        super().__init__(data_modules)
-        self._define_valuation(pass_value = 1, reprobe_value = 0)
+        super().__init__(valuation, data_modules)
 
     def _check_data_modules(self):
 
@@ -384,7 +391,7 @@ class TwitterAnalysis(Algorithm):
         """
 
         for module in self.data_modules:
-            if module.description != definitions.tweets_count:
+            if module.description not in definitions.counter:
                 raise ValueError("Bad description in data module id: "
                 +str(module.id))
 
@@ -414,10 +421,10 @@ class TwitterAnalysis(Algorithm):
         """
         
         for module in self.data_modules:
-            if module.data_type != definitions.tweets_histogram:
+            if module.data_type != definitions.tweets_count:
                 raise ValueError("Bad data type in data module id: "
                 +str(module.id)
-                +". Expected: "+definitions.tweets_histogram)
+                +". Expected: "+definitions.tweets_count)
 
     def evaluate(self):
 
@@ -430,9 +437,9 @@ class TwitterAnalysis(Algorithm):
         """
         
         if 1>0:
-            valuation = self.reprobe_value
+            valuation = self._reprobed_value
         else:
-            valuation = self.pass_value
+            valuation = self._passed_value
 
         return valuation
 

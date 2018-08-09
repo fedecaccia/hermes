@@ -1,7 +1,7 @@
 import definitions
 import config
 
-from world import EmulatedExchangeWorld, RealExchangeWorld, Oracle
+from world import EmulatedWorld, RealWorld, Oracle
 from data_module import Candles, Orderbook, Tickers, Tweets
 from algorithm import CrossingMA, Volume, TwitterAnalysis, VirtualTransfer
 from strategy import Strategy
@@ -10,6 +10,7 @@ from trade import Trade
 from strategy import Strategy
 
 from pprint import pprint
+from queue import Queue
 
 
 class Hermes(object):
@@ -21,7 +22,7 @@ class Hermes(object):
     def __init__(self):
 
         """
-        + Description: Constructor. Builds main system.
+        + Description: Constructor. Hermes initialization.
         + Input:
         -
         + Output:
@@ -29,14 +30,7 @@ class Hermes(object):
         """
 
         self._load_config()
-        self._unique_exchanges()
-        self._connect_to_world()
-        self._create_oracle()
-        self._build_data_modules()
-        self._build_algorithms()        
-        self._build_portfolio()
-        self._build_trading_platform()
-        self._build_strategies()
+        self._build_systems()
 
     def _load_config(self):
 
@@ -142,6 +136,26 @@ class Hermes(object):
         """
         pass
 
+    def _build_systems(self):
+
+        """
+        + Description: Builds main system.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        self._unique_exchanges()
+        self._connect_to_world()
+        self._create_oracle()
+        self._build_data_modules()
+        self._build_algorithms()        
+        self._build_portfolio()
+        self._build_trading_platform()
+        self._build_request_structure()
+        self._build_strategies()
+
     def _unique_exchanges(self):
         
         """
@@ -173,15 +187,15 @@ class Hermes(object):
         self.world = None
 
         if self.mode == definitions.backtest:
-            self.world = EmulatedExchangeWorld(self.data_elements)
+            self.world = EmulatedWorld(self.data_elements)
 
         else:            
         
             if self.mode == definitions.paper:
-                self.world = RealExchangeWorld(self.mode, self.exchanges_names)
+                self.world = RealWorld(self.mode, self.exchanges_names)
             
             else:
-                self.world = RealExchangeWorld(self.mode, self.exchanges_names, config.api_keys_files)
+                self.world = RealWorld(self.mode, self.exchanges_names, config.api_keys_files)
 
     def _create_oracle(self):
 
@@ -219,7 +233,7 @@ class Hermes(object):
             elif element[definitions.data_type] == definitions.tickers:
                 self.data_modules[key] = Tickers(element, self.world)
             
-            elif element[definitions.data_type] == definitions.tweets_histogram:
+            elif element[definitions.data_type] == definitions.tweets_count:
                 self.data_modules[key] = Tweets(element, self.world)
 
             else:
@@ -244,20 +258,22 @@ class Hermes(object):
         for element in self.algorithms_elements:
 
             key = element[definitions.algorithm]
+            valuation = element[definitions.valuation]
+            parameters = element[definitions.parameters]
             data_ids = element[definitions.data_modules_array]
             data_modules = [self.data_modules[data_id] for data_id in data_ids]
 
             if element[definitions.algorithm] == definitions.crossing_ma:
-                self.algorithms[key] = CrossingMA(data_modules)
+                self.algorithms[key] = CrossingMA(valuation, data_modules, parameters)
 
             elif element[definitions.algorithm] == definitions.volume:
-                self.algorithms[key] = Volume(data_modules)
+                self.algorithms[key] = Volume(valuation, data_modules, parameters)
 
             elif element[definitions.algorithm] == definitions.twitter_analysis:
-                self.algorithms[key] = TwitterAnalysis(data_modules)
+                self.algorithms[key] = TwitterAnalysis(valuation, data_modules, parameters)
 
             elif element[definitions.algorithm] == definitions.virtual_transfer:
-                self.algorithms[key] = VirtualTransfer(data_modules) 
+                self.algorithms[key] = VirtualTransfer(valuation, data_modules, parameters)
 
             else:
                 raise ValueError("Bad algorithm: '"
@@ -293,6 +309,19 @@ class Hermes(object):
         print("\nTrading platform")
         pprint(self.trading)
 
+    def _build_request_structure(self):
+
+        """
+        + Description: build pile and threads to perform parallel requests.
+        + Input:
+        -
+        + Output:
+        -
+        """
+        
+        self.requests_pile = Queue()
+
+
     def _build_strategies(self):
 
         """
@@ -307,13 +336,27 @@ class Hermes(object):
         for element in self.strategies_elements:
 
             key = element[definitions.strategy_id]
+            threshold = element[definitions.threshold]
+            
             algorithm_ids = element[definitions.algorithms_array]
             algorithms = [self.algorithms[algo_id] for algo_id in algorithm_ids]
+            
+            data_modules = set()
+            for algorithm_id in algorithm_ids:
+                if algorithm_id in element[definitions.algorithms_array]:
+                    data_modules.update(self.algorithms[algorithm_id].data_modules)
+            print(data_modules)
 
-            self.strategies[key] = Strategy(algorithms, self.portfolio, self.trading)
+            self.strategies[key] = Strategy(key,
+                                            threshold,
+                                            self.requests_pile,
+                                            algorithms,
+                                            data_modules,
+                                            self.portfolio,
+                                            self.trading)
 
         print("\nStrategies:")
-        pprint(self.strategies) 
+        pprint(self.strategies)
 
     def run(self):
 
@@ -325,4 +368,6 @@ class Hermes(object):
         -
         """
 
-        pass
+        while self.world.is_connected():
+            for strategy in self.strategies.values():                
+                strategy.execute()

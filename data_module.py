@@ -30,6 +30,10 @@ class DataModule(ABC):
     @abstractmethod
     def _check_element_consistency(self, element):
         pass
+    
+    @abstractmethod
+    async def update(self):
+        pass
 
 
 class Candles(DataModule):
@@ -50,11 +54,14 @@ class Candles(DataModule):
         """
 
         super().__init__(element, world)
+        self.ticker = element[definitions.description]
+        self.exchange = element[definitions.source]
+        self.timeframe = element[definitions.timeframe]
 
     def _check_element_consistency(self, element):
         
         """
-        Desciption: check consistency in the element built by user.
+        Description: check consistency in the element built by user.
         + Input:
         - element: main descriptions.
         + Output:
@@ -62,6 +69,23 @@ class Candles(DataModule):
         """
 
         pass
+
+    def update(self):
+
+        """
+        Description: connection to world, to update values.
+        + Input:
+        -.
+        + Output:
+        -
+        """
+
+        limit = 10
+        data = self.world.request_candles(self.ticker,
+                                          self.exchange,
+                                          self.timeframe,
+                                          limit)
+        print("Data module: "+str(self.id)+" updated.")
 
 
 class Orderbook(DataModule):
@@ -82,11 +106,13 @@ class Orderbook(DataModule):
         """
 
         super().__init__(element, world)
+        self.ticker = element[definitions.description]
+        self.exchange = element[definitions.source]
 
     def _check_element_consistency(self, element):
         
         """
-        Desciption: check consistency in the element built by user.
+        Description: check consistency in the element built by user.
         + Input:
         - element: main descriptions.
         + Output:
@@ -94,6 +120,19 @@ class Orderbook(DataModule):
         """
 
         pass
+
+    def update(self):
+
+        """
+        Description: connection to world, to update values.
+        + Input:
+        -.
+        + Output:
+        -
+        """
+
+        data = self.world.request_orderbook(self.ticker, self.exchange)
+        print("Data module: "+str(self.id)+" updated.")
 
 class Tickers(DataModule):
 
@@ -113,11 +152,13 @@ class Tickers(DataModule):
         """
 
         super().__init__(element, world)
+        self.ticker = element[definitions.description]
+        self.exchange = element[definitions.source]
     
     def _check_element_consistency(self, element):
         
         """
-        Desciption: check consistency in the element built by user.
+        Description: check consistency in the element built by user.
         + Input:
         - element: main descriptions.
         + Output:
@@ -125,6 +166,19 @@ class Tickers(DataModule):
         """
 
         pass
+
+    def update(self):
+
+        """
+        Description: connection to world, to update values.
+        + Input:
+        -.
+        + Output:
+        -
+        """
+
+        data = self.world.request_tickers()
+        print("Data module: "+str(self.id)+" updated.")
 
 
 class Tweets(DataModule):
@@ -145,11 +199,13 @@ class Tweets(DataModule):
         """
 
         super().__init__(element, world)
+        self.description = element[definitions.description]
+        self.source = element[definitions.source]
 
     def _check_element_consistency(self, element):
         
         """
-        Desciption: check consistency in the element built by user.
+        Description: check consistency in the element built by user.
         + Input:
         - element: main descriptions.
         + Output:
@@ -157,3 +213,16 @@ class Tweets(DataModule):
         """
 
         pass
+
+    def update(self):
+
+        """
+        Description: connection to world, to update values.
+        + Input:
+        -.
+        + Output:
+        -
+        """
+
+        data = self.world.request_tweets_count(self.description)
+        print("Data module: "+str(self.id)+" updated.")

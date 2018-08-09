@@ -33,9 +33,15 @@ eur = "EUR"
 btc = "BTC"
 eth = "ETH"
 
-# Other data descriptions
+# Other description definitions
 
-tweets_count = "tweets_count"
+counter = "counter"
+
+# Twitter filters
+
+bitcoin = "bitcoin"
+ethereum = "ethereum"
+blockchain = "blockchain"
 
 # Data types definition
 
@@ -44,7 +50,17 @@ orderbook = "orderbook"
 candles = "candles"
 ticker = "ticker"
 tickers = "tickers"
-tweets_histogram = "tweets_histogram"
+tweets_count = "tweets_count"
+
+# Candles timeframes definition
+
+one_min = "1m"
+five_min = "5m"
+thirty_min = "30m"
+one_hour = "1h"
+four_hour = "4h"
+six_hour = "6h"
+one_day = "1d"
 
 # Backtest data format definition
 
@@ -104,3 +120,13 @@ algorithms_array = "algorithms_array"
 parameters = "parameters"
 data_modules_array = "data_modules_array"
 strategy_id = "strategy_id"
+values = "values"
+filters = "filters"
+timeframe = "timeframe"
+
+# Algorithm valuations definition
+
+threshold = "threshold"
+valuation = "valuation"
+passed = "passed"
+reprobed = "reprobed"

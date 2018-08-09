@@ -7,6 +7,7 @@ import ccxt
 import pandas as pd
 
 from abc import ABC, abstractmethod
+from datetime import datetime
 
 
 class World(ABC):
@@ -27,48 +28,36 @@ class World(ABC):
 
         pass
 
-
-class ExchangeWorld(World):
-
-    """
-    BacktestWorld: world of exchanges.
-    Inherit from World.
-    """
-
-    def __init__(self):
-
-        """
-        + Description: constructor
-        + Input:
-        -
-        + Output:
-        -
-        """
-
-        super().__init__()
-
     @abstractmethod
-    def request_order_books(self, ticker, exchanges):
+    def is_connected(self):
+        pass
+        
+    @abstractmethod
+    def request_orderbook(self, ticker, exchange):
         pass
 
     @abstractmethod
-    def request_candles(self, ticker, exchanges):
+    def request_candles(self, ticker, exchange, timeframe, since, limit):
         pass
 
     @abstractmethod
-    def request_tickers(self, exchanges):
+    def request_tickers(self, exchange):
         pass
     
     @abstractmethod
     def request_balance(self, exchange):
         pass
 
+    @abstractmethod
+    def request_tweets_count(self, filter):
+        pass
 
-class EmulatedExchangeWorld(ExchangeWorld):
+
+class EmulatedWorld(World):
 
     """
-    EmulatedExchangeWorld: Connection with databases and ficticious accounts.
-    Inherit from ExchangeWorld, which inherits from World.
+    EmulatedWorld: Connection with databases and ficticious accounts.
+    Inherit from World.
     """
 
     def __init__(self, data_elements):
@@ -83,6 +72,7 @@ class EmulatedExchangeWorld(ExchangeWorld):
 
         super().__init__()
         self._initialize_data(data_elements)
+        self.test_count = 0
 
 
     def _initialize_data(self, data_elements):
@@ -100,7 +90,7 @@ class EmulatedExchangeWorld(ExchangeWorld):
             data[definitions.data_id] = data_element[definitions.data_id]
             data[definitions.ticker] = data_element[definitions.description]
             data[definitions.exchange] = data_element[definitions.source]
-            data["values"] = self._load_data(data_element)
+            data[definitions.values] = self._load_data(data_element)
 
     def _load_data(self, data_element):
 
@@ -186,54 +176,74 @@ class EmulatedExchangeWorld(ExchangeWorld):
         data = None
         return data
 
-    def request_order_books(self, ticker, exchanges):
+    def is_connected(self):
+        self.test_count += 1
+        if self.test_count>10:
+            return False
+        return True
+
+    def request_orderbook(self, ticker, exchange):
 
         """
         + Description: query to request orderboooks for a given ticker.
         + Input:
         - ticker: string
-        - exchanges: array of string of exchanges
+        - exchange: exchange name string
         + Output:
         - orderbook: array of dicts
         """
         
-        pass
+        return {"bids":[0,1,2], "asks":[0,1,2]}
 
-    def request_candles(self, ticker, exchanges, timeframe, limit, since):
+    def request_candles(self, ticker, exchange, timeframe, since=None, limit=1000):
 
         """
         + Description: query to request candles for a given ticker.
         + Input:
         - ticker: string
-        - exchanges: array of string of exchanges
-        - timeframe: string
-        - limit: maximum amount of candles
+        - exchange: exchange name string
+        - timeframe: string        
         - since: seconds passed since the first required candle
+        - limit: maximum amount of candles
         + Output:
         - candles: array of dicts
         """
 
-        pass
+        return {
+            "datetime":[10100101,10120020202],
+            "o":[1.1,2.2],
+            "h":[1.1,2.2],
+            "l":[1.1,2.2],
+            "c":[1.1,2.2],
+            "v":[1.1,2.2]
+            }
 
-    def request_tickers(self, exchanges):
+    def request_tickers(self, exchange):
         
         """
         + Description: query to request tickers data.
         + Input:
         - ticker: string
-        - exchanges: array of string of exchanges
+        - exchange: exchange name string
         + Output:
         - tickers: array of dicts
         """
 
-        pass
+        return {
+            "btcusd":{
+                "last":1232
+            },
+            "ethusd":{
+                "last":123
+            }
+        }
 
     def request_balance(self, exchange):
 
         """
         + Description: query to request exchange balances.
         + Input:
-        - exchange: string
+        - exchange: exchange name string
         + Output:
         - balance: dict with accounts balances.
         """
@@ -269,11 +279,24 @@ class EmulatedExchangeWorld(ExchangeWorld):
 
         return balance
 
-class RealExchangeWorld(ExchangeWorld):
+    def request_tweets_count(self, filter):
+
+        """
+        + Description: query to request actual tweets filtered count.
+        + Input:
+        - filter: array of keyword strings to filter twitter stream.
+        + Output:
+        - tweets_count: Dictionary with datetime and integer twitter count.
+        """
+
+        tweets_count = {datetime.now(), 1000}
+        return tweets_count
+
+class RealWorld(World):
 
     """
-    Real ExchangeWorld: Connection with exchanges.
-    Inherit from RealExchangeWorld, which inherits from World.
+    RealWorld: Connection with exchanges.
+    Inherit from World.
     """
 
     def __init__(self, mode, exchanges_names, api_keys_files = None):
@@ -322,7 +345,7 @@ class RealExchangeWorld(ExchangeWorld):
         
         return exchanges
 
-    def _load_api_keys(api_key_file):
+    def _load_api_keys(self, api_key_file):
 
         """
         + Description: load exchange api keys.
@@ -352,42 +375,47 @@ class RealExchangeWorld(ExchangeWorld):
 
         return keys
 
-    def request_order_books(self, ticker, exchanges):
+    def is_connected(self):
+        return True
+
+    def request_orderbook(self, ticker, exchange):
 
         """
         + Description: query to request orderboooks for a given ticker.
         + Input:
         - ticker: string
-        - exchanges: array of string of exchanges
+        - exchange: exchange name string
         + Output:
         - orderbook: array of dicts
         """
         
         pass
 
-    def request_candles(self, ticker, exchanges, timeframe, limit, since):
+    def request_candles(self, ticker, exchange, timeframe, since=None, limit=1000):
 
         """
         + Description: query to request candles for a given ticker.
         + Input:
         - ticker: string
-        - exchanges: array of string of exchanges
-        - timeframe: string
-        - limit: maximum amount of candles
+        - exchange: exchange name string
+        - timeframe: string        
         - since: seconds passed since the first required candle
+        - limit: maximum amount of candles
         + Output:
         - candles: array of dicts
         """
 
-        pass
+        client = getattr(ccxt, exchange)()
+        tickers = client.fetch_ohlcv(ticker, timeframe, since, limit)
+        return tickers
 
-    def request_tickers(self, exchanges):
+    def request_tickers(self, exchange):
         
         """
         + Description: query to request tickers data.
         + Input:
         - ticker: string
-        - exchanges: array of string of exchanges
+        - exchange: exchange name string
         + Output:
         - tickers: array of dicts
         """
@@ -399,19 +427,31 @@ class RealExchangeWorld(ExchangeWorld):
         """
         + Description: query to request exchange balances.
         + Input:
-        - exchange: string
+        - exchange: exchange name string
         + Output:
         - balance: dict with accounts balances.
         """
 
         pass
 
+    def request_tweets_count(self, filter):
 
-class Oracle(World):
+        """
+        + Description: query to request actual tweets filtered count.
+        + Input:
+        - filter: array of keyword strings to filter twitter stream.
+        + Output:
+        - tweets_count: Dictionary with datetime and integer twitter count.
+        """
+
+        tweets_count = {datetime.now(), 1000}
+        return tweets_count
+
+
+class Oracle(object):
 
     """
     Oracle: Fast information from databases or real world.
-    Inherit from World.
     """
 
     def __init__(self, world):

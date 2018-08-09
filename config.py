@@ -13,6 +13,7 @@ data_elements = [
     description: ethbtc,
     source: bittrex,
     data_type: candles,
+    timeframe: one_min,
     data_format: csv,
     header_format: cdm,
     file_name: "./data/candlesbittrexETHBTC.csv"
@@ -37,9 +38,10 @@ data_elements = [
   },
   {
     data_id: 3,
-    description: tweets_count,
+    description: counter,
+    filters: [bitcoin, ethereum, blockchain],
     source: twitter,
-    data_type: tweets_histogram,
+    data_type: tweets_count,
     data_format: csv,
     header_format: tdm,
     file_name: "./data/tweetsBTC.csv"
@@ -57,7 +59,11 @@ algorithms_elements = [
       trade_amount_coin: usd,
       trade_amount_value: 100
     },
-    data_modules_array: [0]
+    data_modules_array: [0],
+    valuation:{
+        passed:1,
+        reprobed:0
+    }
   },
   {
     algorithm: volume,
@@ -66,7 +72,11 @@ algorithms_elements = [
       trade_amount_coin: usd,
       trade_amount_value: 200
     },
-    data_modules_array: [0]
+    data_modules_array: [0],
+    valuation:{
+        passed:1,
+        reprobed:-1
+    }
   },
   {
     algorithm: twitter_analysis,
@@ -75,7 +85,11 @@ algorithms_elements = [
       trade_amount_coin: usd,
       trade_amount_value: 200
     },
-    data_modules_array: [3]
+    data_modules_array: [3],
+    valuation:{
+        passed:1,
+        reprobed:0
+    }
   },
   {
     algorithm: virtual_transfer,
@@ -84,7 +98,11 @@ algorithms_elements = [
       trade_amount_coin: usd,
       trade_amount_value: 100
     },
-    data_modules_array: [1,2]
+    data_modules_array: [1,2],
+    valuation:{
+        passed:1,
+        reprobed:0
+    }
   }
 ]
 
@@ -93,11 +111,13 @@ algorithms_elements = [
 strategies_elements = [
   {
     strategy_id: 0,
-    algorithms_array: [crossing_ma, volume, twitter_analysis]
+    algorithms_array: [crossing_ma, volume, twitter_analysis],
+    threshold: 3
   },
   {
     strategy_id: 1,
-    algorithms_array: [virtual_transfer]
+    algorithms_array: [virtual_transfer],
+    threshold: 1
   }
 ]
 
