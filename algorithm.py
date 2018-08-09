@@ -154,7 +154,7 @@ class CrossingMA(Algorithm):
         - valuation: integer algorithm valuation
         """
         
-        if 1>0:
+        if 0>1:
             valuation = self._reprobed_value
         else:
             valuation = self._passed_value
@@ -248,7 +248,7 @@ class Volume(Algorithm):
         - valuation: integer algorithm valuation
         """
         
-        if 1>0:
+        if 0>1:
             valuation = self._reprobed_value
         else:
             valuation = self._passed_value
@@ -342,7 +342,7 @@ class VirtualTransfer(Algorithm):
         - valuation: integer algorithm valuation
         """
         
-        if 1>0:
+        if 0>1:
             valuation = self._reprobed_value
         else:
             valuation = self._passed_value
@@ -436,7 +436,7 @@ class TwitterAnalysis(Algorithm):
         - valuation: integer algorithm valuation
         """
         
-        if 1>0:
+        if 0>1:
             valuation = self._reprobed_value
         else:
             valuation = self._passed_value

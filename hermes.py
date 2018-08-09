@@ -8,9 +8,11 @@ from strategy import Strategy
 from portfolio import Portfolio
 from trade import Trade
 from strategy import Strategy
+from request_worker import RequestWorker
 
 from pprint import pprint
 from queue import Queue
+from threading import Lock
 
 
 class Hermes(object):
@@ -46,6 +48,7 @@ class Hermes(object):
         self._load_data_elements()
         self._load_algorithms_elements()
         self._load_strategies_elements()
+        self._load_other_parameters()
 
     def _load_trading_mode(self):
 
@@ -135,6 +138,17 @@ class Hermes(object):
         -
         """
         pass
+
+    def _load_other_parameters(self):
+        
+        """
+        + Description: check consistency in strategies elements.
+        + Input:
+        -
+        + Output:
+        -
+        """
+        self.n_request_threads = config.n_request_threads
 
     def _build_systems(self):
 
@@ -312,15 +326,20 @@ class Hermes(object):
     def _build_request_structure(self):
 
         """
-        + Description: build pile and threads to perform parallel requests.
+        + Description: build pile and threads to perform parallel request.
         + Input:
         -
         + Output:
         -
         """
         
-        self.requests_pile = Queue()
-
+        print("\nBuilding request structure")
+        self.request_pile = Queue()
+        self.request_flags = [0 for i in range(self.n_request_threads)]
+        self.request_workers = [RequestWorker(i, self.request_pile, self.request_flags, Lock()) 
+                                for i in range(self.n_request_threads)]
+      
+        _ = list(map(lambda x: x.start(), self.request_workers))
 
     def _build_strategies(self):
 
@@ -345,11 +364,11 @@ class Hermes(object):
             for algorithm_id in algorithm_ids:
                 if algorithm_id in element[definitions.algorithms_array]:
                     data_modules.update(self.algorithms[algorithm_id].data_modules)
-            print(data_modules)
 
             self.strategies[key] = Strategy(key,
                                             threshold,
-                                            self.requests_pile,
+                                            self.request_pile,
+                                            self.request_flags,
                                             algorithms,
                                             data_modules,
                                             self.portfolio,

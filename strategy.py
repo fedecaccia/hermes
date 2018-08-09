@@ -1,3 +1,5 @@
+import numpy as np
+
 from abc import ABC, abstractmethod
 
 
@@ -8,13 +10,22 @@ class Strategy(ABC):
     Based on a sum over individual algorithm punctuation values, takes a trading decision.
     """
 
-    def __init__(self, id, threshold, requests_pile, algorithms, data_modules, portfolio, trading):
+    def __init__(self,
+                 id,
+                 threshold,
+                 request_pile,
+                 request_flags,
+                 algorithms,
+                 data_modules,
+                 portfolio,trading):
 
         """
         + Description: constructor
         + Input:
         - id: Strategy id.
-        - threshold: min integer valuation value to shoot trading order.        
+        - threshold: Min integer valuation value to shoot trading order.        
+        - request_pile: a pile to where request_workers look functions to evaluate.
+        - request_flags: an array of flags indicanting that a given worker is waiting (0) or working (1).
         - algorithms: Dictionary of algorithm objects.
         - data_modules: Array of all data_modules objects used in startegy.
         - portfolio: portfolio object.
@@ -26,7 +37,8 @@ class Strategy(ABC):
         self.id = id
         self._threshold = threshold
         self.data_modules = data_modules
-        self.requests_pile = requests_pile
+        self.request_pile = request_pile
+        self.request_flags = request_flags
         self.algorithms = algorithms
         self.portfolio = portfolio
         self.trading = trading
@@ -59,8 +71,15 @@ class Strategy(ABC):
         """
 
         print("Updating data modules")
+        for i in range(len(self.request_flags)):
+            self.request_flags[i] = 1 # all workers are flagged as working
+        
         for module in self.data_modules:
-            self.requests_pile.put(module.update())
+            self.request_pile.put(module.update)
+
+        while np.any(self.request_flags): # some worker is still working
+            pass
+        print("All modules have been updated")
 
     def _restart_valuation(self):
 
@@ -96,7 +115,7 @@ class Strategy(ABC):
         + Output:
         -
         """
-
+        print("valuation", self._valuation)
         if self._valuation >= self._threshold:
             print("Shooting trading order")
         

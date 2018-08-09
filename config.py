@@ -124,6 +124,7 @@ strategies_elements = [
 # Trading mode
 
 trading_mode = backtest
+n_request_threads = 2
 
 
 #######################################################
