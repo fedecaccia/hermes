@@ -86,11 +86,10 @@ class EmulatedWorld(World):
         -
         """
 
-        updated = map(dict, data_elements)
-        for d in updated:
-            d.update({definitions.values:self._load_data(d)})
-            
-        self.data = {d[definitions.data_id] : d for d in updated}
+        for data_element in data_elements:
+            self.data[data_element[definitions.data_id]].update({
+                definitions.values:self._load_data(data_element)
+            })
 
     def _load_data(self, data_element):
 
