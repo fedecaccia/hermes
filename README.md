@@ -12,7 +12,7 @@ Under development.
 
 ## Contact
 Developed by [CoinFabrik](https://www.coinfabrik.com/). 
-Interesting in crypto? You can read our articles [here](https://blog.coinfabrik.com/).
+Interested in crypto? You can read our articles [here](https://blog.coinfabrik.com/).
 Any questions or suggestions feel free to contact me at federico.caccia@coinfabrik.com
 
 ## Licensing
