@@ -196,9 +196,6 @@ class EmulatedWorld(World):
         for data_key, data_val in self.data.items():
             self._n_time_idx[data_key] = len(data_val[definitions.values].index)#.max()
 
-        print("HERE")
-        print(self._n_time_idx[0])
-
     def is_connected(self):
 
         """
