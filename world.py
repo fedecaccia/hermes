@@ -194,7 +194,7 @@ class EmulatedWorld(World):
         """
 
         for data_key, data_val in self.data.items():
-            self._n_time_idx[data_key] = len(data_val[definitions.values].index)#.max()
+            self._n_time_idx[data_key] = len(data_val[definitions.values].index)
 
     def is_connected(self):
 
@@ -211,10 +211,6 @@ class EmulatedWorld(World):
             if time_idx<self._n_time_idx[data_id]:
                 connection=True
 
-        # self.test_count += 1
-        # if self.test_count>10:
-        #     return False
-        # return True
         return connection
 
     def request_orderbook(self, ticker, exchange):
