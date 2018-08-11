@@ -54,7 +54,6 @@ tweets_count = "tweets_count"
 
 # Timeframes definition
 
-seconds = "seconds"
 one_sec = "1s"
 one_min = "1m"
 five_min = "5m"
@@ -64,6 +63,8 @@ four_hour = "4h"
 six_hour = "6h"
 one_day = "1d"
 timeframe = "timeframe"
+since = "since"
+limit = "limit"
 
 # Backtest data format definition
 

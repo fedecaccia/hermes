@@ -16,40 +16,38 @@ class World(ABC):
     World: Connection with external services which provides exchange information and also receive trading orders.
     """
 
-    def __init__(self):
+    def __init__(self, data_elements, max_delay_in_data):
 
         """
         + Description: constructor
         + Input:
-        -
+        - data_elements: data modules description built by user in config.
+        - max_delay_in_data: float setting the tolerance between data points.
         + Output:
         -
         """
 
+        self.data = {}
+        for data_element in data_elements:
+            self.data[data_element[definitions.data_id]] = {
+                key:value for key, value in data_element.items()
+            }
+        self._max_delay_in_data = datetime.timedelta(seconds=max_delay_in_data)
+
+    @abstractmethod
+    def advance_step(self):
         pass
 
     @abstractmethod
     def is_connected(self):
         pass
-        
-    @abstractmethod
-    def request_orderbook(self, ticker, exchange):
-        pass
 
     @abstractmethod
-    def request_candles(self, ticker, exchange, timeframe, since, limit):
+    def request_data(self, data_module_id):
         pass
 
-    @abstractmethod
-    def request_tickers(self, exchange):
-        pass
-    
     @abstractmethod
     def request_balance(self, exchange):
-        pass
-
-    @abstractmethod
-    def request_tweets_count(self, filter):
         pass
 
 
@@ -60,17 +58,19 @@ class EmulatedWorld(World):
     Inherit from World.
     """
 
-    def __init__(self, data_elements, time_step):
+    def __init__(self, data_elements, max_delay_in_data, time_step):
 
         """
         + Description: constructor. Initializes corresponding data.
         + Input:
         - data_elements: data modules description built by user in config.
+        - max_delay_in_data: float setting the tolerance between data points.
+        - time_step: string time step to advance in each step.
         + Output:
         -
         """
 
-        super().__init__()
+        super().__init__(data_elements, max_delay_in_data)
         self._initialize_data(data_elements)        
         self._time_step = time_step
         self._initialize_time_bounds(data_elements)
@@ -86,11 +86,7 @@ class EmulatedWorld(World):
         -
         """
 
-        self.data = {}
         for data_element in data_elements:
-            self.data[data_element[definitions.data_id]] = {
-                key:value for key, value in data_element.items()
-            }
             self.data[data_element[definitions.data_id]].update({
                 definitions.values:self._load_data(data_element)
             })
@@ -138,7 +134,7 @@ class EmulatedWorld(World):
         except:
             raise ValueError("ERROR trying to find csv file: "+filename+".")
         else:
-            pd.to_datetime(data["datetime"])
+            data["datetime"] = pd.to_datetime(data["datetime"])
             data.set_index("datetime", inplace=True)
         return data
 
@@ -161,6 +157,8 @@ class EmulatedWorld(World):
                                 con=db,
                                 parse_dates="datetime",
                                 index_col="datetime")
+            table["datetime"] = pd.to_datetime(table["datetime"])
+            data.set_index("datetime", inplace=True)
         else:
             raise ValueError("ERROR trying to read sql tables with header_format: '"
                             +header_format+"'.")
@@ -209,15 +207,14 @@ class EmulatedWorld(World):
     def _initialize_time(self):
 
         """
-        Description: Start world time one step before self._min_time.
+        Description: Start world time as the minor time in database.
         + Input:
         -
         + Output:
         -
         """
 
-        self._time = self._min_time - self._get_timedelta()
-
+        self._time = self._min_time
 
     def _get_min_datetime(self, dataframe):
 
@@ -247,23 +244,20 @@ class EmulatedWorld(World):
 
         """
         Description: world connected is defined as true if there is more backtest data to evaluate.
-        Since it's called before time step, it's propertly to advance an step time.
         + Input:
         -
         + Output:
         - Connection: Bool
         """
 
-        self._advance_step()
-        print(self._time)
         if self._time<self._max_time:
             return True
         return False
 
-    def _advance_step(self):
+    def advance_step(self):
 
         """
-        Description: Advance a time step in a simulated world hour.
+        Description: Advance a time step in the simulated world time.
         + Input:
         -
         + Output:
@@ -271,6 +265,7 @@ class EmulatedWorld(World):
         """
 
         self._time += self._get_timedelta()
+        print("\n",self._time)
 
     def _get_timedelta(self):
 
@@ -279,7 +274,7 @@ class EmulatedWorld(World):
         + Input:
         -
         + Output:
-        -
+        - timedelta: datetime.timedelta object.
         """
 
         if self._time_step == definitions.one_sec:
@@ -309,61 +304,27 @@ class EmulatedWorld(World):
         else:
             raise ValueError("Bad value in step_time: '"+self._time_step+"'.")
 
-    def request_orderbook(self, ticker, exchange):
+    def request_data(self, data_module_id):
 
         """
-        + Description: query to request orderboooks for a given ticker.
+        + Description: request especific data according to data_module_id.
         + Input:
-        - ticker: string
-        - exchange: exchange name string
+        - data_module_id: data module id integer.
         + Output:
-        - orderbook: array of dicts
-        """
-        
-        return {"bids":[0,1,2], "asks":[0,1,2]}
-
-    def request_candles(self, ticker, exchange, timeframe, since=None, limit=1000):
-
-        """
-        + Description: query to request candles for a given ticker.
-        + Input:
-        - ticker: string
-        - exchange: exchange name string
-        - timeframe: string        
-        - since: seconds passed since the first required candle
-        - limit: maximum amount of candles
-        + Output:
-        - candles: array of dicts
+        - requested data.
         """
 
-        return {
-            "datetime":[10100101,10120020202],
-            "o":[1.1,2.2],
-            "h":[1.1,2.2],
-            "l":[1.1,2.2],
-            "c":[1.1,2.2],
-            "v":[1.1,2.2]
-            }
-
-    def request_tickers(self, exchange):
-        
-        """
-        + Description: query to request tickers data.
-        + Input:
-        - ticker: string
-        - exchange: exchange name string
-        + Output:
-        - tickers: array of dicts
-        """
-
-        return {
-            "btcusd":{
-                "last":1232
-            },
-            "ethusd":{
-                "last":123
-            }
-        }
+        data_module = self.data[data_module_id]
+        data = data_module[definitions.values]
+        try:
+            idx = data.index.get_loc(key=self._time,
+                                     method="pad", # only looks for previous time
+                                     tolerance=self._max_delay_in_data)
+        except:
+            row = None
+        else:
+            row = data.iloc[idx]
+        return row
 
     def request_balance(self, exchange):
 
@@ -406,20 +367,6 @@ class EmulatedWorld(World):
 
         return balance
 
-    def request_tweets_count(self, filter):
-
-        """
-        + Description: query to request actual tweets filtered count.
-        + Input:
-        - filter: array of keyword strings to filter twitter stream.
-        + Output:
-        - tweets_count: Dictionary with datetime and integer twitter count.
-        """
-
-        tweets_count = {datetime.datetime.now(), 1000}
-        return tweets_count
-
-
 class RealWorld(World):
 
     """
@@ -427,17 +374,21 @@ class RealWorld(World):
     Inherit from World.
     """
 
-    def __init__(self, mode, exchanges_names, api_keys_files = None):
+    def __init__(self, data_elements, max_delay_in_data, mode, exchanges_names, api_keys_files = None):
 
         """
         + Description: constructor
         + Input:
-        -
+        - data_elements: data modules description built by user in config.
+        - max_delay_in_data: float setting the tolerance between data points.
+        - mode: string trading mode.
+        - exchanges_names = set cointaining unique string names of exchanges.
+        - api_keys_files = lsit of api key files in case private connections are needed.
         + Output:
         -
         """
 
-        super().__init__()
+        super().__init__(data_elements, max_delay_in_data)
         self.mode = mode
         if self.mode == definitions.real:
             self.exchanges = self._create_clients_with_private_connections(exchanges_names, api_keys_files)
@@ -504,9 +455,60 @@ class RealWorld(World):
         return keys
 
     def is_connected(self):
+
+        """
+        + Description: In case of real trading, verify private connection.
+        + Input:
+        -
+        + Output:
+        - Bool
+        """
+
         return True
 
-    def request_orderbook(self, ticker, exchange):
+    def advance_step(self):
+
+        """
+        Description: Dummy function. It's definition only has sense in EmulatedWorld.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        pass
+
+    def request_data(self, data_module_id):
+
+        """
+        + Description: request especific data according to data_module_id.
+        + Input:
+        - data_module_id: data module id integer.
+        + Output:
+        - requested data.
+        """
+
+        data_module = self.data[data_module_id]
+        data_type = data_module[definitions.data_type]
+
+        if data_type == definitions.orderbook:
+            return self._request_orderbook(data_module[definitions.description],
+                                           data_module[definitions.source])
+
+        elif data_type == definitions.candles:
+            return self._request_candles(data_module[definitions.description],
+                                         data_module[definitions.source],
+                                         data_module[definitions.timeframe],
+                                         since=data_module[definitions.since],
+                                         limit=data_module[definitions.limit])
+
+        elif data_type == definitions.tickers:
+            return self._request_tickers(data_module[definitions.source])
+
+        elif data_type == definitions.tweets_count:
+            return self._request_tweets_count(data_module[definitions.filters])
+
+    def _request_orderbook(self, ticker, exchange):
 
         """
         + Description: query to request orderboooks for a given ticker.
@@ -519,7 +521,7 @@ class RealWorld(World):
         
         pass
 
-    def request_candles(self, ticker, exchange, timeframe, since=None, limit=1000):
+    def _request_candles(self, ticker, exchange, timeframe, since=None, limit=1000):
 
         """
         + Description: query to request candles for a given ticker.
@@ -537,7 +539,7 @@ class RealWorld(World):
         tickers = client.fetch_ohlcv(ticker, timeframe, since, limit)
         return tickers
 
-    def request_tickers(self, exchange):
+    def _request_tickers(self, exchange):
         
         """
         + Description: query to request tickers data.
@@ -550,19 +552,7 @@ class RealWorld(World):
 
         pass
 
-    def request_balance(self, exchange):
-
-        """
-        + Description: query to request exchange balances.
-        + Input:
-        - exchange: exchange name string
-        + Output:
-        - balance: dict with accounts balances.
-        """
-
-        pass
-
-    def request_tweets_count(self, filter):
+    def _request_tweets_count(self, filter):
 
         """
         + Description: query to request actual tweets filtered count.
@@ -575,6 +565,17 @@ class RealWorld(World):
         tweets_count = {datetime.datetime.now(), 1000}
         return tweets_count
 
+    def request_balance(self, exchange):
+
+        """
+        + Description: query to request exchange balances.
+        + Input:
+        - exchange: exchange name string
+        + Output:
+        - balance: dict with accounts balances.
+        """
+
+        pass
 
 class Oracle(object):
 
