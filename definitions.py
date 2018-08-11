@@ -110,6 +110,13 @@ margin_trading = "margin_trading"
 
 margin = "margin"
 
+# Algorithm valuations definition
+
+threshold = "threshold"
+valuation = "valuation"
+passed = "passed"
+reprobed = "reprobed"
+
 # Useful definitions
 
 data_id = "data_id"
@@ -123,10 +130,3 @@ strategy_id = "strategy_id"
 values = "values"
 filters = "filters"
 timeframe = "timeframe"
-
-# Algorithm valuations definition
-
-threshold = "threshold"
-valuation = "valuation"
-passed = "passed"
-reprobed = "reprobed"

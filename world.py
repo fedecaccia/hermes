@@ -73,7 +73,11 @@ class EmulatedWorld(World):
         super().__init__()
         self._initialize_data(data_elements)
         self.test_count = 0
-
+        self._time_idx = {data_element[definitions.data_id]:0
+                          for data_element in data_elements}
+        self._n_time_idx = {data_element[definitions.data_id]:0
+                          for data_element in data_elements}
+        self._initialize_n_time_idx()
 
     def _initialize_data(self, data_elements):
 
@@ -85,12 +89,14 @@ class EmulatedWorld(World):
         -
         """
 
-        data = {}
+        self.data = {}
         for data_element in data_elements:
-            data[definitions.data_id] = data_element[definitions.data_id]
-            data[definitions.ticker] = data_element[definitions.description]
-            data[definitions.exchange] = data_element[definitions.source]
-            data[definitions.values] = self._load_data(data_element)
+            self.data[data_element[definitions.data_id]] = {
+                key:value for key, value in data_element.items()
+            }
+            self.data[data_element[definitions.data_id]].update({
+                definitions.values:self._load_data(data_element)
+            })
 
     def _load_data(self, data_element):
 
@@ -99,7 +105,7 @@ class EmulatedWorld(World):
         + Input:
         - data_element: data module description built by user in config.
         + Output:
-        -
+        - data: Pandas element.
         """
 
         print("\nInitializing data module:")
@@ -176,11 +182,43 @@ class EmulatedWorld(World):
         data = None
         return data
 
+    def _initialize_n_time_idx(self):
+
+        """
+        Description: look for amount of elements in each data module.
+        Modifies self._n_time_idx
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        for data_key, data_val in self.data.items():
+            self._n_time_idx[data_key] = len(data_val[definitions.values].index)#.max()
+
+        print("HERE")
+        print(self._n_time_idx[0])
+
     def is_connected(self):
-        self.test_count += 1
-        if self.test_count>10:
-            return False
-        return True
+
+        """
+        Description: world connected is defined as true if there is more backtest data to evaluate.
+        + Input:
+        -
+        + Output:
+        - Connection: Bool
+        """
+
+        connection = False
+        for data_id, time_idx in self._time_idx.items():
+            if time_idx<self._n_time_idx[data_id]:
+                connection=True
+
+        # self.test_count += 1
+        # if self.test_count>10:
+        #     return False
+        # return True
+        return connection
 
     def request_orderbook(self, ticker, exchange):
 
@@ -291,6 +329,7 @@ class EmulatedWorld(World):
 
         tweets_count = {datetime.now(), 1000}
         return tweets_count
+
 
 class RealWorld(World):
 

@@ -390,11 +390,26 @@ class Hermes(object):
         while self.world.is_connected():
         
             for strategy in self.strategies.values():                
-                strategy.execute()       
+                strategy.execute()
+
+        self._stop_workers()
+
+        print("\nProgram finished")
+
+
+    def _stop_workers(self):
+
+        """
+        + Description: final function that kill workers propertly.
+        + Input:
+        -
+        + Output:
+        -
+        """       
 		
-        # send a 'None signal' to finish workers
-        _ = [self.request_pile.put(None) for i in range(self.n_request_threads)]
+        # send a 'None signal' to finish workers        
+        for _ in range(self.n_request_threads):
+            self.request_pile.put(None)
 
-        _ = list(map(lambda x: x.join(), self.request_workers))
-
-        print("end")
+        for worker in self.request_workers:
+            worker.join()

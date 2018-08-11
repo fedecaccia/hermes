@@ -14,6 +14,7 @@ class RequestWorker(Thread):
         + Input:
         - thread_id: integer thread id.
         - request_queue: pile where requests are stacked.
+        None element act as a signal to finish
         - request_flag: list of 1 flag ([flag]) to indicate how many workers are bussy.
         - mutext: thread locker
         + Output:
@@ -40,10 +41,13 @@ class RequestWorker(Thread):
         
         function = self.request_queue.get()
 
+        # None element act as a signal to finish
         while function is not None:
             
             self._evaluate_function(function)            
             function = self.request_queue.get()
+
+        print("Request worker "+str(self.id)+" found None signal.")
 
     def _evaluate_function(self, function):
 
