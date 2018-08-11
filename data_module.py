@@ -31,9 +31,19 @@ class DataModule(ABC):
     def _check_element_consistency(self, element):
         pass
     
-    @abstractmethod
-    async def update(self):
-        pass
+    def update(self):
+
+        """
+        Description: connection to world, to update values.
+        + Input:
+        -.
+        + Output:
+        -
+        """
+
+        data = self.world.request_data(self.id)
+        print(data)
+        print("Data module: "+str(self.id)+" updated.")
 
 
 class Candles(DataModule):
@@ -70,23 +80,6 @@ class Candles(DataModule):
 
         pass
 
-    def update(self):
-
-        """
-        Description: connection to world, to update values.
-        + Input:
-        -.
-        + Output:
-        -
-        """
-
-        limit = 10
-        data = self.world.request_candles(self.ticker,
-                                          self.exchange,
-                                          self.timeframe,
-                                          limit)
-        print("Data module: "+str(self.id)+" updated.")
-
 
 class Orderbook(DataModule):
 
@@ -121,18 +114,6 @@ class Orderbook(DataModule):
 
         pass
 
-    def update(self):
-
-        """
-        Description: connection to world, to update values.
-        + Input:
-        -.
-        + Output:
-        -
-        """
-
-        data = self.world.request_orderbook(self.ticker, self.exchange)
-        print("Data module: "+str(self.id)+" updated.")
 
 class Tickers(DataModule):
 
@@ -167,19 +148,6 @@ class Tickers(DataModule):
 
         pass
 
-    def update(self):
-
-        """
-        Description: connection to world, to update values.
-        + Input:
-        -.
-        + Output:
-        -
-        """
-
-        data = self.world.request_tickers()
-        print("Data module: "+str(self.id)+" updated.")
-
 
 class Tweets(DataModule):
 
@@ -213,16 +181,3 @@ class Tweets(DataModule):
         """
 
         pass
-
-    def update(self):
-
-        """
-        Description: connection to world, to update values.
-        + Input:
-        -.
-        + Output:
-        -
-        """
-
-        data = self.world.request_tweets_count(self.description)
-        print("Data module: "+str(self.id)+" updated.")

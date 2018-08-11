@@ -52,8 +52,9 @@ ticker = "ticker"
 tickers = "tickers"
 tweets_count = "tweets_count"
 
-# Candles timeframes definition
+# Timeframes definition
 
+one_sec = "1s"
 one_min = "1m"
 five_min = "5m"
 thirty_min = "30m"
@@ -61,6 +62,9 @@ one_hour = "1h"
 four_hour = "4h"
 six_hour = "6h"
 one_day = "1d"
+timeframe = "timeframe"
+since = "since"
+limit = "limit"
 
 # Backtest data format definition
 
@@ -129,4 +133,3 @@ data_modules_array = "data_modules_array"
 strategy_id = "strategy_id"
 values = "values"
 filters = "filters"
-timeframe = "timeframe"

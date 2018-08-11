@@ -149,6 +149,12 @@ class Hermes(object):
         -
         """
         self.n_request_threads = config.n_request_threads
+        self.max_delay_in_data = config.max_delay_in_data
+        if self.mode == definitions.backtest:
+            try:
+                self._time_step = config.time_step
+            except:
+                raise ValueError("'time_step' must be definied in config.py using backtest mode.")
 
     def _build_systems(self):
 
@@ -199,15 +205,24 @@ class Hermes(object):
         self.world = None
 
         if self.mode == definitions.backtest:
-            self.world = EmulatedWorld(self.data_elements)
+            self.world = EmulatedWorld(self.data_elements,
+                                       self.max_delay_in_data,
+                                       self._time_step)
 
         else:            
         
             if self.mode == definitions.paper:
-                self.world = RealWorld(self.mode, self.exchanges_names)
+                self.world = RealWorld(self.data_elements,
+                                       self.max_delay_in_data,
+                                       self.mode,
+                                       self.exchanges_names)
             
             else:
-                self.world = RealWorld(self.mode, self.exchanges_names, config.api_keys_files)
+                self.world = RealWorld(self.data_elements,
+                                       self.max_delay_in_data,
+                                       self.mode,
+                                       self.exchanges_names,
+                                       config.api_keys_files)
 
     def _create_oracle(self):
 
@@ -389,6 +404,8 @@ class Hermes(object):
         
             for strategy in self.strategies.values():                
                 strategy.execute()
+            
+            self.world.advance_step()
 
         self._stop_workers()
 
