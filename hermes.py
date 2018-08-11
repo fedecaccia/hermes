@@ -180,10 +180,8 @@ class Hermes(object):
         -
         """
 
-        self.exchanges_names = set()
-        for element in self.data_elements:
-            if element[definitions.source] in definitions.all_exchanges:
-                self.exchanges_names.update([element[definitions.source]])
+        sources = [e[definitions.source] for e in self.data_elements]
+        self.exchanges_names = set([s for s in sources if s in definitions.all_exchanges])
 
         print("\nUnique list of exchanges")
         print(self.exchanges_names)
