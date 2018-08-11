@@ -65,9 +65,7 @@ class Config (object):
         # exchange fees by id
 
         try:
-            self.exchange_fees_by_id = {}
-            for exchange in settings.exchanges:
-                self.exchange_fees_by_id[exchange["id"]] = exchange["fees"]
+            self.exchange_fees_by_id = { exchange["id"]: exchange["fees"] for exchange in settings.exchanges} 
         except Exception as err:
             print(err)
             raise ValueError("I can't build exchange_fees_by_id from settings.exchanges")
