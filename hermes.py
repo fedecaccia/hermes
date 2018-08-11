@@ -388,5 +388,13 @@ class Hermes(object):
         """
 
         while self.world.is_connected():
+        
             for strategy in self.strategies.values():                
-                strategy.execute()
+                strategy.execute()       
+		
+        # send a 'None signal' to finish workers
+        _ = [self.request_pile.put(None) for i in range(self.n_request_threads)]
+
+        _ = list(map(lambda x: x.join(), self.request_workers))
+
+        print("end")

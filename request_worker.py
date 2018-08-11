@@ -38,11 +38,12 @@ class RequestWorker(Thread):
 
         print("Request worker: "+str(self.id)+" started.")
         
-        while True:
+        function = self.request_queue.get()
 
+        while function is not None:
+            
+            self._evaluate_function(function)            
             function = self.request_queue.get()
-            self._evaluate_function(function)
-
 
     def _evaluate_function(self, function):
 
