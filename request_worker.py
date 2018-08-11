@@ -7,15 +7,14 @@ class RequestWorker(Thread):
     RequestWorker: particular thread that make requests.
     """
 
-    def __init__(self, thread_id, request_queue, request_flags, mutex):
+    def __init__(self, thread_id, request_queue, request_flag, mutex):
 
         """
         + Description: constructor
         + Input:
         - thread_id: integer thread id.
         - request_queue: pile where requests are stacked.
-        - request_flags: list of flags to indicate wheter a given thread is working.
-        0 means waiting, and 1 means working.
+        - request_flag: list of 1 flag ([flag]) to indicate how many workers are bussy.
         - mutext: thread locker
         + Output:
         -
@@ -24,7 +23,7 @@ class RequestWorker(Thread):
         Thread.__init__(self)
         self.id = thread_id
         self.request_queue = request_queue        
-        self.request_flags = request_flags
+        self.request_flag = request_flag
         self.mutex = mutex
 
     def run(self):
@@ -39,17 +38,23 @@ class RequestWorker(Thread):
 
         print("Request worker: "+str(self.id)+" started.")
         
-        function = self.request_queue.get()
+        while True:
+
+            function = self.request_queue.get()
+            self._evaluate_function(function)
+
+
+    def _evaluate_function(self, function):
+
+        """
+        + Description: input function evaluation
+        + Input:
+        - function
+        + Output:
+        -
+        """
+
         function()
         self.mutex.acquire()
-        self.request_flags[self.id] = 0
+        self.request_flag[0] -= 1
         self.mutex.release()
-
-        while function != None:
-            function = self.request_queue.get()
-            function()
-            self.mutex.acquire()
-            self.request_flags[self.id] = 0
-            self.mutex.release()
-
-        # esto esta mal cuando no todos los threads tienen que estar ocupados

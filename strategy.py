@@ -14,7 +14,7 @@ class Strategy(ABC):
                  id,
                  threshold,
                  request_pile,
-                 request_flags,
+                 request_flag,
                  algorithms,
                  data_modules,
                  portfolio,trading):
@@ -24,12 +24,12 @@ class Strategy(ABC):
         + Input:
         - id: Strategy id.
         - threshold: Min integer valuation value to shoot trading order.        
-        - request_pile: a pile to where request_workers look functions to evaluate.
-        - request_flags: an array of flags indicanting that a given worker is waiting (0) or working (1).
+        - request_pile: A pile to where request_workers look functions to evaluate.
+        - request_flag: List of 1 flag ([flag]) to indicate how many workers are bussy.
         - algorithms: Dictionary of algorithm objects.
         - data_modules: Array of all data_modules objects used in startegy.
-        - portfolio: portfolio object.
-        - trading: trading platform object.
+        - portfolio: Portfolio object.
+        - trading: Trading platform object.
         + Output:
         -
         """
@@ -37,8 +37,9 @@ class Strategy(ABC):
         self.id = id
         self._threshold = threshold
         self.data_modules = data_modules
+        self._n_data_modules = len(data_modules)
         self.request_pile = request_pile
-        self.request_flags = request_flags
+        self.request_flag = request_flag
         self.algorithms = algorithms
         self.portfolio = portfolio
         self.trading = trading
@@ -71,13 +72,12 @@ class Strategy(ABC):
         """
 
         print("Updating data modules")
-        for i in range(len(self.request_flags)):
-            self.request_flags[i] = 1 # all workers are flagged as working
+        self.request_flag[0] = self._n_data_modules # all workers are flagged as working
         
         for module in self.data_modules:
             self.request_pile.put(module.update)
 
-        while np.any(self.request_flags): # some worker is still working
+        while self.request_flag[0] > 0: # some worker is still working
             pass
         print("All modules have been updated")
 

@@ -335,8 +335,8 @@ class Hermes(object):
         
         print("\nBuilding request structure")
         self.request_pile = Queue()
-        self.request_flags = [0 for i in range(self.n_request_threads)]
-        self.request_workers = [RequestWorker(i, self.request_pile, self.request_flags, Lock()) 
+        self.request_flag = [0]
+        self.request_workers = [RequestWorker(i, self.request_pile, self.request_flag, Lock()) 
                                 for i in range(self.n_request_threads)]
       
         _ = list(map(lambda x: x.start(), self.request_workers))
@@ -368,7 +368,7 @@ class Hermes(object):
             self.strategies[key] = Strategy(key,
                                             threshold,
                                             self.request_pile,
-                                            self.request_flags,
+                                            self.request_flag,
                                             algorithms,
                                             data_modules,
                                             self.portfolio,
