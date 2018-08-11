@@ -3,11 +3,11 @@ import exchange
 
 import dataset
 import ccxt
+import datetime
 
 import pandas as pd
 
 from abc import ABC, abstractmethod
-from datetime import datetime
 
 
 class World(ABC):
@@ -60,7 +60,7 @@ class EmulatedWorld(World):
     Inherit from World.
     """
 
-    def __init__(self, data_elements):
+    def __init__(self, data_elements, time_step):
 
         """
         + Description: constructor. Initializes corresponding data.
@@ -71,13 +71,10 @@ class EmulatedWorld(World):
         """
 
         super().__init__()
-        self._initialize_data(data_elements)
-        self.test_count = 0
-        self._time_idx = {data_element[definitions.data_id]:0
-                          for data_element in data_elements}
-        self._n_time_idx = {data_element[definitions.data_id]:0
-                          for data_element in data_elements}
-        self._initialize_n_time_idx()
+        self._initialize_data(data_elements)        
+        self._time_step = time_step
+        self._initialize_time_bounds(data_elements)
+        self._initialize_time()
 
     def _initialize_data(self, data_elements):
 
@@ -182,36 +179,135 @@ class EmulatedWorld(World):
         data = None
         return data
 
-    def _initialize_n_time_idx(self):
+    def _initialize_time_bounds(self, data_elements):
 
         """
-        Description: look for amount of elements in each data module.
-        Modifies self._n_time_idx
+        Description: Creates self._min_time and self._max_time
+        + Input:
+        - data_elements: data modules description built by user in config.
+        + Output:
+        -
+        """
+
+        sample = self.data[0][definitions.values]
+        self._min_time = self._get_min_datetime(sample)
+        self._max_time = self._get_max_datetime(sample)
+
+        for data_val in self.data.values():
+
+            dataframe = data_val[definitions.values]
+
+            min_time = self._get_min_datetime(dataframe)
+            max_time = self._get_max_datetime(dataframe)
+
+            if min_time<self._min_time:
+                self._min_time = min_time
+
+            if max_time<self._max_time:
+                self._max_time = max_time
+
+    def _initialize_time(self):
+
+        """
+        Description: Start world time one step before self._min_time.
         + Input:
         -
         + Output:
         -
         """
 
-        for data_key, data_val in self.data.items():
-            self._n_time_idx[data_key] = len(data_val[definitions.values].index)
+        self._time = self._min_time - self._get_timedelta()
+
+
+    def _get_min_datetime(self, dataframe):
+
+        """
+        Description: return min timestamp in dataframe index.
+        + Input:
+        - dataframe: Pandas dataframe object.
+        + Output:
+        - min timestamp.
+        """
+
+        return pd.to_datetime(dataframe.index.min())
+
+    def _get_max_datetime(self, dataframe):
+
+        """
+        Description: return max timestamp in dataframe index.
+        + Input:
+        - dataframe: Pandas dataframe object.
+        + Output:
+        - max timestamp.
+        """
+
+        return pd.to_datetime(dataframe.index.max())
 
     def is_connected(self):
 
         """
         Description: world connected is defined as true if there is more backtest data to evaluate.
+        Since it's called before time step, it's propertly to advance an step time.
         + Input:
         -
         + Output:
         - Connection: Bool
         """
 
-        connection = False
-        for data_id, time_idx in self._time_idx.items():
-            if time_idx<self._n_time_idx[data_id]:
-                connection=True
+        self._advance_step()
+        print(self._time)
+        if self._time<self._max_time:
+            return True
+        return False
 
-        return connection
+    def _advance_step(self):
+
+        """
+        Description: Advance a time step in a simulated world hour.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        self._time += self._get_timedelta()
+
+    def _get_timedelta(self):
+
+        """
+        Description: Return a deltatime object based on self._time_step.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        if self._time_step == definitions.one_sec:
+            return datetime.timedelta(seconds=1)
+        
+        elif self._time_step == definitions.one_min:
+            return datetime.timedelta(minutes=1)
+        
+        elif self._time_step == definitions.five_min:
+            return datetime.timedelta(minutes=5)
+
+        elif self._time_step == definitions.thirty_min:
+            return datetime.timedelta(minutes=30)
+        
+        elif self._time_step == definitions.one_hour:
+            return datetime.timedelta(hours=1)
+        
+        elif self._time_step == definitions.four_hour:
+            return datetime.timedelta(hours=4)
+        
+        elif self._time_step == definitions.six_hour:
+            return datetime.timedelta(hours=6)
+        
+        elif self._time_step == definitions.one_day:
+            return datetime.timedelta(hours=24)
+
+        else:
+            raise ValueError("Bad value in step_time: '"+self._time_step+"'.")
 
     def request_orderbook(self, ticker, exchange):
 
@@ -320,7 +416,7 @@ class EmulatedWorld(World):
         - tweets_count: Dictionary with datetime and integer twitter count.
         """
 
-        tweets_count = {datetime.now(), 1000}
+        tweets_count = {datetime.datetime.now(), 1000}
         return tweets_count
 
 
@@ -476,7 +572,7 @@ class RealWorld(World):
         - tweets_count: Dictionary with datetime and integer twitter count.
         """
 
-        tweets_count = {datetime.now(), 1000}
+        tweets_count = {datetime.datetime.now(), 1000}
         return tweets_count
 
 

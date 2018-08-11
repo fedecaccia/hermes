@@ -131,7 +131,10 @@ n_request_threads = 2
 #                  BACKTEST SECTION
 #######################################################
 
-
+time_step = one_sec
+max_delay_in_data = {
+  seconds: 0.5
+}
 
 
 #######################################################

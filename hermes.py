@@ -149,6 +149,11 @@ class Hermes(object):
         -
         """
         self.n_request_threads = config.n_request_threads
+        if self.mode == definitions.backtest:
+            try:
+                self._time_step = config.time_step
+            except:
+                raise ValueError("'time_step' must be definied in config.py using backtest mode.")
 
     def _build_systems(self):
 
@@ -199,7 +204,7 @@ class Hermes(object):
         self.world = None
 
         if self.mode == definitions.backtest:
-            self.world = EmulatedWorld(self.data_elements)
+            self.world = EmulatedWorld(self.data_elements, self._time_step)
 
         else:            
         
