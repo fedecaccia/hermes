@@ -5,6 +5,7 @@ import dataset
 import ccxt
 import datetime
 
+import numpy as np
 import pandas as pd
 
 from abc import ABC, abstractmethod
@@ -32,7 +33,7 @@ class World(ABC):
             self.data[data_element[definitions.data_id]] = {
                 key:value for key, value in data_element.items()
             }
-        self._max_delay_in_data = datetime.timedelta(seconds=max_delay_in_data)
+        self._max_delay_in_data = max_delay_in_data
 
     @abstractmethod
     def advance_step(self):
@@ -40,6 +41,10 @@ class World(ABC):
 
     @abstractmethod
     def is_connected(self):
+        pass
+
+    @abstractmethod
+    def get_time(self):
         pass
 
     @abstractmethod
@@ -201,7 +206,7 @@ class EmulatedWorld(World):
             if min_time<self._min_time:
                 self._min_time = min_time
 
-            if max_time<self._max_time:
+            if max_time>self._max_time:
                 self._max_time = max_time
 
     def _initialize_time(self):
@@ -265,7 +270,6 @@ class EmulatedWorld(World):
         """
 
         self._time += self._get_timedelta()
-        print("\n",self._time)
 
     def _get_timedelta(self):
 
@@ -304,6 +308,18 @@ class EmulatedWorld(World):
         else:
             raise ValueError("Bad value in step_time: '"+self._time_step+"'.")
 
+    def get_time(self):
+
+        """
+        Description: Return world time.
+        + Input:
+        -
+        + Output:
+        - self._time: pandas timestamp.
+        """
+
+        return self._time
+
     def request_data(self, data_module_id):
 
         """
@@ -317,13 +333,39 @@ class EmulatedWorld(World):
         data_module = self.data[data_module_id]
         data = data_module[definitions.values]
         try:
-            idx = data.index.get_loc(key=self._time,
-                                     method="pad", # only looks for previous time
-                                     tolerance=self._max_delay_in_data)
+            # Slowest approach
+            # idx = data.index.get_loc(key=self._time,
+            #                          method="pad", # only looks for previous time
+            #                          tolerance=datetime.timedelta(seconds=self._max_delay_in_data)
+
+            # Alternative approach
+            arr = data.index.astype(int)//10**9 # To convert to Unix time
+            world_time = pd.to_datetime(self._time).timestamp() # To convert your search value to Unix time
+            idx = np.searchsorted(arr, world_time, side='left') # How many elements smaller
+            
+            if arr[idx]>world_time: # this case only is false when arr[idx]==world_time
+                idx -= 1 # minus one to get previous index
+
+            # print("world:",
+            #       world_time,
+            #       self._time,
+            #       " - data: ["+str(idx)+"]",
+            #       arr[idx],
+            #       data.index[idx],
+            #       "diff:",
+            #       world_time-arr[idx])
+
         except:
-            row = None
+            return None
+
         else:
-            row = data.iloc[idx]
+
+            if world_time >= arr[idx] and world_time-arr[idx]<=self._max_delay_in_data:
+                row = data.iloc[idx]
+                print("YAHOO")
+            else:
+                return None
+
         return row
 
     def request_balance(self, exchange):
@@ -477,6 +519,18 @@ class RealWorld(World):
         """
 
         pass
+
+    def get_time(self):
+
+        """
+        Description: Return world time.
+        + Input:
+        -
+        + Output:
+        - datetime
+        """
+
+        return datetime.datetime.now()
 
     def request_data(self, data_module_id):
 

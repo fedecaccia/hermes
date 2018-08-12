@@ -401,6 +401,8 @@ class Hermes(object):
         """
 
         while self.world.is_connected():
+
+            print("\nWORLD TIME: "+str(self.world.get_time()))
         
             for strategy in self.strategies.values():                
                 strategy.execute()

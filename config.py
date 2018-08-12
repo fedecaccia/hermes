@@ -18,7 +18,7 @@ data_elements = [
     limit: 10,
     data_format: csv,
     header_format: cdm,
-    file_name: "./data/candlesbittrexETHBTC.csv"
+    file_name: "./sample/candlesbittrexETHBTC.csv"
   },
   {
     data_id: 1,
@@ -27,7 +27,7 @@ data_elements = [
     data_type: orderbook,
     data_format: csv,
     header_format: cdm,
-    file_name: "./data/orderbookbittrexETHBTC.csv"
+    file_name: "./sample/orderbookbittrexETHBTC.csv"
   },
   {
     data_id: 2,
@@ -36,7 +36,7 @@ data_elements = [
     data_type: orderbook,
     data_format: csv,
     header_format: cdm,
-    file_name: "./data/orderbookbinanceETHBTC.csv"
+    file_name: "./sample/orderbookbinanceETHBTC.csv"
   },
   {
     data_id: 3,
@@ -46,7 +46,7 @@ data_elements = [
     data_type: tweets_count,
     data_format: csv,
     header_format: tdm,
-    file_name: "./data/tweetsBTC.csv"
+    file_name: "./sample/tweetsBTC.csv"
   }
 ]
 
@@ -127,7 +127,7 @@ strategies_elements = [
 
 trading_mode = backtest
 n_request_threads = 2
-max_delay_in_data = 1 # seconds
+max_delay_in_data = 0.5 # seconds
 
 
 #######################################################

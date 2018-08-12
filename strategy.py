@@ -56,7 +56,7 @@ class Strategy(ABC):
         """
 
         print("\nExecuting strategy id: "+str(self.id))  
-        self._restart_valuation()      
+        self._restart_valuation()
         self._update_data_modules()
         self._evaluate_algorithms()
         self._analyze_valuation()
