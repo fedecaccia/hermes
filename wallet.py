@@ -37,8 +37,4 @@ class Wallet(object):
         -
         """
         accounts = self.world.request_balance(self.exchange)
-        self.accounts = {
-            definitions.trading: accounts[definitions.trading],
-            definitions.funding: accounts[definitions.funding],
-            definitions.margin_trading: accounts[definitions.margin_trading]
-        }
+        self.accounts = {k: accounts[k]  for k in self.accounts}
