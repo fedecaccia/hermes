@@ -286,6 +286,16 @@ class Volume(Algorithm):
         + Output:
         - valuation: integer algorithm valuation
         """
+
+        print(self.data_modules[0])
+
+
+
+
+
+
+
+
         
         if 0>1:
             valuation = self._reprobed_value

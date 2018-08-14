@@ -25,7 +25,7 @@ class DataModule(ABC):
         self.description = element[definitions.description]
         self.source = element[definitions.source]
         self.data_type = element[definitions.data_type]
-        self.world = world
+        self._world = world
     
     @abstractmethod
     def _check_element_consistency(self, element):
@@ -41,7 +41,7 @@ class DataModule(ABC):
         -
         """
 
-        data = self.world.request_data(self.id)
+        data = self._world.request_data(self.id)
         print("Data module: "+str(self.id)+" updated.")
 
 
