@@ -42,7 +42,6 @@ class DataModule(ABC):
         """
 
         data = self.world.request_data(self.id)
-        print(data)
         print("Data module: "+str(self.id)+" updated.")
 
 
