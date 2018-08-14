@@ -26,7 +26,7 @@ class Strategy(ABC):
         - threshold: Min integer valuation value to shoot trading order.        
         - request_pile: A pile to where request_workers look functions to evaluate.
         - request_flag: List of 1 flag ([flag]) to indicate how many workers are bussy.
-        - algorithms: Dictionary of algorithm objects.
+        - algorithms: Array of algorithm objects.
         - data_modules: Array of all data_modules objects used in startegy.
         - portfolio: Portfolio object.
         - trading: Trading platform object.

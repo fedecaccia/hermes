@@ -54,6 +54,7 @@ data_elements = [
 
 algorithms_elements = [
   {
+    algorithm_id: 0,
     algorithm: crossing_ma,
     parameters: {
       ema_low: 10,
@@ -68,6 +69,7 @@ algorithms_elements = [
     }
   },
   {
+    algorithm_id: 1,
     algorithm: volume,
     parameters: {
       vol_growth:0.5,
@@ -81,6 +83,7 @@ algorithms_elements = [
     }
   },
   {
+    algorithm_id: 2,
     algorithm: twitter_analysis,
     parameters: {
       tweets_growth:0.3,
@@ -94,6 +97,7 @@ algorithms_elements = [
     }
   },
   {
+    algorithm_id: 3,
     algorithm: virtual_transfer,
     parameters: {
       min_profit:0.1,
@@ -113,12 +117,12 @@ algorithms_elements = [
 strategies_elements = [
   {
     strategy_id: 0,
-    algorithms_array: [crossing_ma, volume, twitter_analysis],
+    algorithms_array: [0, 1, 3],
     threshold: 3
   },
   {
     strategy_id: 1,
-    algorithms_array: [virtual_transfer],
+    algorithms_array: [2],
     threshold: 1
   }
 ]

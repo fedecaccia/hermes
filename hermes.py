@@ -284,23 +284,23 @@ class Hermes(object):
         self.algorithms = {}
         for element in self.algorithms_elements:
 
-            key = element[definitions.algorithm]
+            algo_id = element[definitions.algorithm_id]
             valuation = element[definitions.valuation]
             parameters = element[definitions.parameters]
             data_ids = element[definitions.data_modules_array]
             data_modules = [self.data_modules[data_id] for data_id in data_ids]
 
             if element[definitions.algorithm] == definitions.crossing_ma:
-                self.algorithms[key] = CrossingMA(valuation, data_modules, parameters)
+                self.algorithms[algo_id] = CrossingMA(algo_id, valuation, data_modules, parameters)
 
             elif element[definitions.algorithm] == definitions.volume:
-                self.algorithms[key] = Volume(valuation, data_modules, parameters)
+                self.algorithms[algo_id] = Volume(algo_id ,valuation, data_modules, parameters)
 
             elif element[definitions.algorithm] == definitions.twitter_analysis:
-                self.algorithms[key] = TwitterAnalysis(valuation, data_modules, parameters)
+                self.algorithms[algo_id] = TwitterAnalysis(algo_id, valuation, data_modules, parameters)
 
             elif element[definitions.algorithm] == definitions.virtual_transfer:
-                self.algorithms[key] = VirtualTransfer(valuation, data_modules, parameters)
+                self.algorithms[algo_id] = VirtualTransfer(algo_id, valuation, data_modules, parameters)
 
             else:
                 raise ValueError("Bad algorithm: '"

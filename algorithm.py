@@ -12,17 +12,19 @@ class Algorithm(ABC):
     Shoots a punctuation to Strategy.
     """
 
-    def __init__(self, valuation, data_modules):
+    def __init__(self, algo_id, valuation, data_modules):
 
         """
         + Description: constructor
         + Input:
+        - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - valuation: Dictionary with passed and reprobed values.
         - data_modules: array of data module objects.
         + Output:
         -
         """
         
+        self._id = algo_id
         self.data_modules = data_modules
         self._check_data_modules()
         self._define_valuation(valuation[definitions.passed],
@@ -44,6 +46,11 @@ class Algorithm(ABC):
 
     @abstractmethod
     def _check_data_modules(self):        
+        
+        pass
+
+    @abstractmethod
+    def _check_data_modules_amount(self):
         
         pass
 
@@ -70,11 +77,12 @@ class Algorithm(ABC):
 
 class CrossingMA(Algorithm):
 
-    def __init__(self, valuation, data_modules, parameters):
+    def __init__(self, algo_id, valuation, data_modules, parameters):
 
         """
         + Description: Trading strategy based on moving average crossings.
         + Input:
+        - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - valuation: Dictionary with passed and reprobed values.
         - data_modules: Array of data module objects.
         - parameters: Dictionary of specific algorithm parameters.
@@ -82,7 +90,7 @@ class CrossingMA(Algorithm):
         -
         """
         
-        super().__init__(valuation, data_modules)
+        super().__init__(algo_id, valuation, data_modules)
 
     def _check_data_modules(self):
 
@@ -94,9 +102,24 @@ class CrossingMA(Algorithm):
         -
         """
         
+        self._check_data_modules_amount()
         self._check_data_modules_description()
         self._check_data_modules_source()
         self._check_data_type()
+
+    def _check_data_modules_amount(self):
+
+        """
+        + Description: check that amonut data modules received is right.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        if len(self.data_modules)!=1:
+            raise ValueError("Error using: "+str(len(self.data_modules))+" data modules in algorithm with id: '"
+                             +str(self._id)+"'. You can only use 1.")
 
     def _check_data_modules_description(self):
 
@@ -164,11 +187,12 @@ class CrossingMA(Algorithm):
 
 class Volume(Algorithm):
 
-    def __init__(self, valuation, data_modules, parameters):
+    def __init__(self, algo_id, valuation, data_modules, parameters):
 
         """
         + Description: Trading strategy based on volume analysis.
         + Input:
+        - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - valuation: Dictionary with passed and reprobed values.
         - data_modules: Array of data module objects.
         - parameters: Dictionary of specific algorithm parameters.
@@ -176,7 +200,7 @@ class Volume(Algorithm):
         -
         """
         
-        super().__init__(valuation, data_modules)
+        super().__init__(algo_id, valuation, data_modules)
 
     def _check_data_modules(self):
 
@@ -188,9 +212,24 @@ class Volume(Algorithm):
         -
         """
         
+        self._check_data_modules_amount()
         self._check_data_modules_description()
         self._check_data_modules_source()
         self._check_data_type()
+
+    def _check_data_modules_amount(self):
+
+        """
+        + Description: check that amonut data modules received is right.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        if len(self.data_modules)>1:
+            raise ValueError("Error using: "+str(len(self.data_modules))+" data modules in algorithm with id: '"
+                             +str(self._id)+"'. You can only use 1.")
 
     def _check_data_modules_description(self):
 
@@ -258,11 +297,12 @@ class Volume(Algorithm):
 
 class VirtualTransfer(Algorithm):
 
-    def __init__(self, valuation, data_modules, parameters):
+    def __init__(self, algo_id, valuation, data_modules, parameters):
 
         """
         + Description: Trading strategy based on statistical arbitrage.
         + Input:
+        - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - valuation: Dictionary with passed and reprobed values.
         - data_modules: Array of data module objects.
         - parameters: Dictionary of specific algorithm parameters.
@@ -270,7 +310,7 @@ class VirtualTransfer(Algorithm):
         -
         """
         
-        super().__init__(valuation, data_modules)
+        super().__init__(algo_id, valuation, data_modules)
 
     def _check_data_modules(self):
 
@@ -282,9 +322,24 @@ class VirtualTransfer(Algorithm):
         -
         """
         
+        self._check_data_modules_amount()
         self._check_data_modules_description()
         self._check_data_modules_source()
         self._check_data_type()
+
+    def _check_data_modules_amount(self):
+
+        """
+        + Description: check that amonut data modules received is right.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        if len(self.data_modules)!=2:
+            raise ValueError("Error using: "+str(len(self.data_modules))+" data modules in algorithm with id: '"
+                             +str(self._id)+"'. You can only use 2.")
 
     def _check_data_modules_description(self):
 
@@ -352,11 +407,12 @@ class VirtualTransfer(Algorithm):
 
 class TwitterAnalysis(Algorithm):
 
-    def __init__(self, valuation, data_modules, parameters):
+    def __init__(self, algo_id, valuation, data_modules, parameters):
 
         """
         + Description: Trading strategy based on twitter analysis.
         + Input:
+        - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - valuation: Dictionary with passed and reprobed values.
         - data_modules: Array of data module objects.
         - parameters: Dictionary of specific algorithm parameters.
@@ -364,7 +420,7 @@ class TwitterAnalysis(Algorithm):
         -
         """
         
-        super().__init__(valuation, data_modules)
+        super().__init__(algo_id, valuation, data_modules)
 
     def _check_data_modules(self):
 
@@ -376,9 +432,24 @@ class TwitterAnalysis(Algorithm):
         -
         """
         
+        self._check_data_modules_amount()
         self._check_data_modules_description()
         self._check_data_modules_source()
         self._check_data_type()
+
+    def _check_data_modules_amount(self):
+
+        """
+        + Description: check that amonut data modules received is right.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        if len(self.data_modules)!=1:
+            raise ValueError("Error using: "+str(len(self.data_modules))+" data modules in algorithm with id: '"
+                             +str(self._id)+"'. You can only use 1.")
 
     def _check_data_modules_description(self):
 
