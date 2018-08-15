@@ -49,10 +49,7 @@ class Algorithm(ABC):
         for asset, exchanges in signals.items():
             self._signals[asset] = {}
             for exchange in exchanges:
-                self._signals[asset][exchange] = {
-                    definitions.long_signal:0,
-                    definitions.short_signal:0
-                }
+                self._signals[asset][exchange] = 0
 
     @abstractmethod
     def _check_data_modules(self):        
@@ -89,8 +86,7 @@ class Algorithm(ABC):
         -
         """
 
-        long_signal = self._signals[asset][exchange][definitions.long_signal]
-        long_signal += self._signals_values[asset][exchange][definitions.long_signal]
+        self._signals[asset][exchange] = self._signals_values[asset][exchange][definitions.long_signal]
 
     def _shoot_short_signal(self, asset, exchange):
 
@@ -103,8 +99,7 @@ class Algorithm(ABC):
         -
         """
 
-        short_signal = self._signals[asset][exchange][definitions.short_signal]
-        short_signal += self._signals_values[asset][exchange][definitions.short_signal]
+        self._signals[asset][exchange] = self._signals_values[asset][exchange][definitions.short_signal]
 
 
 class CrossingMA(Algorithm):
@@ -317,7 +312,7 @@ class Volume(Algorithm):
         asset = list(self._signals.keys())[0]
         exchange = list(self._signals[asset].keys())[0]
 
-        print(self.data_modules[0].data)
+        # print(self.data_modules[0].data)
         ma_vol = self._get_ma_volume(periods = 5)
         vol = self._get_last_volume()
         

@@ -97,11 +97,7 @@ class Strategy(ABC):
         for asset, exchanges in self._thresholds.items():
             self._valuation[asset] = {}
             for exchange in exchanges.keys():
-                self._valuation[asset][exchange] = {
-                    definitions.long_signal: 0,
-                    definitions.short_signal: 0
-                }
-
+                self._valuation[asset][exchange] = 0
 
     def _evaluate_algorithms(self):
 
@@ -117,9 +113,8 @@ class Strategy(ABC):
             signals = algorithm.evaluate()
 
             for asset, exchanges in signals.items():
-                for exchange, signals in exchanges.items():
-                    for signal_key, signal_val in signals.items():
-                        self._valuation[asset][exchange][signal_key] += signal_val
+                for exchange, signal in exchanges.items():                
+                    self._valuation[asset][exchange] += signal
 
     def _analyze_valuation(self):
 
@@ -130,5 +125,14 @@ class Strategy(ABC):
         + Output:
         -
         """
+        
         print("valuation", self._valuation)
-        pass
+        
+        for asset, exchanges in self._valuation.items():
+            for exchange, signal in exchanges.items():                
+                
+                if signal >= self._thresholds[asset][exchange][definitions.long_threshold]:
+                    print("LONG SIGNAL SHOOTED")
+
+                elif signal <= self._thresholds[asset][exchange][definitions.short_threshold]:
+                    print("SHORT SIGNAL SHOOTED")
