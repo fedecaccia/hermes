@@ -1,5 +1,7 @@
 import definitions
 
+import copy
+
 from abc import ABC, abstractmethod
 
 
@@ -12,13 +14,13 @@ class Algorithm(ABC):
     Shoots a punctuation to Strategy.
     """
 
-    def __init__(self, algo_id, valuation, data_modules):
+    def __init__(self, algo_id, signals, data_modules):
 
         """
         + Description: constructor
         + Input:
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
-        - valuation: Dictionary with passed and reprobed values.
+        - signals: Dictionary with long and short signal per asset.
         - data_modules: array of data module objects.
         + Output:
         -
@@ -27,70 +29,100 @@ class Algorithm(ABC):
         self._id = algo_id
         self.data_modules = data_modules
         self._check_data_modules()
-        self._define_valuation(valuation[definitions.passed],
-                               valuation[definitions.reprobed])
+        self._define_signals(signals)
 
-    def _define_valuation(self, passed_value, reprobed_value):
+    def _define_signals(self, signals):
 
         """
-        + Description: define valuation parameters
+        + Description: define signals parameters
         + Input:
-        - passed_value: punctutation in case algorithm pass test
-        - reprobed_value: punctutation in case algorithm reprobe test
+        - signals: Dictionary with long and short signal per asset.
         + Output:
         -
         """
+
+        # values to shoot with signals
+        self._signals_values = signals
         
-        self._passed_value = passed_value
-        self._reprobed_value = reprobed_value
+        # efective shoots
+        self._signals = {}
+        for asset, exchanges in signals.items():
+            self._signals[asset] = {}
+            for exchange in exchanges:
+                self._signals[asset][exchange] = {
+                    definitions.long_signal:0,
+                    definitions.short_signal:0
+                }
 
     @abstractmethod
     def _check_data_modules(self):        
-        
         pass
 
     @abstractmethod
-    def _check_data_modules_amount(self):
-        
+    def _check_data_modules_amount(self):        
         pass
 
     @abstractmethod
-    def _check_data_modules_description(self):
-        
+    def _check_data_modules_description(self):        
         pass
 
     @abstractmethod
-    def _check_data_modules_source(self):
-        
+    def _check_data_modules_source(self):        
         pass
 
     @abstractmethod
-    def _check_data_type(self):
-        
+    def _check_data_type(self):        
         pass
 
     @abstractmethod
-    def evaluate(self):
-        
+    def evaluate(self):        
         pass
+
+    def _shoot_long_signal(self, asset, exchange):
+
+        """
+        + Description: Save long signal.
+        + Input:
+        - asset: Asset string name.
+        - exchange: Exchange string name.
+        + Output:
+        -
+        """
+
+        long_signal = self._signals[asset][exchange][definitions.long_signal]
+        long_signal += self._signals_values[asset][exchange][definitions.long_signal]
+
+    def _shoot_short_signal(self, asset, exchange):
+
+        """
+        + Description: Save short signal.
+        + Input:
+        - asset: Asset string name.
+        - exchange: Exchange string name.
+        + Output:
+        -
+        """
+
+        short_signal = self._signals[asset][exchange][definitions.short_signal]
+        short_signal += self._signals_values[asset][exchange][definitions.short_signal]
 
 
 class CrossingMA(Algorithm):
 
-    def __init__(self, algo_id, valuation, data_modules, parameters):
+    def __init__(self, algo_id, signals, data_modules, parameters):
 
         """
         + Description: Trading strategy based on moving average crossings.
         + Input:
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
-        - valuation: Dictionary with passed and reprobed values.
+        - signals: Dictionary with long and short signal per asset.
         - data_modules: Array of data module objects.
         - parameters: Dictionary of specific algorithm parameters.
         + Output:
         -
         """
         
-        super().__init__(algo_id, valuation, data_modules)
+        super().__init__(algo_id, signals, data_modules)
 
     def _check_data_modules(self):
 
@@ -174,33 +206,28 @@ class CrossingMA(Algorithm):
         + Input:
         -
         + Output:
-        - valuation: integer algorithm valuation
+        - signals: dictionary of signals returned for the algorithm
         """
         
-        if 0>1:
-            valuation = self._reprobed_value
-        else:
-            valuation = self._passed_value
-
-        return valuation
+        return self._signals
 
 
 class Volume(Algorithm):
 
-    def __init__(self, algo_id, valuation, data_modules, parameters):
+    def __init__(self, algo_id, signals, data_modules, parameters):
 
         """
         + Description: Trading strategy based on volume analysis.
         + Input:
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
-        - valuation: Dictionary with passed and reprobed values.
+        - signals: Dictionary with long and short signal per asset.
         - data_modules: Array of data module objects.
         - parameters: Dictionary of specific algorithm parameters.
         + Output:
         -
         """
         
-        super().__init__(algo_id, valuation, data_modules)
+        super().__init__(algo_id, signals, data_modules)
 
     def _check_data_modules(self):
 
@@ -284,8 +311,11 @@ class Volume(Algorithm):
         + Input:
         -
         + Output:
-        - valuation: integer algorithm valuation
+        - signals: dictionary of signals returned for the algorithm
         """
+
+        asset = list(self._signals.keys())[0]
+        exchange = list(self._signals[asset].keys())[0]
 
         print(self.data_modules[0].data)
         ma_vol = self._get_ma_volume(periods = 5)
@@ -295,11 +325,11 @@ class Volume(Algorithm):
         last_price = self._get_last_price()
         
         if vol>ma_vol and last_price > ma_price:
-            valuation = self._passed_value
+            self._shoot_long_signal(asset, exchange)
         else:
-            valuation = self._reprobed_value
+            self._shoot_short_signal(asset, exchange)
 
-        return valuation
+        return self._signals
 
     def _get_ma_volume(self, periods):
 
@@ -352,20 +382,20 @@ class Volume(Algorithm):
 
 class VirtualTransfer(Algorithm):
 
-    def __init__(self, algo_id, valuation, data_modules, parameters):
+    def __init__(self, algo_id, signals, data_modules, parameters):
 
         """
         + Description: Trading strategy based on statistical arbitrage.
         + Input:
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
-        - valuation: Dictionary with passed and reprobed values.
+        - signals: Dictionary with long and short signal per asset.
         - data_modules: Array of data module objects.
         - parameters: Dictionary of specific algorithm parameters.
         + Output:
         -
         """
         
-        super().__init__(algo_id, valuation, data_modules)
+        super().__init__(algo_id, signals, data_modules)
 
     def _check_data_modules(self):
 
@@ -449,33 +479,29 @@ class VirtualTransfer(Algorithm):
         + Input:
         -
         + Output:
-        - valuation: integer algorithm valuation
+        - signals: dictionary of signals returned for the algorithm
         """
         
-        if 0>1:
-            valuation = self._reprobed_value
-        else:
-            valuation = self._passed_value
-
-        return valuation
+        # if world_time >= arr[idx] and world_time-arr[idx]<=self._max_delay_in_data:
+        return self._signals
 
 
 class TwitterAnalysis(Algorithm):
 
-    def __init__(self, algo_id, valuation, data_modules, parameters):
+    def __init__(self, algo_id, signals, data_modules, parameters):
 
         """
         + Description: Trading strategy based on twitter analysis.
         + Input:
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
-        - valuation: Dictionary with passed and reprobed values.
+        - signals: Dictionary with long and short signal per asset.
         - data_modules: Array of data module objects.
         - parameters: Dictionary of specific algorithm parameters.
         + Output:
         -
         """
         
-        super().__init__(algo_id, valuation, data_modules)
+        super().__init__(algo_id, signals, data_modules)
 
     def _check_data_modules(self):
 
@@ -559,14 +585,9 @@ class TwitterAnalysis(Algorithm):
         + Input:
         -
         + Output:
-        - valuation: integer algorithm valuation
+        - signals: dictionary of signals returned for the algorithm
         """
         
-        if 0>1:
-            valuation = self._reprobed_value
-        else:
-            valuation = self._passed_value
-
-        return valuation
+        return self._signals
 
         

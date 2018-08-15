@@ -41,6 +41,24 @@ class DataModule(ABC):
     def update(self):
         pass
 
+    @abstractmethod
+    def _data_is_new(self, income_data):
+        pass
+    
+    def _data_is_not_none(self, incoming_data):
+
+        """
+        Description: evaluate wether incoming data is None.
+        + Input:
+        - incoming_data: dict containing incoming data.
+        + Output:
+        - Bool.
+        """
+
+        if incoming_data is None:
+            return False
+        return True
+
 
 class Candles(DataModule):
 
@@ -99,9 +117,26 @@ class Candles(DataModule):
         -
         """
 
-        self.data.append(self._world.request_data(self.id))
+        incoming_data = self._world.request_data(self.id)
+
+        if self._data_is_new(incoming_data) and self._data_is_not_none(incoming_data):
+            self.data.append(incoming_data)
+            print("Data module: "+str(self.id)+" updated.")
+
+        else:
+            print("Data module is old or None")
+
+    def _data_is_new(self, incoming_data):
         
-        print("Data module: "+str(self.id)+" updated.")
+        """
+        Description: evaluate wether incoming data is new or repeated.
+        + Input:
+        - incoming_data: dict containing incoming data.
+        + Output:
+        - Bool.
+        """
+        
+        return True
 
 
 class Orderbook(DataModule):
@@ -163,6 +198,17 @@ class Orderbook(DataModule):
         print(data)
         print("Data module: "+str(self.id)+" updated.")
 
+    def _data_is_new(self, incoming_data):
+        
+        """
+        Description: evaluate wether incoming data is new or repeated.
+        + Input:
+        - incoming_data: dict containing incoming data.
+        + Output:
+        - Bool.
+        """
+        
+        return True
 
 
 class Tickers(DataModule):
@@ -224,6 +270,18 @@ class Tickers(DataModule):
         print(data)
         print("Data module: "+str(self.id)+" updated.")
 
+    def _data_is_new(self, incoming_data):
+        
+        """
+        Description: evaluate wether incoming data is new or repeated.
+        + Input:
+        - incoming_data: dict containing incoming data.
+        + Output:
+        - Bool.
+        """
+        
+        return True
+
 
 class Tweets(DataModule):
 
@@ -283,3 +341,15 @@ class Tweets(DataModule):
         data = self._world.request_data(self.id)
         print(data)
         print("Data module: "+str(self.id)+" updated.")
+
+    def _data_is_new(self, incoming_data):
+        
+        """
+        Description: evaluate wether incoming data is new or repeated.
+        + Input:
+        - incoming_data: dict containing incoming data.
+        + Output:
+        - Bool.
+        """
+        
+        return True

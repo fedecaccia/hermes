@@ -285,22 +285,22 @@ class Hermes(object):
         for element in self.algorithms_elements:
 
             algo_id = element[definitions.algorithm_id]
-            valuation = element[definitions.valuation]
+            signals = element[definitions.signals]
             parameters = element[definitions.parameters]
             data_ids = element[definitions.data_modules_array]
             data_modules = [self.data_modules[data_id] for data_id in data_ids]
 
             if element[definitions.algorithm] == definitions.crossing_ma:
-                self.algorithms[algo_id] = CrossingMA(algo_id, valuation, data_modules, parameters)
+                self.algorithms[algo_id] = CrossingMA(algo_id, signals, data_modules, parameters)
 
             elif element[definitions.algorithm] == definitions.volume:
-                self.algorithms[algo_id] = Volume(algo_id ,valuation, data_modules, parameters)
+                self.algorithms[algo_id] = Volume(algo_id ,signals, data_modules, parameters)
 
             elif element[definitions.algorithm] == definitions.twitter_analysis:
-                self.algorithms[algo_id] = TwitterAnalysis(algo_id, valuation, data_modules, parameters)
+                self.algorithms[algo_id] = TwitterAnalysis(algo_id, signals, data_modules, parameters)
 
             elif element[definitions.algorithm] == definitions.virtual_transfer:
-                self.algorithms[algo_id] = VirtualTransfer(algo_id, valuation, data_modules, parameters)
+                self.algorithms[algo_id] = VirtualTransfer(algo_id, signals, data_modules, parameters)
 
             else:
                 raise ValueError("Bad algorithm: '"
@@ -368,7 +368,7 @@ class Hermes(object):
         for element in self.strategies_elements:
 
             key = element[definitions.strategy_id]
-            threshold = element[definitions.threshold]
+            thresholds = element[definitions.thresholds]
             
             algorithm_ids = element[definitions.algorithms_array]
             algorithms = [self.algorithms[algo_id] for algo_id in algorithm_ids]
@@ -379,7 +379,7 @@ class Hermes(object):
                     data_modules.update(self.algorithms[algorithm_id].data_modules)
 
             self.strategies[key] = Strategy(key,
-                                            threshold,
+                                            thresholds,
                                             self.request_pile,
                                             self.request_flag,
                                             algorithms,

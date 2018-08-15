@@ -117,10 +117,12 @@ margin = "margin"
 
 # Algorithm valuations definition
 
-threshold = "threshold"
-valuation = "valuation"
-passed = "passed"
-reprobed = "reprobed"
+thresholds = "thresholds"
+long_threshold = "long_threshold"
+short_threshold = "short_threshold"
+signals = "signals"
+long_signal = "long_signal"
+short_signal = "short_signal"
 
 # Useful definitions
 

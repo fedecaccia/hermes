@@ -1,3 +1,5 @@
+import definitions
+
 import numpy as np
 
 from abc import ABC, abstractmethod
@@ -12,7 +14,7 @@ class Strategy(ABC):
 
     def __init__(self,
                  id,
-                 threshold,
+                 thresholds,
                  request_pile,
                  request_flag,
                  algorithms,
@@ -23,7 +25,7 @@ class Strategy(ABC):
         + Description: constructor
         + Input:
         - id: Strategy id.
-        - threshold: Min integer valuation value to shoot trading order.        
+        - thresholds: Dictionary of thresholds to shoot signals for each asset.        
         - request_pile: A pile to where request_workers look functions to evaluate.
         - request_flag: List of 1 flag ([flag]) to indicate how many workers are bussy.
         - algorithms: Array of algorithm objects.
@@ -35,7 +37,7 @@ class Strategy(ABC):
         """
 
         self.id = id
-        self._threshold = threshold
+        self._thresholds = thresholds
         self.data_modules = data_modules
         self._n_data_modules = len(data_modules)
         self.request_pile = request_pile
@@ -91,7 +93,15 @@ class Strategy(ABC):
         -
         """
 
-        self._valuation = 0
+        self._valuation = {}
+        for asset, exchanges in self._thresholds.items():
+            self._valuation[asset] = {}
+            for exchange in exchanges.keys():
+                self._valuation[asset][exchange] = {
+                    definitions.long_signal: 0,
+                    definitions.short_signal: 0
+                }
+
 
     def _evaluate_algorithms(self):
 
@@ -104,7 +114,12 @@ class Strategy(ABC):
         """
 
         for algorithm in self.algorithms:
-            self._valuation += algorithm.evaluate()
+            signals = algorithm.evaluate()
+
+            for asset, exchanges in signals.items():
+                for exchange, signals in exchanges.items():
+                    for signal_key, signal_val in signals.items():
+                        self._valuation[asset][exchange][signal_key] += signal_val
 
     def _analyze_valuation(self):
 
@@ -116,6 +131,4 @@ class Strategy(ABC):
         -
         """
         print("valuation", self._valuation)
-        if self._valuation >= self._threshold:
-            print("Shooting trading order")
-        
+        pass

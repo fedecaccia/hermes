@@ -63,9 +63,13 @@ algorithms_elements = [
   #     trade_amount_value: 100
   #   },
   #   data_modules_array: [0],
-  #   valuation:{
-  #       passed:1,
-  #       reprobed:0
+  #   signals:{
+  #     ethbtc:{      
+  #       bittrex:{
+  #         long_signal:+1,
+  #         short_signal:-1
+  #       }
+  #     }
   #   }
   # },
   {
@@ -78,9 +82,13 @@ algorithms_elements = [
       trade_amount_value: 200
     },
     data_modules_array: [0],
-    valuation:{
-        passed:1,
-        reprobed:-1
+    signals:{
+      ethbtc:{
+        bittrex:{
+          long_signal:+1,
+          short_signal:-1
+        }
+      }
     }
   }#,
   # {
@@ -92,9 +100,13 @@ algorithms_elements = [
   #     trade_amount_value: 200
   #   },
   #   data_modules_array: [3],
-  #   valuation:{
-  #       passed:1,
-  #       reprobed:0
+  #   signals:{
+  #     ethbtc:{      
+  #       bittrex:{
+  #         long_signal:+1,
+  #         short_signal:-1
+  #       }
+  #     }
   #   }
   # },
   # {
@@ -106,9 +118,19 @@ algorithms_elements = [
   #     trade_amount_value: 100
   #   },
   #   data_modules_array: [1,2],
-  #   valuation:{
-  #       passed:1,
-  #       reprobed:0
+  #   signals:{
+  #     ethbtc:{      
+  #       bittrex:{
+  #         long_signal:+1,
+  #         short_signal:-1
+  #       }
+  #     },
+  #     ethbtc:{      
+  #       binance:{
+  #         long_signal:+1,
+  #         short_signal:-1
+  #       }
+  #     }
   #   }
   # }
 ]
@@ -124,14 +146,34 @@ algorithms_elements = [
 #   {
 #     strategy_id: 1,
 #     algorithms_array: [2],
-#     threshold: 1
+#     thresholds:{
+#       bittrex:{      
+#         ethbtc:{
+#           long_threshold:+1,
+#           short_threshold:-1
+#         }
+#       },
+#       binance:{      
+#         ethbtc:{
+#           long_threshold:+1,
+#           short_threshold:-1
+#         }
+#       }
+#     }
 #   }
 # ]
 strategies_elements = [
   {
     strategy_id: 0,
     algorithms_array: [1],
-    threshold: 1
+    thresholds:{
+      ethbtc:{   
+        bittrex:{
+          long_threshold:+1,
+          short_threshold:-1
+        }
+      }
+    }
   }
 ]
 
