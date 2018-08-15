@@ -287,22 +287,67 @@ class Volume(Algorithm):
         - valuation: integer algorithm valuation
         """
 
-        print(self.data_modules[0])
-
-
-
-
-
-
-
-
+        print(self.data_modules[0].data)
+        ma_vol = self._get_ma_volume(periods = 5)
+        vol = self._get_last_volume()
         
-        if 0>1:
-            valuation = self._reprobed_value
-        else:
+        ma_price = self._get_ma_price(periods = 5)
+        last_price = self._get_last_price()
+        
+        if vol>ma_vol and last_price > ma_price:
             valuation = self._passed_value
+        else:
+            valuation = self._reprobed_value
 
         return valuation
+
+    def _get_ma_volume(self, periods):
+
+        """
+        + Description: Calculate moving average volume in "periods".
+        + Input:
+        -
+        + Output:
+        - ma_volume: float
+        """
+
+        return 10
+
+    def _get_last_volume(self):
+
+        """
+        + Description: Get last volume
+        + Input:
+        -
+        + Output:
+        - last_volume: float
+        """
+
+        return self.data_modules[0].data[-1]["volume"]
+
+    def _get_ma_price(self, periods):
+
+        """
+        + Description: Calculate moving average price in "periods".
+        + Input:
+        -
+        + Output:
+        - ma_price: float
+        """
+
+        return 5
+
+    def _get_last_price(self):
+
+        """
+        + Description: Get last price.
+        + Input:
+        -
+        + Output:
+        - last_price: float
+        """
+
+        return self.data_modules[0].data[-1]["close"]
 
 
 class VirtualTransfer(Algorithm):

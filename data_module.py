@@ -26,23 +26,20 @@ class DataModule(ABC):
         self.source = element[definitions.source]
         self.data_type = element[definitions.data_type]
         self._world = world
+        self.data = None
+        self._initialize_data()
     
     @abstractmethod
     def _check_element_consistency(self, element):
         pass
     
+    @abstractmethod
+    def _initialize_data(self):
+        pass
+
+    @abstractmethod
     def update(self):
-
-        """
-        Description: connection to world, to update values.
-        + Input:
-        -.
-        + Output:
-        -
-        """
-
-        data = self._world.request_data(self.id)
-        print("Data module: "+str(self.id)+" updated.")
+        pass
 
 
 class Candles(DataModule):
@@ -80,6 +77,33 @@ class Candles(DataModule):
         pass
 
 
+    def _initialize_data(self):
+
+        """
+        Description: initialize an empty data object.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        self.data = []
+    
+    def update(self):
+
+        """
+        Description: connection to world, to update values.
+        + Input:
+        -.
+        + Output:
+        -
+        """
+
+        self.data.append(self._world.request_data(self.id))
+        
+        print("Data module: "+str(self.id)+" updated.")
+
+
 class Orderbook(DataModule):
 
     """
@@ -112,6 +136,33 @@ class Orderbook(DataModule):
         """
 
         pass
+
+    def _initialize_data(self):
+
+        """
+        Description: initialize an empty data object.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        pass
+
+    def update(self):
+
+        """
+        Description: connection to world, to update values.
+        + Input:
+        -.
+        + Output:
+        -
+        """
+
+        data = self._world.request_data(self.id)
+        print(data)
+        print("Data module: "+str(self.id)+" updated.")
+
 
 
 class Tickers(DataModule):
@@ -147,6 +198,32 @@ class Tickers(DataModule):
 
         pass
 
+    def _initialize_data(self):
+
+        """
+        Description: initialize an empty data object.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        pass
+
+    def update(self):
+
+        """
+        Description: connection to world, to update values.
+        + Input:
+        -.
+        + Output:
+        -
+        """
+
+        data = self._world.request_data(self.id)
+        print(data)
+        print("Data module: "+str(self.id)+" updated.")
+
 
 class Tweets(DataModule):
 
@@ -180,3 +257,29 @@ class Tweets(DataModule):
         """
 
         pass
+
+    def _initialize_data(self):
+
+        """
+        Description: initialize an empty data object.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        pass
+
+    def update(self):
+
+        """
+        Description: connection to world, to update values.
+        + Input:
+        -.
+        + Output:
+        -
+        """
+
+        data = self._world.request_data(self.id)
+        print(data)
+        print("Data module: "+str(self.id)+" updated.")

@@ -57,11 +57,11 @@ class Strategy(ABC):
 
         print("\nExecuting strategy id: "+str(self.id))  
         self._restart_valuation()
-        self._update_data_modules()
+        self._request_update_in_data_modules()
         self._evaluate_algorithms()
         self._analyze_valuation()
 
-    def _update_data_modules(self):
+    def _request_update_in_data_modules(self):
 
         """
         + Description: Function to update all data modules in strategy.
@@ -79,7 +79,7 @@ class Strategy(ABC):
 
         while self.request_flag[0] > 0: # some worker is still working
             pass
-        print("All modules have been updated")
+        print("All modules have rquested updates")
 
     def _restart_valuation(self):
 

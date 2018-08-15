@@ -346,25 +346,16 @@ class EmulatedWorld(World):
             if arr[idx]>world_time: # this case only is false when arr[idx]==world_time
                 idx -= 1 # minus one to get previous index
 
-            # print("world:",
-            #       world_time,
-            #       self._time,
-            #       " - data: ["+str(idx)+"]",
-            #       arr[idx],
-            #       data.index[idx],
-            #       "diff:",
-            #       world_time-arr[idx])
-
         except:
             return None
 
         else:
 
-            if world_time >= arr[idx] and world_time-arr[idx]<=self._max_delay_in_data:
-                row = data.iloc[idx]
-                print("YAHOO")
-            else:
-                return None
+            # if world_time >= arr[idx] and world_time-arr[idx]<=self._max_delay_in_data:
+            row = data.iloc[idx]
+            #     print("YAHOO")
+            # else:
+            #     return None
 
         return row
 
