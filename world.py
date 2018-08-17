@@ -17,23 +17,17 @@ class World(ABC):
     World: Connection with external services which provides exchange information and also receive trading orders.
     """
 
-    def __init__(self, data_elements, max_delay_in_data):
+    def __init__(self, data_elements):
 
         """
         + Description: constructor
         + Input:
-        - data_elements: data modules description built by user in config.
-        - max_delay_in_data: float setting the tolerance between data points.
+        - data_elements: Dictionary of data elements.
         + Output:
         -
         """
 
-        self.data = {}
-        for data_element in data_elements:
-            self.data[data_element[definitions.data_id]] = {
-                key:value for key, value in data_element.items()
-            }
-        self._max_delay_in_data = max_delay_in_data
+        self.data = data_elements
 
     @abstractmethod
     def advance_step(self):
@@ -63,22 +57,21 @@ class EmulatedWorld(World):
     Inherit from World.
     """
 
-    def __init__(self, data_elements, max_delay_in_data, time_step):
+    def __init__(self, data_elements, time_step):
 
         """
         + Description: constructor. Initializes corresponding data.
         + Input:
-        - data_elements: data modules description built by user in config.
-        - max_delay_in_data: float setting the tolerance between data points.
+        - data_elements: Dictionary of data elements.
         - time_step: string time step to advance in each step.
         + Output:
         -
         """
 
-        super().__init__(data_elements, max_delay_in_data)
+        super().__init__(data_elements)
         self._initialize_data(data_elements)        
         self._time_step = time_step
-        self._initialize_time_bounds(data_elements)
+        self._initialize_time_bounds()
         self._initialize_time()
 
     def _initialize_data(self, data_elements):
@@ -86,53 +79,53 @@ class EmulatedWorld(World):
         """
         + Description: Initializes backtest data.
         + Input:
-        - data_elements: data modules description built by user in config.
+        - data_elements: Dictionary of data elements.
         + Output:
         -
         """
 
-        for data_element in data_elements:
-            self.data[data_element[definitions.data_id]].update({
-                definitions.values:self._load_data(data_element)
+        for data_key, data_params in data_elements.items():
+            self.data[data_key].update({
+                definitions.values:self._load_data(data_params)
             })
 
-    def _load_data(self, data_element):
+    def _load_data(self, data_params):
 
         """
         + Description: Load particular data.
         + Input:
-        - data_element: data module description built by user in config.
+        - data_params: data module description.
         + Output:
         - data: Pandas element.
         """
 
         print("\nInitializing data module:")
-        print("Description:", data_element[definitions.description])
-        print("Source:", data_element[definitions.source])
-        print("Data type:", data_element[definitions.data_type])
-        if data_element[definitions.data_format] == definitions.csv:
-            return self._load_data_from_csv(data_element)
+        print("Description:", data_params[definitions.description])
+        print("Source:", data_params[definitions.source])
+        print("Data type:", data_params[definitions.data_type])
+        if data_params[definitions.data_format] == definitions.csv:
+            return self._load_data_from_csv(data_params)
 
-        elif data_element[definitions.data_format] == definitions.sql:
-            return  self._load_data_from_sql(data_element)
+        elif data_params[definitions.data_format] == definitions.sql:
+            return  self._load_data_from_sql(data_params)
 
-        elif data_element[definitions.data_format] == definitions.nosql:
-            return  self._load_data_from_nosql(data_element)
+        elif data_params[definitions.data_format] == definitions.nosql:
+            return  self._load_data_from_nosql(data_params)
 
         else:
             raise ValueError("Bad data_format.")
 
-    def _load_data_from_csv(self, data_element):
+    def _load_data_from_csv(self, data_params):
 
         """
         Description: load data from csv into a dict of pandas elements.
         + Input:
-        - data_element: data module description built by user in config.
+        - data_params: data module description.
         + Output:
         - data values: a pandas object or a None object.
         """
 
-        filename = data_element[definitions.file_name]
+        filename = data_params[definitions.file_name]
         data = None
         try:
             data = pd.read_csv(filename, parse_dates=True)
@@ -143,19 +136,19 @@ class EmulatedWorld(World):
             data.set_index("datetime", inplace=True)
         return data
 
-    def _load_data_from_sql(self, data_element):
+    def _load_data_from_sql(self, data_params):
 
         """
         Description: load data from sql into a dict of pandas elements.
         + Input:
-        - data_element: data module description built by user in config.
+        - data_params: data module description.
         + Output:
         - data values: a pandas object or a None object.
         """
 
-        db = dataset.connect(data_element[definitions.db_path])
-        table_name = data_element[definitions.table_name]
-        header_format = data_element[definitions.header_format]   
+        db = dataset.connect(data_params[definitions.db_path])
+        table_name = data_params[definitions.table_name]
+        header_format = data_params[definitions.header_format]   
         table = None     
         if header_format == definitions.cdm:
             table = pd.read_sql(sql=table_name,
@@ -163,18 +156,18 @@ class EmulatedWorld(World):
                                 parse_dates="datetime",
                                 index_col="datetime")
             table["datetime"] = pd.to_datetime(table["datetime"])
-            data.set_index("datetime", inplace=True)
+            table.set_index("datetime", inplace=True)
         else:
             raise ValueError("ERROR trying to read sql tables with header_format: '"
                             +header_format+"'.")
         return table
     
-    def _load_data_from_nosql(self, data_element):
+    def _load_data_from_nosql(self, data_params):
 
         """
         Description: load data from nosql into a dict of pandas elements.
         + Input:
-        - data_element: data module description built by user in config.
+        - data_params: data module description.
         + Output:
         - data values: a pandas object or a None object.
         """
@@ -182,17 +175,17 @@ class EmulatedWorld(World):
         data = None
         return data
 
-    def _initialize_time_bounds(self, data_elements):
+    def _initialize_time_bounds(self):
 
         """
         Description: Creates self._min_time and self._max_time
         + Input:
-        - data_elements: data modules description built by user in config.
+        - data_params: data module description.
         + Output:
         -
         """
 
-        sample = self.data[0][definitions.values]
+        sample = list(self.data.values())[0][definitions.values]
         self._min_time = self._get_min_datetime(sample)
         self._max_time = self._get_max_datetime(sample)
 
@@ -407,13 +400,12 @@ class RealWorld(World):
     Inherit from World.
     """
 
-    def __init__(self, data_elements, max_delay_in_data, mode, exchanges_names, api_keys_files = None):
+    def __init__(self, data_elements, mode, exchanges_names, api_keys_files = None):
 
         """
         + Description: constructor
         + Input:
-        - data_elements: data modules description built by user in config.
-        - max_delay_in_data: float setting the tolerance between data points.
+        - data_elements: Dictionary of data elements.
         - mode: string trading mode.
         - exchanges_names = set cointaining unique string names of exchanges.
         - api_keys_files = lsit of api key files in case private connections are needed.
@@ -421,7 +413,7 @@ class RealWorld(World):
         -
         """
 
-        super().__init__(data_elements, max_delay_in_data)
+        super().__init__(data_elements)
         self.mode = mode
         if self.mode == definitions.real:
             self.exchanges = self._create_clients_with_private_connections(exchanges_names, api_keys_files)

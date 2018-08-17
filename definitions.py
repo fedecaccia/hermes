@@ -107,13 +107,10 @@ trade_amount_value = "trade_amount_value"
 
 # Account types
 
+account = "account"
 trading = "trading"
 funding = "funding"
 margin_trading = "margin_trading"
-
-# Margin trading specifics
-
-margin = "margin"
 
 # Algorithm valuations definition
 
@@ -124,6 +121,19 @@ signals = "signals"
 long_signal = "long_signal"
 short_signal = "short_signal"
 
+# Orders
+
+buy = "buy"
+sell = "sell"
+order_type = "order_type"
+margin = "margin"
+trading = "trading"
+limit = "limit"
+market = "market"
+stop = "stop"
+stop_limit = "stop_limit"
+usd_amount_to_trade = "usd_amount_to_trade"
+
 # Useful definitions
 
 data_id = "data_id"
@@ -131,9 +141,14 @@ description = "description"
 source = "source"
 algorithm = "algorithm"
 algorithms_array = "algorithms_array"
-parameters = "parameters"
 data_modules_array = "data_modules_array"
 algorithm_id = "algorithm_id"
 strategy_id = "strategy_id"
 values = "values"
 filters = "filters"
+assets = "assets"
+base = "base"
+quote = "quote"
+symbol = "symbol"
+algo_params = "algo_params"
+order_params = "order_params"

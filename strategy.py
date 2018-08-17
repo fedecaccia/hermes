@@ -2,50 +2,90 @@ import definitions
 
 import numpy as np
 
-from abc import ABC, abstractmethod
 
-
-class Strategy(ABC):
+class Strategy(object):
 
     """
-    Strategy: a generic class to implement data reception and algorithm evaluation.
+    Strategy: a class to implement data reception and algorithm evaluation.
     Based on a sum over individual algorithm punctuation values, takes a trading decision.
     """
 
     def __init__(self,
-                 id,
-                 thresholds,
+                 strategy_id,
+                 strategy_values,
+                 assets,
                  request_pile,
                  request_flag,
                  algorithms,
                  data_modules,
-                 portfolio,trading):
+                 portfolio,
+                 trading):
 
         """
         + Description: constructor
         + Input:
         - id: Strategy id.
-        - thresholds: Dictionary of thresholds to shoot signals for each asset.        
+        - strategy_values: Dictionary of strategy parameters values.        
+        - assets: Array of asset objects.       
         - request_pile: A pile to where request_workers look functions to evaluate.
         - request_flag: List of 1 flag ([flag]) to indicate how many workers are bussy.
-        - algorithms: Array of algorithm objects.
-        - data_modules: Array of all data_modules objects used in startegy.
+        - algorithms: Dictionary of algorithm objects.
+        - data_modules: Dictionary of data_modules objects.
         - portfolio: Portfolio object.
         - trading: Trading platform object.
         + Output:
         -
         """
 
-        self.id = id
-        self._thresholds = thresholds
-        self.data_modules = data_modules
-        self._n_data_modules = len(data_modules)
+        self.id = strategy_id
+        self._assets = assets        
         self.request_pile = request_pile
-        self.request_flag = request_flag
-        self.algorithms = algorithms
-        self.portfolio = portfolio
-        self.trading = trading
+        self.request_flag = request_flag        
+        self._portfolio = portfolio
+        self._trading = trading
         self._valuation = 0
+        self._thresholds = strategy_values[definitions.thresholds]
+        self._order_type = strategy_values[definitions.order_type]
+        self._usd_amount_to_trade = strategy_values[definitions.usd_amount_to_trade]
+        self._order_params = strategy_values[definitions.order_params]        
+        self._set_algorithms(algorithms, strategy_values)
+        self._set_data_modules(data_modules)
+
+    def _set_algorithms(self, algorithms, strategy_values):
+        
+        """
+        + Description: Find algorithms objects needed in strategy.
+        + Input:
+        - algorithms: Dictionary of algorithms objects.
+        - strategy_values: Dictionary of strategy parameters.
+        + Output:
+        -
+        """
+    
+        algo = set()
+        for algo_id, algorithm in algorithms.items():
+            if algo_id in strategy_values[definitions.algorithms_array]:
+                algo.update([algorithm])
+        self._algorithms = list(algo)
+
+    def _set_data_modules(self, data_modules):
+        
+        """
+        + Description: Find data modules objects needed in strategy.
+        + Input:
+        - data_modules: Dictionary of data modules objects.
+        + Output:
+        -
+        """
+
+        modules = set()
+        for module_id, module in data_modules.items():
+            for algo in self._algorithms:
+                if module_id in algo.data_modules_ids:
+                    modules.update([module])
+        self._data_modules = list(modules)
+
+        self._n_data_modules = len(self._data_modules)
 
     def execute(self):
 
@@ -76,12 +116,12 @@ class Strategy(ABC):
         print("Updating data modules")
         self.request_flag[0] = self._n_data_modules # all workers are flagged as working
         
-        for module in self.data_modules:
+        for module in self._data_modules:
             self.request_pile.put(module.update)
 
         while self.request_flag[0] > 0: # some worker is still working
             pass
-        print("All modules have rquested updates")
+        print("All modules have requested updates")
 
     def _restart_valuation(self):
 
@@ -94,10 +134,8 @@ class Strategy(ABC):
         """
 
         self._valuation = {}
-        for asset, exchanges in self._thresholds.items():
-            self._valuation[asset] = {}
-            for exchange in exchanges.keys():
-                self._valuation[asset][exchange] = 0
+        for asset in self._thresholds.keys():
+            self._valuation[asset] = 0
 
     def _evaluate_algorithms(self):
 
@@ -109,12 +147,11 @@ class Strategy(ABC):
         -
         """
 
-        for algorithm in self.algorithms:
+        for algorithm in self._algorithms:
             signals = algorithm.evaluate()
 
-            for asset, exchanges in signals.items():
-                for exchange, signal in exchanges.items():                
-                    self._valuation[asset][exchange] += signal
+            for asset, signal in signals.items():              
+                self._valuation[asset] += signal
 
     def _analyze_valuation(self):
 
@@ -128,11 +165,26 @@ class Strategy(ABC):
         
         print("valuation", self._valuation)
         
-        for asset, exchanges in self._valuation.items():
-            for exchange, signal in exchanges.items():                
+        for asset_id, signal in self._valuation.items():
+                    
+            if signal >= self._thresholds[asset_id][definitions.long_threshold]:
+                print("LONG SIGNAL SHOOTED")
                 
-                if signal >= self._thresholds[asset][exchange][definitions.long_threshold]:
-                    print("LONG SIGNAL SHOOTED")
+                self._trading.execute_order(
+                    asset_id=asset_id,
+                    order_type=self._order_type,
+                    side=definitions.buy,                    
+                    params=self._order_params,
+                    amount=self._usd_amount_to_trade,            
+                )
 
-                elif signal <= self._thresholds[asset][exchange][definitions.short_threshold]:
-                    print("SHORT SIGNAL SHOOTED")
+            elif signal <= self._thresholds[asset_id][definitions.short_threshold]:
+                print("SHORT SIGNAL SHOOTED")
+                    
+                self._trading.execute_order(
+                    asset_id=asset_id,
+                    order_type=self._order_type,
+                    side=definitions.sell,                    
+                    params=self._order_params,
+                    amount=self._usd_amount_to_trade
+                )

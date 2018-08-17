@@ -3,6 +3,7 @@ import config
 
 from world import EmulatedWorld, RealWorld, Oracle
 from data_module import Candles, Orderbook, Tickers, Tweets
+from asset import Asset
 from algorithm import CrossingMA, Volume, TwitterAnalysis, VirtualTransfer
 from strategy import Strategy
 from portfolio import Portfolio
@@ -46,6 +47,7 @@ class Hermes(object):
 
         self._load_trading_mode()
         self._load_data_elements()
+        self._load_assets_elements()
         self._load_algorithms_elements()
         self._load_strategies_elements()
         self._load_other_parameters()
@@ -88,6 +90,30 @@ class Hermes(object):
         -
         + Output:
         -
+        """
+        pass
+
+    def _load_assets_elements(self):
+        
+        """
+        + Description: load asset elements.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        self.assets_elements = config.assets_elements
+        self._check_assets_elements_consistency()
+
+    def _check_assets_elements_consistency(self):
+
+        """
+        + Description: check consistency in asset elements.
+        + Input:
+        - 
+        + Output:
+        - 
         """
         pass
 
@@ -170,6 +196,7 @@ class Hermes(object):
         self._connect_to_world()
         self._create_oracle()
         self._build_data_modules()
+        self._build_assets()
         self._build_algorithms()        
         self._build_portfolio()
         self._build_trading_platform()
@@ -186,7 +213,7 @@ class Hermes(object):
         -
         """
 
-        sources = [e[definitions.source] for e in self.data_elements]
+        sources = [e[definitions.source] for e in self.data_elements.values()]
         self.exchanges_names = set([s for s in sources if s in definitions.all_exchanges])
 
         print("\nUnique list of exchanges")
@@ -206,20 +233,17 @@ class Hermes(object):
 
         if self.mode == definitions.backtest:
             self.world = EmulatedWorld(self.data_elements,
-                                       self.max_delay_in_data,
                                        self._time_step)
 
         else:            
         
             if self.mode == definitions.paper:
                 self.world = RealWorld(self.data_elements,
-                                       self.max_delay_in_data,
                                        self.mode,
                                        self.exchanges_names)
             
             else:
                 self.world = RealWorld(self.data_elements,
-                                       self.max_delay_in_data,
                                        self.mode,
                                        self.exchanges_names,
                                        config.api_keys_files)
@@ -247,29 +271,41 @@ class Hermes(object):
         """        
         
         self.data_modules = {}
-        for element in self.data_elements:
-
-            key = element[definitions.data_id]
+        for data_id, data_values in self.data_elements.items():
             
-            if element[definitions.data_type] == definitions.candles:                
-                self.data_modules[key] = Candles(element, self.world)
+            if data_values[definitions.data_type] == definitions.candles:                
+                self.data_modules[data_id] = Candles(data_id, data_values, self.world)
             
-            elif element[definitions.data_type] == definitions.orderbook:
-                self.data_modules[key] = Orderbook(element, self.world)
+            elif data_values[definitions.data_type] == definitions.orderbook:
+                self.data_modules[data_id] = Orderbook(data_id, data_values, self.world)
             
-            elif element[definitions.data_type] == definitions.tickers:
-                self.data_modules[key] = Tickers(element, self.world)
+            elif data_values[definitions.data_type] == definitions.tickers:
+                self.data_modules[data_id] = Tickers(data_id, data_values, self.world)
             
-            elif element[definitions.data_type] == definitions.tweets_count:
-                self.data_modules[key] = Tweets(element, self.world)
+            elif data_values[definitions.data_type] == definitions.tweets_count:
+                self.data_modules[data_id] = Tweets(data_id, data_values, self.world)
 
             else:
                 raise ValueError("Bad data_type: '"
-                +element[definitions.data_type]
-                +' in module id: '+str(element[definitions.data_id])) 
+                +data_values[definitions.data_type]
+                +' in module id: '+data_id+"'.") 
         
         print("\nData modules:")
-        pprint(self.data_modules)     
+        pprint(self.data_modules)
+
+    def _build_assets(self):
+
+        """
+        + Description: build assets.
+        + Input:
+        -
+        + Output:
+        -
+        """
+        self.assets = {}
+        for asset_id, asset_values in self.assets_elements.items():
+            self.assets[asset_id] = Asset(asset_id, asset_values)
+
 
     def _build_algorithms(self):
 
@@ -282,29 +318,23 @@ class Hermes(object):
         """
 
         self.algorithms = {}
-        for element in self.algorithms_elements:
+        for algo_id, algo_values in self.algorithms_elements.items():
 
-            algo_id = element[definitions.algorithm_id]
-            signals = element[definitions.signals]
-            parameters = element[definitions.parameters]
-            data_ids = element[definitions.data_modules_array]
-            data_modules = [self.data_modules[data_id] for data_id in data_ids]
+            if algo_values[definitions.algorithm] == definitions.crossing_ma:
+                self.algorithms[algo_id] = CrossingMA(algo_id, algo_values, self.data_modules)
 
-            if element[definitions.algorithm] == definitions.crossing_ma:
-                self.algorithms[algo_id] = CrossingMA(algo_id, signals, data_modules, parameters)
+            elif algo_values[definitions.algorithm] == definitions.volume:
+                self.algorithms[algo_id] = Volume(algo_id, algo_values, self.data_modules)
 
-            elif element[definitions.algorithm] == definitions.volume:
-                self.algorithms[algo_id] = Volume(algo_id ,signals, data_modules, parameters)
+            elif algo_values[definitions.algorithm] == definitions.twitter_analysis:
+                self.algorithms[algo_id] = TwitterAnalysis(algo_id, algo_values, self.data_modules)
 
-            elif element[definitions.algorithm] == definitions.twitter_analysis:
-                self.algorithms[algo_id] = TwitterAnalysis(algo_id, signals, data_modules, parameters)
-
-            elif element[definitions.algorithm] == definitions.virtual_transfer:
-                self.algorithms[algo_id] = VirtualTransfer(algo_id, signals, data_modules, parameters)
+            elif algo_values[definitions.algorithm] == definitions.virtual_transfer:
+                self.algorithms[algo_id] = VirtualTransfer(algo_id, algo_values, self.data_modules)
 
             else:
                 raise ValueError("Bad algorithm: '"
-                +element[definitions.data_type])
+                +algo_id+"'.")
 
         print("\nAlgorithms:")
         pprint(self.algorithms) 
@@ -365,25 +395,15 @@ class Hermes(object):
         """
         
         self.strategies = {}
-        for element in self.strategies_elements:
-
-            key = element[definitions.strategy_id]
-            thresholds = element[definitions.thresholds]
+        for strategy_id, strategy_values in self.strategies_elements.items():
             
-            algorithm_ids = element[definitions.algorithms_array]
-            algorithms = [self.algorithms[algo_id] for algo_id in algorithm_ids]
-            
-            data_modules = set()
-            for algorithm_id in algorithm_ids:
-                if algorithm_id in element[definitions.algorithms_array]:
-                    data_modules.update(self.algorithms[algorithm_id].data_modules)
-
-            self.strategies[key] = Strategy(key,
-                                            thresholds,
+            self.strategies[strategy_id] = Strategy(strategy_id,
+                                            strategy_values,
+                                            self.assets,
                                             self.request_pile,
                                             self.request_flag,
-                                            algorithms,
-                                            data_modules,
+                                            self.algorithms,
+                                            self.data_modules,
                                             self.portfolio,
                                             self.trading)
 

@@ -9,22 +9,23 @@ class DataModule(ABC):
     DataModule: Module to store data description, content and analysis.
     """
 
-    def __init__(self, element, world):
+    def __init__(self, data_id, data_values, world):
 
         """
         + Description: constructor
         + Input:
-        - element: main descriptions.
+        - data_id: Data id string.
+        - data_values: Dictionary with main parameter values.
         - world:
         + Output:
         -
         """
 
-        self._check_element_consistency(element)
-        self.id = element[definitions.data_id]
-        self.description = element[definitions.description]
-        self.source = element[definitions.source]
-        self.data_type = element[definitions.data_type]
+        self._check_element_consistency(data_values)
+        self.id = data_id
+        self.description = data_values[definitions.description]
+        self.source = data_values[definitions.source]
+        self.data_type = data_values[definitions.data_type]
         self._world = world
         self.data = None
         self._initialize_data()
@@ -66,28 +67,29 @@ class Candles(DataModule):
     Candles: Module to store candles data description, content and analysis.
     """
 
-    def __init__(self, element, world):
+    def __init__(self, data_id, data_values, world):
 
         """
         + Description: constructor
         + Input:
-        - element: main descriptions.
-        - world: world connection.
+        - data_id: Data id string.
+        - data_values: Dictionary with main parameter values.
+        - world:
         + Output:
         -
         """
 
-        super().__init__(element, world)
-        self.ticker = element[definitions.description]
-        self.exchange = element[definitions.source]
-        self.timeframe = element[definitions.timeframe]
+        super().__init__(data_id, data_values, world)
+        self.ticker = data_values[definitions.description]
+        self.exchange = data_values[definitions.source]
+        self.timeframe = data_values[definitions.timeframe]
 
-    def _check_element_consistency(self, element):
+    def _check_element_consistency(self, data_values):
         
         """
         Description: check consistency in the element built by user.
         + Input:
-        - element: main descriptions.
+        - data_values: Dictionary with main parameter values.
         + Output:
         -
         """
@@ -145,27 +147,28 @@ class Orderbook(DataModule):
     Orderbook: Module to store orderbook data description, content and analysis.
     """
 
-    def __init__(self, element, world):
+    def __init__(self, data_id, data_values, world):
 
         """
         + Description: constructor
         + Input:
-        - element: main descriptions.
-        - world: world connection.
+        - data_id: Data id string.
+        - data_values: Dictionary with main parameter values.
+        - world:
         + Output:
         -
         """
 
-        super().__init__(element, world)
-        self.ticker = element[definitions.description]
-        self.exchange = element[definitions.source]
+        super().__init__(data_id, data_values, world)
+        self.ticker = data_values[definitions.description]
+        self.exchange = data_values[definitions.source]
 
-    def _check_element_consistency(self, element):
+    def _check_element_consistency(self, data_values):
         
         """
         Description: check consistency in the element built by user.
         + Input:
-        - element: main descriptions.
+        - data_values: Dictionary with main parameter values.
         + Output:
         -
         """
@@ -217,27 +220,28 @@ class Tickers(DataModule):
     Tickers: Module to store tickers data description, content and analysis.
     """
 
-    def __init__(self, element, world):
+    def __init__(self, data_id, data_values, world):
 
         """
         + Description: constructor
         + Input:
-        - element: main descriptions.
-        - world: world connection.
+        - data_id: Data id string.
+        - data_values: Dictionary with main parameter values.
+        - world:
         + Output:
         -
         """
 
-        super().__init__(element, world)
-        self.ticker = element[definitions.description]
-        self.exchange = element[definitions.source]
+        super().__init__(data_id, data_values, world)
+        self.ticker = data_values[definitions.description]
+        self.exchange = data_values[definitions.source]
     
-    def _check_element_consistency(self, element):
+    def _check_element_consistency(self, data_values):
         
         """
         Description: check consistency in the element built by user.
         + Input:
-        - element: main descriptions.
+        - data_values: Dictionary with main parameter values.
         + Output:
         -
         """
@@ -289,27 +293,28 @@ class Tweets(DataModule):
     Tweets: Module to store tweets data description, content and analysis.
     """
 
-    def __init__(self, element, world):
+    def __init__(self, data_id, data_values, world):
 
         """
         + Description: constructor
         + Input:
-        - element: main descriptions.
-        - world: world connection.
+        - data_id: Data id string.
+        - data_values: Dictionary with main parameter values.
+        - world:
         + Output:
         -
         """
 
-        super().__init__(element, world)
-        self.description = element[definitions.description]
-        self.source = element[definitions.source]
+        super().__init__(data_id, data_values, world)
+        self.description = data_values[definitions.description]
+        self.source = data_values[definitions.source]
 
-    def _check_element_consistency(self, element):
+    def _check_element_consistency(self, data_values):
         
         """
         Description: check consistency in the element built by user.
         + Input:
-        - element: main descriptions.
+        - data_values: Dictionary with main parameter values.
         + Output:
         -
         """
