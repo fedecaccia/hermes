@@ -364,6 +364,7 @@ class Hermes(object):
 
         self.trading = Trade(
             self.world,
+            self.oracle,
             self.assets,
             self.portfolio,
             self.request_pile,

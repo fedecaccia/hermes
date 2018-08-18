@@ -401,7 +401,7 @@ class Volume(Algorithm):
         + Output:
         - last_volume: float
         """
-
+        
         return self.data_modules[0].data[-1]["volume"]
 
     def _get_ma_price(self, periods):

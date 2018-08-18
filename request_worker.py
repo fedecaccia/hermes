@@ -65,9 +65,6 @@ class RequestWorker(Thread):
         -
         """
 
-        self.mutex.acquire()
-        self.request_flag[0] += 1
-        self.mutex.release()
         function(params)
         self.mutex.acquire()
         self.request_flag[0] -= 1

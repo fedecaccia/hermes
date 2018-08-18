@@ -1,4 +1,5 @@
 import definitions
+import time
 
 import numpy as np
 
@@ -113,7 +114,7 @@ class Strategy(object):
         """
 
         print("Updating data modules")
-        # self.request_flag[0] = self._n_data_modules # all workers are flagged as working
+        self.request_flag[0] = self._n_data_modules # all workers are flagged as working
         
         for module in self._data_modules:
             self.request_pile.put({
@@ -121,9 +122,10 @@ class Strategy(object):
                 definitions.params:{}
             })
 
+        print("All modules have requested update")
         while self.request_flag[0] > 0: # some worker is still working
             pass
-        print("All modules have requested updates")
+        print("All modules have been updated")
 
     def _restart_valuation(self):
 
