@@ -415,6 +415,7 @@ class EmulatedWorld(World):
         params = params[definitions.params]
 
         print("Executing order:", symbol, exchange, account, side, amount, params)
+        order_id = 0
 
 class RealWorld(World):
 

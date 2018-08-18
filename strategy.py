@@ -96,36 +96,14 @@ class Strategy(object):
         -
         """
 
-        print("\nExecuting strategy id: "+str(self.id))  
+        print("\nExecuting strategy id: "+str(self.id))
+        self.check_available_funds()
         self._restart_valuation()
         self._restart_params()
         self._request_update_in_data_modules()
         self._evaluate_algorithms()
         self._analyze_valuation()
-
-    def _request_update_in_data_modules(self):
-
-        """
-        + Description: Function to update all data modules in strategy.
-        + Input:
-        - 
-        + Output:
-        -
-        """
-
-        print("Updating data modules")
-        self.request_flag[0] = self._n_data_modules # all workers are flagged as working
-        
-        for module in self._data_modules:
-            self.request_pile.put({
-                definitions.function:module.update,
-                definitions.params:{}
-            })
-
-        print("All modules have requested update")
-        while self.request_flag[0] > 0: # some worker is still working
-            pass
-        print("All modules have been updated")
+        self.check_orders() # (llama a trade que debe chequear las orders puestas en pilas)
 
     def _restart_valuation(self):
 
@@ -154,6 +132,30 @@ class Strategy(object):
         self._params = {}
         for asset in self._thresholds.keys():
             self._params[asset] = 0
+
+    def _request_update_in_data_modules(self):
+
+        """
+        + Description: Function to update all data modules in strategy.
+        + Input:
+        - 
+        + Output:
+        -
+        """
+
+        print("Updating data modules")
+        self.request_flag[0] = self._n_data_modules # all workers are flagged as working
+        
+        for module in self._data_modules:
+            self.request_pile.put({
+                definitions.function:module.update,
+                definitions.params:{}
+            })
+
+        print("All modules have requested update")
+        while self.request_flag[0] > 0: # some worker is still working
+            pass
+        print("All modules have been updated")
 
     def _evaluate_algorithms(self):
 
