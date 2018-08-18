@@ -199,8 +199,8 @@ class Hermes(object):
         self._build_assets()
         self._build_algorithms()        
         self._build_portfolio()
-        self._build_trading_platform()
         self._build_request_structure()
+        self._build_trading_platform()        
         self._build_strategies()
 
     def _unique_exchanges(self):
@@ -321,16 +321,16 @@ class Hermes(object):
         for algo_id, algo_values in self.algorithms_elements.items():
 
             if algo_values[definitions.algorithm] == definitions.crossing_ma:
-                self.algorithms[algo_id] = CrossingMA(algo_id, algo_values, self.data_modules)
+                self.algorithms[algo_id] = CrossingMA(algo_id, algo_values, self.data_modules, self.oracle)
 
             elif algo_values[definitions.algorithm] == definitions.volume:
-                self.algorithms[algo_id] = Volume(algo_id, algo_values, self.data_modules)
+                self.algorithms[algo_id] = Volume(algo_id, algo_values, self.data_modules, self.oracle)
 
             elif algo_values[definitions.algorithm] == definitions.twitter_analysis:
-                self.algorithms[algo_id] = TwitterAnalysis(algo_id, algo_values, self.data_modules)
+                self.algorithms[algo_id] = TwitterAnalysis(algo_id, algo_values, self.data_modules, self.oracle)
 
             elif algo_values[definitions.algorithm] == definitions.virtual_transfer:
-                self.algorithms[algo_id] = VirtualTransfer(algo_id, algo_values, self.data_modules)
+                self.algorithms[algo_id] = VirtualTransfer(algo_id, algo_values, self.data_modules, self.oracle)
 
             else:
                 raise ValueError("Bad algorithm: '"
@@ -362,7 +362,13 @@ class Hermes(object):
         -
         """
 
-        self.trading = Trade(self.world, self.portfolio)
+        self.trading = Trade(
+            self.world,
+            self.assets,
+            self.portfolio,
+            self.request_pile,
+            self.request_flag
+        )
         print("\nTrading platform")
         pprint(self.trading)
 

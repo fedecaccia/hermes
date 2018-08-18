@@ -14,7 +14,7 @@ class Algorithm(ABC):
     Shoots a punctuation to Strategy.
     """
 
-    def __init__(self, algo_id, algo_values, data_modules):
+    def __init__(self, algo_id, algo_values, data_modules, oracle):
 
         """
         + Description: constructor
@@ -22,6 +22,7 @@ class Algorithm(ABC):
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - algo_values: Dictionary with algorithm parameters values.
         - data_modules: Dictionary of data module objects.
+        - oracle: Oracle object.
         + Output:
         -
         """
@@ -35,6 +36,7 @@ class Algorithm(ABC):
                 self.data_modules_ids.append(data_module_id)
         self._check_data_modules()        
         self._define_signals(algo_values[definitions.signals])
+        self._oracle = oracle
 
     def _define_signals(self, signals):
 
@@ -108,7 +110,7 @@ class Algorithm(ABC):
 
 class CrossingMA(Algorithm):
 
-    def __init__(self, algo_id, algo_values, data_modules):
+    def __init__(self, algo_id, algo_values, data_modules, oracle):
 
         """
         + Description: constructor
@@ -116,11 +118,12 @@ class CrossingMA(Algorithm):
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - algo_values: Dictionary with algorithm parameters values.
         - data_modules: array of data module objects.
+                - oracle: Oracle object.
         + Output:
         -
         """
         
-        super().__init__(algo_id, algo_values, data_modules)
+        super().__init__(algo_id, algo_values, data_modules, oracle)
 
     def _check_data_modules(self):
 
@@ -204,15 +207,18 @@ class CrossingMA(Algorithm):
         + Input:
         -
         + Output:
-        - signals: dictionary of signals returned for the algorithm
+        - signals: Dictionary of signals returned for the algorithm.
+        - params: Dictionary of order parameters.
         """
+
+        params = {}
         
-        return self._signals
+        return self._signals, params
 
 
 class Volume(Algorithm):
 
-    def __init__(self, algo_id, algo_values, data_modules):
+    def __init__(self, algo_id, algo_values, data_modules, oracle):
         
         """
         + Description: constructor
@@ -220,11 +226,12 @@ class Volume(Algorithm):
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - algo_values: Dictionary with algorithm parameters values.
         - data_modules: array of data module objects.
+        - oracle: Oracle object.
         + Output:
         -
         """
         
-        super().__init__(algo_id, algo_values, data_modules)
+        super().__init__(algo_id, algo_values, data_modules, oracle)
         self._check_parameters(algo_values)
 
     def _check_data_modules(self):
@@ -315,6 +322,21 @@ class Volume(Algorithm):
             self._vol_growth = params[definitions.ma_periods]
         except:
             raise ValueError("Error trying to parse ma_periods in algorithm: '"+self.id+"' parameters.")
+        
+        try:
+            self._limit_buy_pct = params[definitions.limit_buy_pct]
+        except:
+            raise ValueError("Error trying to parse limit_buy_pct in algorithm: '"+self.id+"' parameters.")
+        
+        try:
+            self._limit_sell_pct = params[definitions.limit_sell_pct]
+        except:
+            raise ValueError("Error trying to parse limit_sell_pct in algorithm: '"+self.id+"' parameters.")
+        
+        try:
+            self._usd_amount_to_trade = params[definitions.usd_amount_to_trade]
+        except:
+            raise ValueError("Error trying to parse usd_amount_to_trade in algorithm: '"+self.id+"' parameters.")
 
     def evaluate(self):
 
@@ -323,10 +345,12 @@ class Volume(Algorithm):
         + Input:
         -
         + Output:
-        - signals: dictionary of signals returned for the algorithm
+        - signals: Dictionary of signals returned for the algorithm.
+        - params: Dictionary of order parameters.
         """
 
         asset = list(self._signals.keys())[0]
+        params = {asset:{} for asset in list(self._signals.keys())} 
 
         # print(self.data_modules[0].data)
         ma_vol = self._get_ma_volume(periods = 5)
@@ -335,12 +359,26 @@ class Volume(Algorithm):
         ma_price = self._get_ma_price(periods = 5)
         last_price = self._get_last_price()
         
+        btc_usd = self._oracle.get_amount_in_base(
+            definitions.btc,
+            definitions.usd,
+            self._usd_amount_to_trade
+        )
+        
+        eth_usd=last_price*btc_usd
+        amount = eth_usd / self._usd_amount_to_trade
+
         if vol>ma_vol and last_price > ma_price:
             self._shoot_long_signal(asset)
+            params[asset] = {definitions.limit:last_price*self._limit_buy_pct}
         else:
             self._shoot_short_signal(asset)
-
-        return self._signals
+            params[asset] = {
+                definitions.amount:amount,
+                definitions.limit:last_price*self._limit_sell_pct
+            }
+               
+        return self._signals, params
 
     def _get_ma_volume(self, periods):
 
@@ -393,7 +431,7 @@ class Volume(Algorithm):
 
 class VirtualTransfer(Algorithm):
 
-    def __init__(self, algo_id, algo_values, data_modules):
+    def __init__(self, algo_id, algo_values, data_modules, oracle):
 
         """
         + Description: constructor
@@ -401,11 +439,12 @@ class VirtualTransfer(Algorithm):
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - algo_values: Dictionary with algorithm parameters values.
         - data_modules: array of data module objects.
+        - oracle: Oracle object.
         + Output:
         -
         """
         
-        super().__init__(algo_id, algo_values, data_modules)
+        super().__init__(algo_id, algo_values, data_modules, oracle)
 
     def _check_data_modules(self):
 
@@ -489,16 +528,20 @@ class VirtualTransfer(Algorithm):
         + Input:
         -
         + Output:
-        - signals: dictionary of signals returned for the algorithm
+        - signals: Dictionary of signals returned for the algorithm.
+        - params: Dictionary of order parameters.
         """
         
         # if world_time >= arr[idx] and world_time-arr[idx]<=self._max_delay_in_data:
-        return self._signals
+        params = {}
+        
+        return self._signals, params
+
 
 
 class TwitterAnalysis(Algorithm):
 
-    def __init__(self, algo_id, algo_values, data_modules):
+    def __init__(self, algo_id, algo_values, data_modules, oracle):
 
         """
         + Description: constructor
@@ -506,11 +549,12 @@ class TwitterAnalysis(Algorithm):
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - algo_values: Dictionary with algorithm parameters values.
         - data_modules: array of data module objects.
+        - oracle: Oracle object.
         + Output:
         -
         """
         
-        super().__init__(algo_id, algo_values, data_modules)
+        super().__init__(algo_id, algo_values, data_modules, oracle)
 
     def _check_data_modules(self):
 
@@ -594,7 +638,10 @@ class TwitterAnalysis(Algorithm):
         + Input:
         -
         + Output:
-        - signals: dictionary of signals returned for the algorithm
+        - signals: Dictionary of signals returned for the algorithm.
+        - params: Dictionary of order parameters.
         """
+
+        params = {}
         
-        return self._signals
+        return self._signals, params

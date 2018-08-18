@@ -19,9 +19,9 @@ class Asset(object):
         """
 
         self.id = asset_id
-        self._symbol = asset_element[definitions.symbol]
-        self._base = asset_element[definitions.base]
-        self._quote = asset_element[definitions.quote]
-        self._exchange = asset_element[definitions.exchange]
-        self._account = asset_element[definitions.account]
+        self.symbol = asset_element[definitions.symbol]
+        self.base = asset_element[definitions.base]
+        self.quote = asset_element[definitions.quote]
+        self.exchange = asset_element[definitions.exchange]
+        self.account = asset_element[definitions.account]
 

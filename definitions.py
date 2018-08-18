@@ -32,6 +32,7 @@ usd = "USD"
 eur = "EUR"
 btc = "BTC"
 eth = "ETH"
+asset_id = "asset_id"
 
 # Other description definitions
 
@@ -133,6 +134,10 @@ market = "market"
 stop = "stop"
 stop_limit = "stop_limit"
 usd_amount_to_trade = "usd_amount_to_trade"
+limit_buy_pct = "limit_buy_pct"
+limit_sell_pct = "limit_sell_pct"
+side = "side"
+params = "params"
 
 # Useful definitions
 
@@ -152,3 +157,5 @@ quote = "quote"
 symbol = "symbol"
 algo_params = "algo_params"
 order_params = "order_params"
+amount = "amount"
+function = "funtcion"

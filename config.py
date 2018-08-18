@@ -48,6 +48,9 @@ algorithms_elements = {
     algo_params:{
       vol_growth:0.5,
       ma_periods:5,
+      limit_buy_pct: 101,
+      limit_sell_pct:99,
+      usd_amount_to_trade:50
     }
   }
 }
@@ -63,9 +66,7 @@ strategies_elements = {
         short_threshold:-1
       }
     },
-    order_type:market,
-    usd_amount_to_trade:50,
-    order_params:{}
+    order_type:limit    
   }
 }
 

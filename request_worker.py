@@ -1,3 +1,5 @@
+import definitions
+
 from threading import Thread
 
 
@@ -44,22 +46,29 @@ class RequestWorker(Thread):
         # None element act as a signal to finish
         while function is not None:
             
-            self._evaluate_function(function)            
+            self._evaluate_function(
+                function[definitions.function], 
+                function[definitions.params]
+            )            
             function = self.request_queue.get()
 
         print("Request worker "+str(self.id)+" found None signal.")
 
-    def _evaluate_function(self, function):
+    def _evaluate_function(self, function, params):
 
         """
         + Description: input function evaluation
         + Input:
-        - function
+        - function: Function to evaluate
+        - params: Dictionary containing parameters definitions needed by function
         + Output:
         -
         """
 
-        function()
+        self.mutex.acquire()
+        self.request_flag[0] += 1
+        self.mutex.release()
+        function(params)
         self.mutex.acquire()
         self.request_flag[0] -= 1
         self.mutex.release()

@@ -49,6 +49,10 @@ class World(ABC):
     def request_balance(self, exchange):
         pass
 
+    @abstractmethod
+    def post_order(self, params):
+        pass
+
 
 class EmulatedWorld(World):
 
@@ -393,6 +397,25 @@ class EmulatedWorld(World):
 
         return balance
 
+    def post_order(self, params):
+
+        """
+        + Description: constructor
+        + Input:
+        - params: Dictionary containing order parameters.
+        + Output:
+        -
+        """
+
+        symbol = params[definitions.symbol]
+        exchange = params[definitions.exchange]
+        account = params[definitions.account]
+        side = params[definitions.side]
+        amount = params[definitions.amount]
+        params = params[definitions.params]
+
+        print("Executing order:", symbol, exchange, account, side, amount, params)
+
 class RealWorld(World):
 
     """
@@ -614,6 +637,25 @@ class RealWorld(World):
 
         pass
 
+    def post_order(self, params):
+
+        """
+        + Description: constructor
+        + Input:
+        - params: Dictionary containing order parameters.
+        + Output:
+        -
+        """
+
+        symbol = params[definitions.symbol]
+        exchange = params[definitions.exchange]
+        account = params[definitions.account]
+        side = params[definitions.side]
+        amount = params[definitions.amount]
+        params = params[definitions.params]
+        
+        print("Executing order:", symbol, exchange, account, side, amount, params)
+
 class Oracle(object):
 
     """
@@ -623,7 +665,7 @@ class Oracle(object):
     def __init__(self, world):
 
         """
-        + Description: constructor
+        + Description: Constructor.
         + Input:
         - current world
         + Output:
@@ -632,3 +674,20 @@ class Oracle(object):
 
         super().__init__()
         self.world = world
+
+    def get_amount_in_base(self, base, quote, quote_amount):
+
+        """
+        + Description: Returns the equivalent value of base amount to quote_amount.
+        + Input:
+        - base: Asset currency string name.
+        - quote: Quote currency string name.
+        - quote_amount: Float amount of quote currency.
+        + Output:
+        -
+        """
+
+        if base == definitions.btc and quote == definitions.usd:
+            return 6500
+        else:
+            raise ValueError("Oracle can't get "+base+" value in "+quote+".")

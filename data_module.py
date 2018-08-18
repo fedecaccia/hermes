@@ -109,12 +109,12 @@ class Candles(DataModule):
 
         self.data = []
     
-    def update(self):
+    def update(self, dummy):
 
         """
         Description: connection to world, to update values.
         + Input:
-        -.
+        - dummy: dummy argument to keep sintaxis.
         + Output:
         -
         """
@@ -187,12 +187,12 @@ class Orderbook(DataModule):
 
         pass
 
-    def update(self):
+    def update(self, deummy):
 
         """
         Description: connection to world, to update values.
         + Input:
-        -.
+        - dummy: dummy argument to keep sintaxis.
         + Output:
         -
         """
@@ -260,12 +260,12 @@ class Tickers(DataModule):
 
         pass
 
-    def update(self):
+    def update(self, dummy):
 
         """
         Description: connection to world, to update values.
         + Input:
-        -.
+        - dummy: dummy argument to keep sintaxis.
         + Output:
         -
         """
@@ -333,12 +333,12 @@ class Tweets(DataModule):
 
         pass
 
-    def update(self):
+    def update(self, dummy):
 
         """
         Description: connection to world, to update values.
         + Input:
-        -.
+        - dummy: dummy argument to keep sintaxis.
         + Output:
         -
         """

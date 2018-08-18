@@ -26,8 +26,8 @@ class Strategy(object):
         + Input:
         - id: Strategy id.
         - strategy_values: Dictionary of strategy parameters values.        
-        - assets: Array of asset objects.       
-        - request_pile: A pile to where request_workers look functions to evaluate.
+        - assets: Array of asset objects.
+        - request_pile: A pile where request_workers look functions to evaluate.
         - request_flag: List of 1 flag ([flag]) to indicate how many workers are bussy.
         - algorithms: Dictionary of algorithm objects.
         - data_modules: Dictionary of data_modules objects.
@@ -45,9 +45,7 @@ class Strategy(object):
         self._trading = trading
         self._valuation = 0
         self._thresholds = strategy_values[definitions.thresholds]
-        self._order_type = strategy_values[definitions.order_type]
-        self._usd_amount_to_trade = strategy_values[definitions.usd_amount_to_trade]
-        self._order_params = strategy_values[definitions.order_params]        
+        self._order_type = strategy_values[definitions.order_type]      
         self._set_algorithms(algorithms, strategy_values)
         self._set_data_modules(data_modules)
 
@@ -99,6 +97,7 @@ class Strategy(object):
 
         print("\nExecuting strategy id: "+str(self.id))  
         self._restart_valuation()
+        self._restart_params()
         self._request_update_in_data_modules()
         self._evaluate_algorithms()
         self._analyze_valuation()
@@ -114,10 +113,13 @@ class Strategy(object):
         """
 
         print("Updating data modules")
-        self.request_flag[0] = self._n_data_modules # all workers are flagged as working
+        # self.request_flag[0] = self._n_data_modules # all workers are flagged as working
         
         for module in self._data_modules:
-            self.request_pile.put(module.update)
+            self.request_pile.put({
+                definitions.function:module.update,
+                definitions.params:{}
+            })
 
         while self.request_flag[0] > 0: # some worker is still working
             pass
@@ -136,6 +138,20 @@ class Strategy(object):
         self._valuation = {}
         for asset in self._thresholds.keys():
             self._valuation[asset] = 0
+    
+    def _restart_params(self):
+
+        """
+        + Description: Function to reinitialize order parameters.
+        + Input:
+        - 
+        + Output:
+        -
+        """
+
+        self._params = {}
+        for asset in self._thresholds.keys():
+            self._params[asset] = 0
 
     def _evaluate_algorithms(self):
 
@@ -148,10 +164,13 @@ class Strategy(object):
         """
 
         for algorithm in self._algorithms:
-            signals = algorithm.evaluate()
+            signals, params = algorithm.evaluate()
 
             for asset, signal in signals.items():              
                 self._valuation[asset] += signal
+
+            for asset, param in params.items():
+                self._params[asset] = param
 
     def _analyze_valuation(self):
 
@@ -166,6 +185,12 @@ class Strategy(object):
         print("valuation", self._valuation)
         
         for asset_id, signal in self._valuation.items():
+
+            try:
+                amount = self._params[asset_id][definitions.amount]
+            except:
+                raise ValueError("Bad formulation in algorithm. Amount not returned for asset id: '"+asset_id+"'.")
+
                     
             if signal >= self._thresholds[asset_id][definitions.long_threshold]:
                 print("LONG SIGNAL SHOOTED")
@@ -173,9 +198,9 @@ class Strategy(object):
                 self._trading.execute_order(
                     asset_id=asset_id,
                     order_type=self._order_type,
-                    side=definitions.buy,                    
-                    params=self._order_params,
-                    amount=self._usd_amount_to_trade,            
+                    side=definitions.buy,
+                    amount=amount,
+                    params=self._params[asset_id]
                 )
 
             elif signal <= self._thresholds[asset_id][definitions.short_threshold]:
@@ -184,7 +209,7 @@ class Strategy(object):
                 self._trading.execute_order(
                     asset_id=asset_id,
                     order_type=self._order_type,
-                    side=definitions.sell,                    
-                    params=self._order_params,
-                    amount=self._usd_amount_to_trade
+                    side=definitions.sell,
+                    amount=amount,
+                    params=self._params[asset_id]
                 )
