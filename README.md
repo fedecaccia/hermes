@@ -10,6 +10,19 @@ Under development.
 ## Documentation
 Under development.
 
+## TODO
+
+- Strategy: check available funds in portfolio to execute algorithms in trading accounts. (check asssets by thrs keys)
+- Portfolio: margin structure.
+- Strategy: check available margin in portfolio to execute algorithms in margin accounts. (check asssets by thrs keys)
+- Strategy: check order status (and wait for that).
+- World: save order ids.
+- Algorithms: implement pair trading.
+- RealWorld: online public orderbook requests.
+- RealWorld: online public candles requests.
+- RealWorld: online public balances requests.
+- RealWorld: online private post order requests.
+
 ## Contact
 Developed by [CoinFabrik](https://www.coinfabrik.com/). 
 Interested in crypto? You can read our articles [here](https://blog.coinfabrik.com/).
