@@ -27,6 +27,12 @@ Under development.
 - RealWorld: online public balances requests.
 - RealWorld: online private post order requests.
 
+## Notes
+Different exchanges charge fees in different ways.
+Most exchanges charge fees on the currency you are using to pay when you buy (or  on the currency you are receiving when you sell), like USD in BTC/USD.
+If you are using Bitfinex for example, to be consistent you should adjust fees in Account/Fees and select: *Fees will be taken in the default currency set above* (BTC or USD).
+This way, you will always receive the amount submited in the order.
+
 ## Contact
 Developed by [CoinFabrik](https://www.coinfabrik.com/). 
 Interested in crypto? You can read our articles [here](https://blog.coinfabrik.com/).
