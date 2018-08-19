@@ -139,6 +139,7 @@ limit_sell_pct = "limit_sell_pct"
 side = "side"
 params = "params"
 full = "full"
+last = "last"
 
 # Useful definitions
 

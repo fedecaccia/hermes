@@ -44,6 +44,7 @@ class Strategy(object):
         self.request_flag = request_flag        
         self._portfolio = portfolio
         self._trading = trading
+        self._is_trading = False
         self._valuation = 0
         self._thresholds = strategy_values[definitions.thresholds]
         self._order_type = strategy_values[definitions.order_type]      
@@ -97,13 +98,16 @@ class Strategy(object):
         """
 
         print("\nExecuting strategy id: "+str(self.id))
-        self.check_available_funds()
+        # self.check_available_funds()
         self._restart_valuation()
         self._restart_params()
         self._request_update_in_data_modules()
         self._evaluate_algorithms()
         self._analyze_valuation()
-        self.check_orders() # (llama a trade que debe chequear las orders puestas en pilas)
+        if self._trading:
+        #   self.check_orders() # (llama a trade que debe chequear las orders puestas en pilas)
+        #   self.update_balances()
+            pass
 
     def _restart_valuation(self):
 
@@ -129,6 +133,7 @@ class Strategy(object):
         -
         """
 
+        self._is_trading = False
         self._params = {}
         for asset in self._thresholds.keys():
             self._params[asset] = 0
@@ -197,6 +202,7 @@ class Strategy(object):
 
                     
             if signal >= self._thresholds[asset_id][definitions.long_threshold]:
+                self._is_trading = True
                 print("LONG SIGNAL SHOOTED")
                 
                 self._trading.execute_order(
@@ -208,6 +214,7 @@ class Strategy(object):
                 )
 
             elif signal <= self._thresholds[asset_id][definitions.short_threshold]:
+                self._is_trading = True
                 print("SHORT SIGNAL SHOOTED")
                     
                 self._trading.execute_order(

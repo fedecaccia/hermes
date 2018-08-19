@@ -59,6 +59,10 @@ class Trade(object):
             # in this case we are trying to buy as much as we can
             # to secure this, we try to buy the 97% if the aproximated value the oracle tell us
             amount = self.oracle.get_amount_in_base(coin, quote, quote_amount)*0.97
+
+        else:
+            # amount is rightly calculated
+            pass
         
         self.request_flag[0] += 1
         self.request_pile.put({
@@ -70,6 +74,7 @@ class Trade(object):
                 definitions.account:account,
                 definitions.side:side,
                 definitions.amount:amount,
+                definitions.order_type:order_type,
                 definitions.params:params                
                 }
             })

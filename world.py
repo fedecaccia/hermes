@@ -61,13 +61,14 @@ class EmulatedWorld(World):
     Inherit from World.
     """
 
-    def __init__(self, data_elements, time_step):
+    def __init__(self, data_elements, time_step, virtual_portfolio):
 
         """
         + Description: constructor. Initializes corresponding data.
         + Input:
         - data_elements: Dictionary of data elements.
-        - time_step: string time step to advance in each step.
+        - time_step: String time step to advance in each step.
+        - virtual_portfolio: Dictionary containing virtual portfolio.
         + Output:
         -
         """
@@ -77,6 +78,7 @@ class EmulatedWorld(World):
         self._time_step = time_step
         self._initialize_time_bounds()
         self._initialize_time()
+        self._initialize_virtual_portfolio(virtual_portfolio)
 
     def _initialize_data(self, data_elements):
 
@@ -317,6 +319,18 @@ class EmulatedWorld(World):
 
         return self._time
 
+    def _initialize_virtual_portfolio(self, virtual_portfolio):
+
+        """
+        Description: Initialize a virtual portfolio.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        self._virtual_portfolio = virtual_portfolio
+
     def request_data(self, data_module_id):
 
         """
@@ -400,7 +414,7 @@ class EmulatedWorld(World):
     def post_order(self, params):
 
         """
-        + Description: constructor
+        + Description: Constructor.
         + Input:
         - params: Dictionary containing order parameters.
         + Output:
@@ -412,10 +426,56 @@ class EmulatedWorld(World):
         account = params[definitions.account]
         side = params[definitions.side]
         amount = params[definitions.amount]
+        order_type = params[definitions.order_type]
         params = params[definitions.params]
 
-        print("Executing order:", symbol, exchange, account, side, amount, params)
+        print("Executing order:", symbol, exchange, account, side, amount, order_type, params)
         order_id = 0
+
+        self._virtual_operation(symbol, exchange, account, side, amount, order_type, params)
+
+    def _virtual_operation(self, symbol, exchange, account, side, amount, order_type, params):
+
+        """
+        + Description: Update virtual portfolio.
+        + Input:
+        - symbol: Symbol string.
+        - exchange: Exchange string name.
+        - account: Account type string name.
+        - side: "sell" or "buy" strings.
+        - amount: Float amount of the operations.
+        - order_type: String type of order.
+        - params: Dictionary of order parameters.
+        + Output:
+        -
+        """
+
+        if order_type==definitions.limit:
+            price = params[definitions.limit]
+        
+        elif order_type==definitions.market:
+            price = params[definitions.last]
+
+        else:
+            # nothing to do with stop / stop_limit / trailing_stop orders
+            return
+
+        base = symbol.split("/")[0]
+        quote = symbol.split("/")[1]
+
+        try:
+            if side == definitions.buy:
+                self._virtual_portfolio[exchange][account][base] += amount
+                self._virtual_portfolio[exchange][account][quote] -= amount*price
+
+            elif side == definitions.sell:
+                self._virtual_portfolio[exchange][account][base] -= amount
+                self._virtual_portfolio[exchange][account][quote] += amount*price
+
+        except:
+            raise ValueError("Error in virtual portfolio trying to acces to exchange: '"+
+            exchange + "', account: '"+account+"', base: '"+base+"' and quote: '"+quote+"'.")
+
 
 class RealWorld(World):
 
@@ -653,9 +713,10 @@ class RealWorld(World):
         account = params[definitions.account]
         side = params[definitions.side]
         amount = params[definitions.amount]
+        order_type = params[definitions.order_type]
         params = params[definitions.params]
         
-        print("Executing order:", symbol, exchange, account, side, amount, params)
+        print("Executing order:", symbol, exchange, account, side, amount, order_type, params)
 
 class Oracle(object):
 

@@ -211,7 +211,10 @@ class CrossingMA(Algorithm):
         - params: Dictionary of order parameters.
         """
 
-        params = {}
+        params = {asset:{
+            definitions.limit:0,
+            definitions.last:0
+        } for asset in list(self._signals.keys())} 
         
         return self._signals, params
 
@@ -311,30 +314,30 @@ class Volume(Algorithm):
 
     def _check_parameters(self, algo_values):
 
-        params = algo_values[definitions.algo_params]
+        algo_params = algo_values[definitions.algo_params]
 
         try:
-            self._vol_growth = params[definitions.vol_growth]
+            self._vol_growth = algo_params[definitions.vol_growth]
         except:
             raise ValueError("Error trying to parse vol_growth in algorithm: '"+self.id+"' parameters.")
         
         try:
-            self._vol_growth = params[definitions.ma_periods]
+            self._vol_growth = algo_params[definitions.ma_periods]
         except:
             raise ValueError("Error trying to parse ma_periods in algorithm: '"+self.id+"' parameters.")
         
         try:
-            self._limit_buy_pct = params[definitions.limit_buy_pct]
+            self._limit_buy_pct = algo_params[definitions.limit_buy_pct]
         except:
             raise ValueError("Error trying to parse limit_buy_pct in algorithm: '"+self.id+"' parameters.")
         
         try:
-            self._limit_sell_pct = params[definitions.limit_sell_pct]
+            self._limit_sell_pct = algo_params[definitions.limit_sell_pct]
         except:
             raise ValueError("Error trying to parse limit_sell_pct in algorithm: '"+self.id+"' parameters.")
         
         try:
-            self._usd_amount_to_trade = params[definitions.usd_amount_to_trade]
+            self._usd_amount_to_trade = algo_params[definitions.usd_amount_to_trade]
         except:
             raise ValueError("Error trying to parse usd_amount_to_trade in algorithm: '"+self.id+"' parameters.")
 
@@ -350,7 +353,10 @@ class Volume(Algorithm):
         """
 
         asset = list(self._signals.keys())[0]
-        params = {asset:{} for asset in list(self._signals.keys())} 
+        params = {asset:{
+            definitions.limit:0,
+            definitions.last:0
+        } for asset in list(self._signals.keys())} 
 
         # print(self.data_modules[0].data)
         ma_vol = self._get_ma_volume(periods = 5)
@@ -370,7 +376,10 @@ class Volume(Algorithm):
 
         if vol>ma_vol and last_price > ma_price:
             self._shoot_long_signal(asset)
-            params[asset] = {definitions.limit:last_price*self._limit_buy_pct}
+            params[asset] = {
+                definitions.limit:last_price*self._limit_buy_pct,
+                definitions.last:last_price
+            }
         else:
             self._shoot_short_signal(asset)
             params[asset] = {
@@ -533,7 +542,10 @@ class VirtualTransfer(Algorithm):
         """
         
         # if world_time >= arr[idx] and world_time-arr[idx]<=self._max_delay_in_data:
-        params = {}
+        params = {asset:{
+            definitions.limit:0,
+            definitions.last:0
+        } for asset in list(self._signals.keys())} 
         
         return self._signals, params
 
@@ -642,6 +654,9 @@ class TwitterAnalysis(Algorithm):
         - params: Dictionary of order parameters.
         """
 
-        params = {}
+        params = {asset:{
+            definitions.limit:0,
+            definitions.last:0
+        } for asset in list(self._signals.keys())} 
         
         return self._signals, params

@@ -82,6 +82,20 @@ max_delay_in_data = 0.5 # seconds
 #######################################################
 
 time_step = one_min
+virtual_portfolio = {
+  bittrex:{
+    trading:{
+      eth:100,
+      btc:10
+    }
+  },
+  binance:{
+    trading:{
+      eth:100,
+      btc:10
+    }
+  }
+}
 
 
 #######################################################
