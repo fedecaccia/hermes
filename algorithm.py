@@ -377,14 +377,14 @@ class Volume(Algorithm):
         if vol>ma_vol and last_price > ma_price:
             self._shoot_long_signal(asset)
             params[asset] = {
-                definitions.limit:last_price*self._limit_buy_pct,
+                definitions.limit:last_price*self._limit_buy_pct/100.,
                 definitions.last:last_price
             }
         else:
             self._shoot_short_signal(asset)
             params[asset] = {
                 definitions.amount:amount,
-                definitions.limit:last_price*self._limit_sell_pct
+                definitions.limit:last_price*self._limit_sell_pct/100.
             }
                
         return self._signals, params

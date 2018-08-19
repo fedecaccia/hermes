@@ -21,20 +21,37 @@ class Wallet(object):
         self.world = world
         self.exchange = exchange_name        
         self.accounts = {
-            definitions.trading: None,
-            definitions.funding: None,
-            definitions.margin_trading: None
+            definitions.trading: {},
+            definitions.funding: {},
+            definitions.margin_trading: {}
         }
-        self.update()
 
-    def update(self):
+    def update(self, balances):
 
         """
-        + Description: balance update function.
+        + Description: Balance update function.
+        + Input:
+        - balances: Dictionary with asset balances per account type.
+        + Output:
+        -
+        """
+
+        for account, assets in balances.items():
+            for asset, amount in assets.items():
+                self.accounts[account][asset] = amount
+
+    def show(self):
+
+        """
+        + Description: Print balances.
         + Input:
         -
         + Output:
         -
         """
-        accounts = self.world.request_balance(self.exchange)
-        self.accounts = {k: accounts[k]  for k in self.accounts}
+
+        print("  "+self.exchange.capitalize()+" wallet:")
+        for account, assets in self.accounts.items():
+            print("    "+account.capitalize()+ " account:")
+            for asset, amount in assets.items():
+                print("      "+asset+": "+str(amount))

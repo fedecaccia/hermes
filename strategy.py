@@ -98,15 +98,15 @@ class Strategy(object):
         """
 
         print("\nExecuting strategy id: "+str(self.id))
-        # self.check_available_funds()
+        # self._check_available_funds()
         self._restart_valuation()
         self._restart_params()
         self._request_update_in_data_modules()
         self._evaluate_algorithms()
         self._analyze_valuation()
         if self._trading:
-        #   self.check_orders() # (llama a trade que debe chequear las orders puestas en pilas)
-        #   self.update_balances()
+        #   self._check_orders() # (llama a trade que debe chequear las orders puestas en pilas)
+            self._update_balances()
             pass
 
     def _restart_valuation(self):
@@ -224,3 +224,15 @@ class Strategy(object):
                     amount=amount,
                     params=self._params[asset_id]
                 )
+
+    def _update_balances(self):
+        
+        """
+        + Description: Update balances in portfolio.
+        + Input:
+        - 
+        + Output:
+        -
+        """
+
+        self._portfolio.update()

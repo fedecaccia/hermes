@@ -375,41 +375,12 @@ class EmulatedWorld(World):
         """
         + Description: query to request exchange balances.
         + Input:
-        - exchange: exchange name string
+        - exchange: Exchange string name.
         + Output:
-        - balance: dict with accounts balances.
+        - balance: Dictionary with asset balances per account type.
         """
 
-        return self._get_test_balance()
-
-    def _get_test_balance(self):
-        
-        """
-        + Description: test balance.
-        + Input:
-        -
-        + Output:
-        - balance: dict with accounts balances.
-        """        
-        
-        balance = {
-            definitions.trading:{
-                definitions.usd:100,
-                definitions.btc:100,
-                definitions.eth:100
-            },
-            definitions.funding:{
-                definitions.usd:0
-            },
-            definitions.margin_trading:{
-                definitions.usd:100,
-                definitions.btc:100,
-                definitions.eth:100,
-                definitions.margin:100
-            }
-        }
-
-        return balance
+        return self._virtual_portfolio[exchange]
 
     def post_order(self, params):
 
@@ -693,7 +664,7 @@ class RealWorld(World):
         + Input:
         - exchange: exchange name string
         + Output:
-        - balance: dict with accounts balances.
+        - balance: dict with asset balances per account.
         """
 
         pass

@@ -440,13 +440,15 @@ class Hermes(object):
 
         self._stop_workers()
 
-        print("\nProgram finished")
+        print("\nExecution finished")
+
+        self.portfolio.show()
 
 
     def _stop_workers(self):
 
         """
-        + Description: final function that kill workers propertly.
+        + Description: Final function that kill workers propertly.
         + Input:
         -
         + Output:

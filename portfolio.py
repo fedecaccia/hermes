@@ -23,6 +23,7 @@ class Portfolio(object):
         self.balance = {
             exchange_name: Wallet(world, exchange_name) for exchange_name in exchanges_names
         }
+        self.update()
 
 
     def get_total_balance(self, coin):
@@ -49,3 +50,31 @@ class Portfolio(object):
         """    
 
         pass
+
+    def update(self):
+
+        """
+        + Description: Update each wallet.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        for exchange in self.exchanges_names:
+            self.balance[exchange].update(self.world.request_balance(exchange))
+
+    def show(self):
+
+        """
+        + Description: Print wallets contents.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        print(self.world.get_time())
+        print("\nPortfolio:")
+        for exchange in self.exchanges_names:
+            self.balance[exchange].show()
