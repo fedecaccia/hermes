@@ -12,8 +12,8 @@ Under development.
 
 ## TODO
 
-- EmulatedWorld: emulate fees by exhchanges (price increment or amount decrement according to exchange).
-- Algorithms: load fees per exchanges (from strategy?).
+- ~~EmulatedWorld: emulate fees by exhchanges (price increment or amount decrement according to exchange).~~
+- ~~Algorithms: load fees per exchanges.~~
 - Strategy: check available funds in portfolio to execute algorithms in trading accounts. (check asssets by thrs keys)
 - Portfolio: margin structure.
 - Strategy: check available margin in portfolio to execute algorithms in margin accounts. (check asssets by thrs keys)
