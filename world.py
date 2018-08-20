@@ -53,6 +53,14 @@ class World(ABC):
     def post_order(self, params):
         pass
 
+    @abstractmethod
+    def _update_tickers(self, params):
+        pass
+
+    @abstractmethod
+    def get_tickers(self, params):
+        pass
+
     def _load_api_keys(self, api_key_file):
 
         """
@@ -143,7 +151,7 @@ class EmulatedWorld(World):
     Inherit from World.
     """
 
-    def __init__(self, data_elements, exchanges_names, time_step, virtual_portfolio):
+    def __init__(self, data_elements, exchanges_names, time_step, virtual_portfolio, virtual_tickers):
 
         """
         + Description: constructor. Initializes corresponding data.
@@ -152,6 +160,7 @@ class EmulatedWorld(World):
         - exchanges_names: List of exchange string names.
         - time_step: String time step to advance in each step.
         - virtual_portfolio: Dictionary containing virtual portfolio.
+        - virtual_portfolio: Dictionary containing virtual tickers.
         + Output:
         -
         """
@@ -164,6 +173,7 @@ class EmulatedWorld(World):
         self._initialize_virtual_portfolio(virtual_portfolio)
         self._create_clients(exchanges_names, None)
         self._initialize_fees()
+        self._update_tickers(virtual_tickers)
 
     def _initialize_data(self, data_elements):
 
@@ -562,6 +572,30 @@ class EmulatedWorld(World):
             raise ValueError("Error in virtual portfolio trying to acces to exchange: '"+
             exchange + "', account: '"+account+"', base: '"+base+"' and quote: '"+quote+"'.")
 
+    def _update_tickers(self, virtual_tickers):
+
+        """
+        + Description: Build a dictionary with all tickers.
+        + Input:
+        - virtual_tickers: Dictionary with virtual tickers from all exchanges connected.
+        + Output:
+        -
+        """
+
+        self.tickers = virtual_tickers
+
+    def get_tickers(self):
+
+        """
+        + Description: Return a dictionary with all tickers.
+        + Input:
+        -
+        + Output:
+        - tickers: Dictionary with tickers from all exchanges connected.
+        """
+        
+        return self.tickers
+
 
 class RealWorld(World):
 
@@ -740,6 +774,32 @@ class RealWorld(World):
 
         return balances
 
+    def _update_tickers(self):
+
+        """
+        + Description: Build a dictionary with all tickers.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        self.tickers = {}
+        for client in self._exchanges.values():
+            self.tickers.update(client.fetch_tickers())
+
+    def get_tickers(self):
+
+        """
+        + Description: Return a dictionary with all tickers.
+        + Input:
+        -
+        + Output:
+        - tickers: Dictionary with tickers from all exchanges connected.
+        """
+        
+        return self.tickers
+
     def post_order(self, params):
 
         """
@@ -779,6 +839,7 @@ class Oracle(object):
         super().__init__()
         self.world = world
         self.fees = self.world.fees
+        self.tickers = self.world.get_tickers()
 
     def get_amount_in_base(self, base, quote, quote_amount):
 
@@ -792,7 +853,11 @@ class Oracle(object):
         -
         """
 
-        if base == definitions.btc and quote == definitions.usd:
-            return 6500
-        else:
-            raise ValueError("Oracle can't get "+base+" value in "+quote+".")
+        symbol = base.upper()+"/"+quote.upper()
+
+        try:
+            amount = self.tickers[symbol][definitions.last]
+        except:
+            raise ValueError("Error in oracle trying to retrieve last for symbol: '"+symbol+"'.")
+        
+        return amount

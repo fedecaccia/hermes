@@ -47,7 +47,7 @@ class Trade(object):
         exchange = self.assets[asset_id].exchange
         account = self.assets[asset_id].account
         symbol = self.assets[asset_id].symbol
-        coin = symbol.split("/")[0]
+        base = symbol.split("/")[0]
         quote = symbol.split("/")[1]
 
         trade_available = False
@@ -56,18 +56,18 @@ class Trade(object):
 
             if amount == definitions.full:
                 
-                amount = self.portfolio.get_balance_in_exchange(coin, exchange)                
+                amount = self.portfolio.get_amount_of_asset(exchange, account, base)
             
-            trade_available = self._funds_are_available(exchange, account, coin, amount)
+            trade_available = self._funds_are_available(exchange, account, base, amount)
 
         elif side == definitions.buy:
 
             if amount == definitions.full:
 
-                quote_available = self.portfolio.get_balance_in_exchange(quote, exchange)                
+                quote_available = self.portfolio.get_amount_of_asset(exchange, account, quote)           
                 # in this case we are trying to buy as much as we can
                 # to secure this, we try to buy the 97% if the aproximated value the oracle tell us
-                amount = self.oracle.get_amount_in_base(coin, quote, quote_available)*0.97               
+                amount = self.oracle.get_amount_in_base(base, quote, quote_available)*0.97             
             
             trade_available = self._funds_are_available(exchange, account, quote, amount)
 

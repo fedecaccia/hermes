@@ -180,6 +180,7 @@ class Hermes(object):
             try:
                 self._time_step = config.time_step
                 self._virtual_portfolio = config.virtual_portfolio
+                self._virtual_tickers = config.virtual_tickers
             except:
                 raise ValueError("'time_step' must be definied in config.py using backtest mode.")
 
@@ -236,7 +237,8 @@ class Hermes(object):
             self.world = EmulatedWorld(self.data_elements,
                                        self.exchanges_names,
                                        self._time_step,
-                                       self._virtual_portfolio)
+                                       self._virtual_portfolio,
+                                       self._virtual_tickers)
 
         else:            
         

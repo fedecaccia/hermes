@@ -50,7 +50,7 @@ algorithms_elements = {
       ma_periods:5,
       limit_buy_pct: 101,
       limit_sell_pct:99,
-      usd_amount_to_trade:50
+      usd_amount_to_trade:full
     }
   }
 }
@@ -82,6 +82,7 @@ max_delay_in_data = 0.5 # seconds
 #######################################################
 
 time_step = one_min
+
 virtual_portfolio = {
   bittrex:{
     trading:{
@@ -102,6 +103,18 @@ virtual_portfolio = {
       eth:100,
       btc:10
     }
+  }
+}
+
+virtual_tickers = {
+  btcusd:{
+    last:6500
+  },
+  ethusd:{
+    last:300
+  },
+  ethbtc:{
+    last:300./6500
   }
 }
 

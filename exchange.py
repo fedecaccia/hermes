@@ -79,6 +79,19 @@ class Exchange(object):
 
         return trading_balances
 
+    def fetch_tickers(self):
+
+        """
+        + Description: Get all tickers from exchange client.
+        + Input:
+        -
+        + Output:
+        - tickers: Dictionary of all tickers.
+        """
+
+        return self.client.fetch_tickers()
+
+
 class Binance(Exchange):
 
     """
