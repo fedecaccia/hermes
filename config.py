@@ -50,7 +50,7 @@ algorithms_elements = {
       ma_periods:5,
       limit_buy_pct: 101,
       limit_sell_pct:99,
-      usd_amount_to_trade:full
+      usd_amount_to_trade:50 # 10, 15, full
     }
   }
 }

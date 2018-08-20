@@ -20,7 +20,8 @@ class Strategy(object):
                  algorithms,
                  data_modules,
                  portfolio,
-                 trading):
+                 trading,
+                 oracle):
 
         """
         + Description: constructor
@@ -34,6 +35,7 @@ class Strategy(object):
         - data_modules: Dictionary of data_modules objects.
         - portfolio: Portfolio object.
         - trading: Trading platform object.
+        - oracle: Oracle object.
         + Output:
         -
         """
@@ -44,6 +46,7 @@ class Strategy(object):
         self.request_flag = request_flag        
         self._portfolio = portfolio
         self._trading = trading
+        self._oracle = oracle
         self._is_trading = False
         self._valuation = 0
         self._thresholds = strategy_values[definitions.thresholds]
@@ -97,7 +100,9 @@ class Strategy(object):
         -
         """
 
-        print("\nExecuting strategy id: "+str(self.id))        
+        print("\nExecuting strategy id: "+str(self.id))
+        self._update_oracle()
+        self._update_portfolio()
         self._restart_valuation()
         self._restart_params()
         self._request_update_in_data_modules()
@@ -107,6 +112,30 @@ class Strategy(object):
         #   self._check_orders() # (llama a trade que debe chequear las orders puestas en pilas)
             self._update_balances()
             pass
+
+    def _update_oracle(self):
+
+        """
+        + Description: Call oracle update function who checks if it's necessary to update.
+        + Input:
+        - 
+        + Output:
+        -
+        """
+        
+        self._oracle.update()
+
+    def _update_portfolio(self):
+
+        """
+        + Description: Call portfolio update function who checks if it's necessary to update.
+        + Input:
+        - 
+        + Output:
+        -
+        """
+        
+        self._portfolio.update()
 
     def _restart_valuation(self):
 
@@ -135,7 +164,7 @@ class Strategy(object):
         self._is_trading = False
         self._params = {}
         for asset in self._thresholds.keys():
-            self._params[asset] = 0
+            self._params[asset] = {}
 
     def _request_update_in_data_modules(self):
 
@@ -178,7 +207,7 @@ class Strategy(object):
                 self._valuation[asset] += signal
 
             for asset, param in params.items():
-                self._params[asset] = param
+                self._params[asset].update(param)
 
     def _analyze_valuation(self):
 

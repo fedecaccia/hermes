@@ -417,7 +417,8 @@ class Hermes(object):
                                             self.algorithms,
                                             self.data_modules,
                                             self.portfolio,
-                                            self.trading)
+                                            self.trading,
+                                            self.oracle)
 
         print("\nStrategies:")
         pprint(self.strategies)
