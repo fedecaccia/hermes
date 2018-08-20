@@ -21,7 +21,7 @@ class Algorithm(ABC):
         + Input:
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - algo_values: Dictionary with algorithm parameters values.
-        - data_modules: Dictionary of data module objects.
+        - data_modules: Array of all data modules objects. Super only saves what here cares.
         - oracle: Oracle object.
         + Output:
         -
@@ -37,6 +37,7 @@ class Algorithm(ABC):
         self._check_data_modules()        
         self._define_signals(algo_values[definitions.signals])
         self._oracle = oracle
+        self._fees = self._oracle.fees
 
     def _define_signals(self, signals):
 
@@ -117,8 +118,8 @@ class CrossingMA(Algorithm):
         + Input:
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - algo_values: Dictionary with algorithm parameters values.
-        - data_modules: array of data module objects.
-                - oracle: Oracle object.
+        - data_modules: Array of all data modules objects. Super only saves what here cares.
+        - oracle: Oracle object.
         + Output:
         -
         """
@@ -228,7 +229,7 @@ class Volume(Algorithm):
         + Input:
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - algo_values: Dictionary with algorithm parameters values.
-        - data_modules: array of data module objects.
+        - data_modules: Array of all data modules objects. Super only saves what here cares.
         - oracle: Oracle object.
         + Output:
         -
@@ -352,7 +353,16 @@ class Volume(Algorithm):
         - params: Dictionary of order parameters.
         """
 
+        # asset key should be the same as defined in # Assets in config.py
         asset = list(self._signals.keys())[0]
+        
+        # quick access to exchange name
+        exchange = self.data_modules[0].source
+
+        # quick access to fees
+        maker_fee = self._fees[exchange][definitions.trading][definitions.maker]
+        taker_fee = self._fees[exchange][definitions.trading][definitions.taker]
+        
         params = {asset:{
             definitions.limit:0,
             definitions.last:0
@@ -371,7 +381,7 @@ class Volume(Algorithm):
             self._usd_amount_to_trade
         )
         
-        eth_usd=last_price*btc_usd
+        eth_usd = last_price*btc_usd
         amount = eth_usd / self._usd_amount_to_trade
 
         if vol>ma_vol and last_price > ma_price:
@@ -386,7 +396,7 @@ class Volume(Algorithm):
                 definitions.amount:amount,
                 definitions.limit:last_price*self._limit_sell_pct/100.
             }
-               
+
         return self._signals, params
 
     def _get_ma_volume(self, periods):
@@ -447,7 +457,7 @@ class VirtualTransfer(Algorithm):
         + Input:
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - algo_values: Dictionary with algorithm parameters values.
-        - data_modules: array of data module objects.
+        - data_modules: Array of all data modules objects. Super only saves what here cares.
         - oracle: Oracle object.
         + Output:
         -
@@ -560,7 +570,7 @@ class TwitterAnalysis(Algorithm):
         + Input:
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - algo_values: Dictionary with algorithm parameters values.
-        - data_modules: array of data module objects.
+        - data_modules: Array of all data modules objects. Super only saves what here cares.
         - oracle: Oracle object.
         + Output:
         -

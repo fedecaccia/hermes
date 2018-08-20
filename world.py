@@ -114,6 +114,27 @@ class World(ABC):
             else:
                 raise ValueError("Exchange: "+exchange+" has not private connection implemented")
 
+    def _initialize_fees(self):
+
+        """
+        + Description: Initialize a dictionary of fees to quick public access.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        self.fees = {}
+        for exchange_key, client in self._exchanges.items():
+                maker = client.fees[definitions.trading][definitions.maker]
+                taker = client.fees[definitions.trading][definitions.taker]
+                self.fees[exchange_key] = {
+                    definitions.trading:{
+                        definitions.taker:taker,
+                        definitions.maker:maker,
+                    }
+                }
+
 
 class EmulatedWorld(World):
 
@@ -142,6 +163,7 @@ class EmulatedWorld(World):
         self._initialize_time()
         self._initialize_virtual_portfolio(virtual_portfolio)
         self._create_clients(exchanges_names, None)
+        self._initialize_fees()
 
     def _initialize_data(self, data_elements):
 
@@ -490,7 +512,7 @@ class EmulatedWorld(World):
             except:
                 raise ValueError("Bad dictionary in params of operation.")
             try:
-                fee = self._exchanges[exchange].fees[definitions.trading][definitions.maker]
+                fee = self.fees[exchange][definitions.trading][definitions.maker]
             except:
                 raise ValueError("Fees have not been loaded propertly.")
         
@@ -500,7 +522,7 @@ class EmulatedWorld(World):
             except:
                 raise ValueError("Bad dictionary in params of operation.")
             try:
-                fee = self._exchanges[exchange].fees[definitions.trading][definitions.taker]
+                fee = self.fees[exhange][definitions.trading][definitions.taker]
             except:
                 raise ValueError("Fees have not been loaded propertly.")
 
@@ -548,6 +570,7 @@ class RealWorld(World):
         super().__init__(data_elements)
 
         self._create_clients(exchanges_names, api_keys_files)
+        self._initialize_fees()
 
     def is_connected(self):
 
@@ -722,6 +745,7 @@ class Oracle(object):
 
         super().__init__()
         self.world = world
+        self.fees = self.world.fees
 
     def get_amount_in_base(self, base, quote, quote_amount):
 
