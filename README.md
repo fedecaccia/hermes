@@ -27,9 +27,9 @@ Under development.
 - [ ] EmulatedWorld: load data from sql.
 - [ ] EmulatedWorld: load data from mongo.
 - [ ] Algorithms: implement pair trading.
-- [x] RealWorld: online public orderbook requests.
-- [x] RealWorld: online public candles requests.
-- [x] RealWorld: online public balances requests.
+- [x] ~~RealWorld: online public orderbook requests.~~
+- [x] ~~RealWorld: online public candles requests.~~
+- [x] ~~RealWorld: online public balances requests.~~
 - [ ] RealWorld: online private post order requests.
 - [ ] **TESTS**.
 
