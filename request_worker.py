@@ -57,10 +57,10 @@ class RequestWorker(Thread):
     def _evaluate_function(self, function, params):
 
         """
-        + Description: input function evaluation
+        + Description: Input function evaluation.
         + Input:
-        - function: Function to evaluate
-        - params: Dictionary containing parameters definitions needed by function
+        - function: Function to evaluate.
+        - params: Dictionary containing parameters definitions needed by function.
         + Output:
         -
         """

@@ -18,6 +18,8 @@ data_elements = {
     data_format: csv,
     header_format: cdm,
     file_name: "./sample/candlesbittrexETHBTC.csv"
+    # db_file = "sqlite:///data/data.db"
+    # mongo_port = ""
   }
 }
 
@@ -72,7 +74,7 @@ strategies_elements = {
 
 # Trading mode
 
-trading_mode = backtest
+trading_mode = paper
 n_request_threads = 2
 max_delay_in_data = 0.5 # seconds
 

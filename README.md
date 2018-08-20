@@ -31,6 +31,7 @@ Under development.
 - [ ] RealWorld: online public candles requests.
 - [ ] RealWorld: online public balances requests.
 - [ ] RealWorld: online private post order requests.
+- [ ] **TESTS**.
 
 ## Notes
 

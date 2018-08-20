@@ -1,7 +1,7 @@
 import definitions
 import config
 
-from world import EmulatedWorld, RealWorld, Oracle
+from world import EmulatedWorld, RealWorld, PaperWorld, Oracle
 from data_module import Candles, Orderbook, Tickers, Tweets
 from asset import Asset
 from algorithm import CrossingMA, Volume, TwitterAnalysis, VirtualTransfer
@@ -179,10 +179,25 @@ class Hermes(object):
         if self.mode == definitions.backtest:
             try:
                 self._time_step = config.time_step
+            except:
+                raise ValueError("'time_step' must be definied in config.py using backtest mode.")
+
+            try:
                 self._virtual_portfolio = config.virtual_portfolio
+            except:
+                raise ValueError("'time_step' must be definied in config.py using backtest mode.")
+                
+            try:
                 self._virtual_tickers = config.virtual_tickers
             except:
                 raise ValueError("'time_step' must be definied in config.py using backtest mode.")
+
+        elif self.mode == definitions.paper:
+            try:
+                self._virtual_portfolio = config.virtual_portfolio
+            except:
+                raise ValueError("'virtual_portfolio' must be definied in config.py using paper mode.")
+
 
     def _build_systems(self):
 
@@ -243,9 +258,10 @@ class Hermes(object):
         else:            
         
             if self.mode == definitions.paper:
-                self.world = RealWorld(self.data_elements,
+                self.world = PaperWorld(self.data_elements,
                                        self.exchanges_names,
-                                       self.mode)
+                                       self.mode,
+                                       self._virtual_portfolio)
             
             else:
                 self.world = RealWorld(self.data_elements,

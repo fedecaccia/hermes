@@ -3,6 +3,8 @@ import time
 
 import numpy as np
 
+from threading import Barrier
+
 
 class Strategy(object):
 
@@ -178,11 +180,14 @@ class Strategy(object):
 
         print("Updating data modules")
         self.request_flag[0] = self._n_data_modules # all workers are flagged as working
-        
+        barrier = Barrier(self._n_data_modules)
+
         for module in self._data_modules:
             self.request_pile.put({
                 definitions.function:module.update,
-                definitions.params:{}
+                definitions.params:{
+                    definitions.barrier:barrier
+                }                
             })
 
         print("All modules have requested update")

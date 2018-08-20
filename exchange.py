@@ -1,9 +1,15 @@
 import definitions
 
 import ccxt
+import time
+
+import pandas as pd
+
+from ccxt.base.errors import DDoSProtection
+from abc import ABC, abstractmethod
 
 
-class Exchange(object):
+class Exchange(ABC):
 
     """
     Exchange: client interface to connect with a particular exchange.
@@ -20,8 +26,10 @@ class Exchange(object):
         -
         """
 
+        self.exchange = exchange
         self._initialize_client(exchange, keys)
         self._initialize_fees()
+        self.last_request_time = 0
 
     def _initialize_client(self, exchange, keys):
 
@@ -70,26 +78,128 @@ class Exchange(object):
         - trading_balance: Dictionary containing balances.
         """
 
-        trading_balances = {}
-        res = self.client.fetch_balances()
-
-        for key, values in res.items():
-            if key not in ["total", "free", "used", "info"]:
-                trading_balances[key] = values
+        trading_balances = None
+        try:
+            res = self.client.fetch_balance()
+        except DDoSProtection:
+            self.last_request_time = time.time()
+            print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
+        else:
+            trading_balances = {}
+            for key, values in res.items():
+                if key not in ["total", "free", "used", "info"]:
+                    trading_balances[key] = values
 
         return trading_balances
 
-    def fetch_tickers(self):
+    def get_margin_balance(self):
 
         """
-        + Description: Get all tickers from exchange client.
+        + Description: Get margin trading balances and limits. (dummy)
+        + Input:
+        -
+        + Output:
+        - margin_balance: Dictionary containing main margin balance parameters.
+
+        """
+        
+        margin_balance = {
+            definitions.leverage: 0,
+            definitions.net_value: 0,
+            definitions.required_margin: 0,
+            definitions.tradable_balance: 0
+        }
+
+        return margin_balance
+
+    def get_tickers_in_serial(self):
+
+        """
+        + Description: Get all tickers from exchange client. Not receiving barrier.
         + Input:
         -
         + Output:
         - tickers: Dictionary of all tickers.
         """
+        
+        tickers = None
+        try:
+            tickers =  self.client.fetch_tickers()
+        except DDoSProtection:
+            self.last_request_time = time.time()
+            print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
 
-        return self.client.fetch_tickers()
+        return tickers
+
+    def get_tickers(self, barrier):
+
+        """
+        + Description: Get all tickers from exchange client synchronized with other threads.
+        + Input:
+        - barrier: Barrier created to synchronize the threads that are working specifically now.
+        + Output:
+        - tickers: Dictionary of all tickers.
+        """
+        
+        tickers = None
+        self.synchronize(barrier)
+        try:
+            tickers = self.client.fetch_tickers()
+        except DDoSProtection:
+            self.last_request_time = time.time()
+            print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
+
+        return tickers
+
+    def get_orderbook(self, ticker, barrier):
+        
+        """
+        + Description: query to request orderboooks for a given ticker.
+        + Input:
+        - ticker: string
+        - barrier: Barrier created to synchronize the threads that are working specifically now.
+        + Output:
+        - orderbook: Array of dictionaries.
+        """
+
+        orderbook = None
+        self.synchronize(barrier)
+        try:
+            orderbook = self.client.fetch_orderbook(ticker)
+        except DDoSProtection:
+            self.last_request_time = time.time()
+            print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)            
+
+        return orderbook
+
+    def get_candles(self, ticker, timeframe, since, limit, barrier):
+
+        """
+        + Description: query to request candles for a given ticker.
+        + Input:
+        - ticker: string
+        - timeframe: string        
+        - since: seconds passed since the first required candle
+        - limit: maximum amount of candles
+        - barrier: Barrier created to synchronize the threads that are working specifically now.
+        + Output:
+        - candles: Array of dictionaries.
+        """
+        
+        candles = None
+        self.synchronize(barrier)
+        try:
+            candles = self.client.fetch_ohlcv(ticker, timeframe, since, limit)
+        except DDoSProtection:
+            self.last_request_time = time.time()
+            print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
+            
+        return candles
+
+    def synchronize(self, barrier):
+        while (time.time() - self.last_request_time)<self.client.rateLimit/1000:
+            pass
+        barrier.wait()
 
 
 class Binance(Exchange):

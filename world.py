@@ -42,7 +42,7 @@ class World(ABC):
         pass
 
     @abstractmethod
-    def request_data(self, data_module_id):
+    def request_data(self, data_module_id, barrier):
         pass
 
     @abstractmethod
@@ -444,16 +444,19 @@ class EmulatedWorld(World):
 
         self._virtual_portfolio = virtual_portfolio
 
-    def request_data(self, data_module_id):
+    def request_data(self, data_module_id, barrier):
 
         """
         + Description: request especific data according to data_module_id.
         + Input:
         - data_module_id: data module id integer.
+        - barrier: Barrier created to synchronize the threads that are working specifically now.
         + Output:
         - requested data.
         """
 
+        barrier.wait() # this function has not sense in backtesting
+        
         data_module = self.data[data_module_id]
         data = data_module[definitions.values]
         try:
@@ -676,12 +679,13 @@ class RealWorld(World):
 
         print("\nWORLD TIME: "+str(datetime.datetime.now()))
 
-    def request_data(self, data_module_id):
+    def request_data(self, data_module_id, barrier):
 
         """
         + Description: request especific data according to data_module_id.
         + Input:
         - data_module_id: data module id integer.
+        - barrier: Barrier created to synchronize the threads that are working specifically now.
         + Output:
         - requested data.
         """
@@ -690,72 +694,89 @@ class RealWorld(World):
         data_type = data_module[definitions.data_type]
 
         if data_type == definitions.orderbook:
-            return self._request_orderbook(data_module[definitions.description],
-                                           data_module[definitions.source])
+            return self._request_orderbook(
+                barrier,
+                data_module[definitions.description],
+                data_module[definitions.source]
+            )
 
         elif data_type == definitions.candles:
-            return self._request_candles(data_module[definitions.description],
-                                         data_module[definitions.source],
-                                         data_module[definitions.timeframe],
-                                         since=data_module[definitions.since],
-                                         limit=data_module[definitions.limit])
+            return self._request_candles(
+                barrier,
+                data_module[definitions.description],
+                data_module[definitions.source],
+                data_module[definitions.timeframe],
+                since=data_module[definitions.since],
+                limit=data_module[definitions.limit]                
+            )
 
         elif data_type == definitions.tickers:
-            return self._request_tickers(data_module[definitions.source])
+            return self._request_tickers(
+                barrier,
+                data_module[definitions.source]
+            )
 
         elif data_type == definitions.tweets_count:
-            return self._request_tweets_count(data_module[definitions.filters])
+            return self._request_tweets_count(
+                barrier,
+                data_module[definitions.filters]
+            )
 
-    def _request_orderbook(self, ticker, exchange):
+    def _request_orderbook(self, barrier, ticker, exchange):
 
         """
         + Description: query to request orderboooks for a given ticker.
         + Input:
+        - barrier: Barrier created to synchronize the threads that are working specifically now.
         - ticker: string
-        - exchange: exchange name string
+        - exchange: exchange name string        
         + Output:
-        - orderbook: array of dicts
+        - orderbook: Array of dictionaries.
         """
-        
-        pass
 
-    def _request_candles(self, ticker, exchange, timeframe, since=None, limit=1000):
+        orderbook = self._exchanges[exchange].get_orderbook(ticker, barrier)
+        return orderbook
+
+    def _request_candles(self, barrier, ticker, exchange, timeframe, since=None, limit=1000):
 
         """
         + Description: query to request candles for a given ticker.
         + Input:
+        - barrier: Barrier created to synchronize the threads that are working specifically now.
         - ticker: string
         - exchange: exchange name string
         - timeframe: string        
         - since: seconds passed since the first required candle
-        - limit: maximum amount of candles
+        - limit: maximum amount of candles        
         + Output:
-        - candles: array of dicts
+        - candles: Array of dictionaries.
         """
 
-        client = getattr(ccxt, exchange)()
-        tickers = client.fetch_ohlcv(ticker, timeframe, since, limit)
-        return tickers
+        candles = self._exchanges[exchange].get_candles(ticker, timeframe, since, limit, barrier)
+        return candles
 
-    def _request_tickers(self, exchange):
+    def _request_tickers(self, barrier, exchange):
         
         """
         + Description: query to request tickers data.
         + Input:
+        - barrier: Barrier created to synchronize the threads that are working specifically now.
         - ticker: string
-        - exchange: exchange name string
+        - exchange: exchange name string        
         + Output:
         - tickers: array of dicts
         """
 
-        pass
+        tickers = self._exchanges[exchange].get_tickers(barrier)
+        return tickers
 
-    def _request_tweets_count(self, filter):
+    def _request_tweets_count(self, barrier, filters):
 
         """
         + Description: query to request actual tweets filtered count.
         + Input:
-        - filter: array of keyword strings to filter twitter stream.
+        - filters: array of keyword strings to filter twitter stream.
+        - barrier: Barrier created to synchronize the threads that are working specifically now.
         + Output:
         - tweets_count: Dictionary with datetime and integer twitter count.
         """
@@ -792,7 +813,9 @@ class RealWorld(World):
 
         self.tickers = {}
         for client in self._exchanges.values():
-            self.tickers.update(client.fetch_tickers())
+            tickers = client.get_tickers_in_serial()
+            if tickers is not None:
+                self.tickers.update(tickers)
 
     def get_tickers(self):
 
@@ -826,6 +849,124 @@ class RealWorld(World):
         
         print("Executing order:", symbol, exchange, account, side, amount, order_type, params)
 
+
+class PaperWorld(RealWorld):
+
+    """
+    PaperWorld: Connection with exchanges just to request public data.
+    Inherit from RealWorld.
+    """
+
+    def __init__(self, data_elements, exchanges_names, mode, virtual_portfolio):
+
+        """
+        + Description: constructor
+        + Input:
+        - data_elements: Dictionary of data elements.
+        - exchanges_names: List of exchange string names.
+        - mode: String trading mode.
+        - virtual_portfolio = Dictionary containing a virtual portfolio.
+        + Output:
+        -
+        """
+
+        super().__init__(data_elements, exchanges_names, mode)
+        self._virtual_portfolio = virtual_portfolio
+
+    def request_balance(self, exchange):
+
+        """
+        + Description: query to request exchange balances.
+        + Input:
+        - exchange: Exchange string name.
+        + Output:
+        - balance: Dictionary with asset balances per account type.
+        """
+
+        return self._virtual_portfolio[exchange]
+
+    def post_order(self, params):
+
+        """
+        + Description: Constructor.
+        + Input:
+        - params: Dictionary containing order parameters.
+        + Output:
+        -
+        """
+
+        symbol = params[definitions.symbol]
+        exchange = params[definitions.exchange]
+        account = params[definitions.account]
+        side = params[definitions.side]
+        amount = params[definitions.amount]
+        order_type = params[definitions.order_type]
+        params = params[definitions.params]
+
+        print("Executing order in paper:", symbol, exchange, account, side, amount, order_type, params)
+        order_id = 0
+
+        self._virtual_operation(symbol, exchange, account, side, amount, order_type, params)
+
+    def _virtual_operation(self, symbol, exchange, account, side, amount, order_type, params):
+
+        """
+        + Description: Update virtual portfolio.
+        + Input:
+        - symbol: Symbol string.
+        - exchange: Exchange string name.
+        - account: Account type string name.
+        - side: "sell" or "buy" strings.
+        - amount: Float amount of the operations.
+        - order_type: String type of order.
+        - params: Dictionary of order parameters.
+        + Output:
+        -
+        """
+
+        if order_type==definitions.limit:
+            try:
+                price = params[definitions.limit]                
+            except:
+                raise ValueError("Bad dictionary in params of operation.")
+            try:
+                fee = self.fees[exchange][definitions.trading][definitions.maker]
+            except:
+                raise ValueError("Fees have not been loaded propertly.")
+        
+        elif order_type==definitions.market:
+            try:
+                price = params[definitions.last]
+            except:
+                raise ValueError("Bad dictionary in params of operation.")
+            try:
+                fee = self.fees[exchange][definitions.trading][definitions.taker]
+            except:
+                raise ValueError("Fees have not been loaded propertly.")
+
+        else:
+            # nothing to do with stop / stop_limit / trailing_stop orders
+            return
+
+        base = symbol.split("/")[0]
+        quote = symbol.split("/")[1]        
+
+        try:
+            if side == definitions.buy:
+                self._virtual_portfolio[exchange][account][base][definitions.free] += amount
+                self._virtual_portfolio[exchange][account][base][definitions.total] += amount
+                self._virtual_portfolio[exchange][account][quote][definitions.free] -= amount*price*(1+fee)
+                self._virtual_portfolio[exchange][account][quote][definitions.total] -= amount*price*(1+fee)
+
+            elif side == definitions.sell:
+                self._virtual_portfolio[exchange][account][base][definitions.free] -= amount
+                self._virtual_portfolio[exchange][account][base][definitions.total] -= amount
+                self._virtual_portfolio[exchange][account][quote][definitions.free] += amount*price*(1-fee)
+                self._virtual_portfolio[exchange][account][quote][definitions.total] += amount*price*(1-fee)
+
+        except:
+            raise ValueError("Error in virtual portfolio trying to acces to exchange: '"+
+            exchange + "', account: '"+account+"', base: '"+base+"' and quote: '"+quote+"'.")
 
 class Oracle(object):
 

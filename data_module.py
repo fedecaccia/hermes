@@ -2,6 +2,8 @@ import definitions
 
 from abc import ABC, abstractmethod
 
+import numpy as np
+
 
 class DataModule(ABC):
 
@@ -28,6 +30,7 @@ class DataModule(ABC):
         self.data_type = data_values[definitions.data_type]
         self._world = world
         self.data = None
+        self.last_data_datetime = 0
         self._initialize_data()
     
     @abstractmethod
@@ -38,12 +41,44 @@ class DataModule(ABC):
     def _initialize_data(self):
         pass
 
-    @abstractmethod
-    def update(self):
-        pass
+    def update(self, params):
+
+        """
+        Description: connection to world, to update values.
+        + Input:
+        - params: Dictionary with parameters passed to the request workers.
+        + Output:
+        -
+        """
+
+        try:
+            barrier = params[definitions.barrier]
+        except:
+            raise ValueError("Barrier has not been received to update data module.")
+
+        incoming_data = self._world.request_data(self.id, barrier)
+
+        if self._data_is_new(incoming_data) and self._data_is_not_none(incoming_data):
+            self._particular_update(incoming_data)
+            print("Data module: "+str(self.id)+" updated.")
+
+        else:
+            print("Data module is old or None")
+
+    def _data_is_new(self, incoming_data):
+        
+        """
+        Description: evaluate wether incoming data is new or repeated.
+        + Input:
+        - incoming_data: dict containing incoming data.
+        + Output:
+        - Bool.
+        """
+        
+        return True
 
     @abstractmethod
-    def _data_is_new(self, income_data):
+    def _particular_update(self, incoming_data):
         pass
     
     def _data_is_not_none(self, incoming_data):
@@ -96,7 +131,6 @@ class Candles(DataModule):
 
         pass
 
-
     def _initialize_data(self):
 
         """
@@ -108,37 +142,44 @@ class Candles(DataModule):
         """
 
         self.data = []
-    
-    def update(self, dummy):
+
+    def _particular_update(self, incoming_data):
 
         """
-        Description: connection to world, to update values.
+        Description: Update data.
         + Input:
-        - dummy: dummy argument to keep sintaxis.
+        - incoming data: data received from client.
         + Output:
         -
         """
-
-        incoming_data = self._world.request_data(self.id)
-
-        if self._data_is_new(incoming_data) and self._data_is_not_none(incoming_data):
-            self.data.append(incoming_data)
-            print("Data module: "+str(self.id)+" updated.")
-
-        else:
-            print("Data module is old or None")
-
-    def _data_is_new(self, incoming_data):
         
-        """
-        Description: evaluate wether incoming data is new or repeated.
-        + Input:
-        - incoming_data: dict containing incoming data.
-        + Output:
-        - Bool.
-        """
-        
-        return True
+        candles = np.array(incoming_data)
+    
+        # discard last candle: yet incomplete
+        candles = np.delete(candles, -1, 0)
+
+        # remove old values
+        for time in candles.transpose()[0]:
+            if time <= self.last_data_datetime:
+                candles = np.delete(candles, 0, 0)
+
+        # if new values
+        if len(candles)>0:
+
+            # update last datetime
+            self.last_data_datetime = candles[-1][0]
+            
+            for candle in candles:
+                candle = {"datetime": candle[0],
+                        # "symbol": symbol,
+                        # "exchange": self.exchange,
+                        "open":candle[1],
+                        "high":candle[2],
+                        "low":candle[3],
+                        "close":candle[4],
+                        "volume":candle[5]}
+
+                self.data.append(candle)
 
 
 class Orderbook(DataModule):
@@ -187,31 +228,17 @@ class Orderbook(DataModule):
 
         pass
 
-    def update(self, deummy):
-
+    def _particular_update(self, incoming_data):
+        
         """
-        Description: connection to world, to update values.
+        Description: Update data.
         + Input:
-        - dummy: dummy argument to keep sintaxis.
+        - incoming data: data received from client.
         + Output:
         -
         """
 
-        data = self._world.request_data(self.id)
-        print(data)
-        print("Data module: "+str(self.id)+" updated.")
-
-    def _data_is_new(self, incoming_data):
-        
-        """
-        Description: evaluate wether incoming data is new or repeated.
-        + Input:
-        - incoming_data: dict containing incoming data.
-        + Output:
-        - Bool.
-        """
-        
-        return True
+        self.data.append(incoming_data)
 
 
 class Tickers(DataModule):
@@ -260,31 +287,17 @@ class Tickers(DataModule):
 
         pass
 
-    def update(self, dummy):
-
+    def _particular_update(self, incoming_data):
+        
         """
-        Description: connection to world, to update values.
+        Description: Update data.
         + Input:
-        - dummy: dummy argument to keep sintaxis.
+        - incoming data: data received from client.
         + Output:
         -
         """
 
-        data = self._world.request_data(self.id)
-        print(data)
-        print("Data module: "+str(self.id)+" updated.")
-
-    def _data_is_new(self, incoming_data):
-        
-        """
-        Description: evaluate wether incoming data is new or repeated.
-        + Input:
-        - incoming_data: dict containing incoming data.
-        + Output:
-        - Bool.
-        """
-        
-        return True
+        self.data.append(incoming_data)
 
 
 class Tweets(DataModule):
@@ -333,28 +346,14 @@ class Tweets(DataModule):
 
         pass
 
-    def update(self, dummy):
-
+    def _particular_update(self, incoming_data):
+        
         """
-        Description: connection to world, to update values.
+        Description: Update data.
         + Input:
-        - dummy: dummy argument to keep sintaxis.
+        - incoming data: data received from client.
         + Output:
         -
         """
 
-        data = self._world.request_data(self.id)
-        print(data)
-        print("Data module: "+str(self.id)+" updated.")
-
-    def _data_is_new(self, incoming_data):
-        
-        """
-        Description: evaluate wether incoming data is new or repeated.
-        + Input:
-        - incoming_data: dict containing incoming data.
-        + Output:
-        - Bool.
-        """
-        
-        return True
+        self.data.append(incoming_data)
