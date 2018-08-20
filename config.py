@@ -85,8 +85,16 @@ time_step = one_min
 virtual_portfolio = {
   bittrex:{
     trading:{
-      eth:100,
-      btc:10
+      eth:{
+        free:100,
+        used:0,
+        total:100,
+      },
+      btc:{
+        free:10,
+        used:0,
+        total:10,
+      }
     }
   },
   binance:{

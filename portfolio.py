@@ -90,7 +90,8 @@ class Portfolio(object):
         -
         """
 
-        print(self.world.get_time())
+        self.world.show_time()
+
         print("\nPortfolio:")
         for exchange in self.exchanges_names:
             self.balance[exchange].show()

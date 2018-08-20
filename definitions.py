@@ -167,3 +167,24 @@ algo_params = "algo_params"
 order_params = "order_params"
 amount = "amount"
 function = "funtcion"
+
+# Balances
+
+free = "free"
+used = "used"
+total = "total"
+leverage = "leverage"
+net_value = "net_value"
+required_margin = "required_margin"
+margin_limits = "margin_limits"
+on_pair = "on_pair"
+tradable_balance = "tradable_balance"
+
+# Bitfinex margin trading definitions
+
+bitfinex_leverage = "leverage"
+bitfinex_net_value = "net_value"
+bitfinex_required_margin = "required_margin"
+bitfinex_margin_limits = "margin_limits"
+bitfinex_on_pair = "on_pair"
+bitfinex_tradable_balance = "tradable_balance"

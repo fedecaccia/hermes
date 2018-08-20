@@ -60,6 +60,24 @@ class Exchange(object):
             }
         }
 
+    def get_trading_balance(self):
+
+        """
+        + Description: Get balance in trading (exchange) account.
+        + Input:
+        -
+        + Output:
+        - trading_balance: Dictionary containing balances.
+        """
+
+        trading_balances = {}
+        res = self.client.fetch_balances()
+
+        for key, values in res.items():
+            if key not in ["total", "free", "used", "info"]:
+                trading_balances[key] = values
+
+        return trading_balances
 
 class Binance(Exchange):
 
@@ -100,6 +118,43 @@ class Bitfinex(Exchange):
 
         super().__init__(exchange, keys)
 
+    def get_margin_balance(self):
+
+        """
+        + Description: Get margin trading balances and limits.
+        + Input:
+        -
+        + Output:
+        - margin_balance: Dictionary containing main margin balance parameters.
+
+        Message returned in private_post_margin_infos from Bitfinex:
+        'message': 'Margin requirement, leverage and tradable balance are now per '
+        'pair. Values displayed in the root of the JSON message are '
+        'incorrect (deprecated). You will find the correct ones under '
+        'margin_limits, for each pair. Please update your code as soon as '
+        'possible.'
+        """    
+        res = self.client.private_post_margin_infos()[0]
+        
+        leverage = res[definitions.bitfinex_leverage]
+        # Your net value (the USD value of your trading wallet, including your margin balance, your unrealized P/L and margin funding)
+        net_value = float(res[definitions.bitfinex_net_value]) # USD actual value after discounts
+        # The minimum net value to maintain in your trading wallet, under which all of your positions are fully liquidated
+        required_margin = float(res[definitions.bitfinex_required_margin])
+        # Your tradable balance in USD (the maximum size you can open on leverage for each pair)
+        tradable_balance = {}
+        for margin_limits in res[definitions.bitfinex_margin_limits]:
+            symbol = margin_limits[definitions.bitfinex_on_pair]
+            tradable_balance[symbol] = float(margin_limits[definitions.bitfinex_tradable_balance])
+
+        margin_balance = {
+            definitions.leverage: leverage,
+            definitions.net_value: net_value,
+            definitions.required_margin: required_margin,
+            definitions.tradable_balance: tradable_balance
+        }
+
+        return margin_balance
 
 class Bittrex(Exchange):
 

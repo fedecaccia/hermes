@@ -16,8 +16,9 @@ Under development.
 - [x] ~~Algorithms: load fees per exchanges.~~
 - [ ] Oracle: implement pricing.
 - [x] ~~Trading: check available funds in portfolio to execute algorithms in trading accounts.~~
-- [ ] Portfolio: margin structure.
-- [ ] Strategy: check available margin in portfolio to execute algorithms in margin accounts. (check asssets by thrs keys)
+- [x] ~~Portfolio: margin structure.~~
+- [x] ~~Strategy: check available margin in portfolio to execute algorithms in margin accounts. (check asssets by thrs keys)~~
+- [ ] Strategy: check margin limits to show warnings.
 - [ ] Strategy: check order status (and wait for that).
 - [ ] World: save order ids.
 - [ ] EmulatedWorld: load data from sql.

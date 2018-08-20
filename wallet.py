@@ -36,9 +36,27 @@ class Wallet(object):
         -
         """
 
-        for account, assets in balances.items():
-            for asset, amount in assets.items():
-                self.accounts[account][asset] = amount
+        self._check_balances(balances)
+        self.accounts = balances
+
+    def _check_balances(self, balances):
+
+        """
+        + Description: Check balances structure.
+        + Input:
+        - balances: Dictionary with asset balances per account type.
+        + Output:
+        -
+        """
+
+        for key, val in balances.items():
+            if key not in [
+                definitions.trading,
+                definitions.funding,
+                definitions.margin_trading]:
+                raise ValueError("Bad structure in balance received in wallet for exchange: "+self.exchange)
+
+
 
     def get_amount_of_asset(self, account, asset):
 
@@ -52,9 +70,9 @@ class Wallet(object):
         - value: Float amount of asset.
         """    
         if account != definitions.margin_trading:
-            return self.accounts[account][asset]
+            return self.accounts[account][asset][definitions.free]
         else:
-            return self.accounts[definitions.margin_trading][asset]
+            return self.accounts[definitions.margin_trading][definitions.tradable_balance][asset]
 
     def show(self):
 

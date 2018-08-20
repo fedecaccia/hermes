@@ -404,6 +404,18 @@ class EmulatedWorld(World):
 
         return self._time
 
+    def show_time(self):
+
+        """
+        Description: Print world time.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        print("\nWORLD TIME: "+str(self._time))
+
     def _initialize_virtual_portfolio(self, virtual_portfolio):
 
         """
@@ -522,7 +534,7 @@ class EmulatedWorld(World):
             except:
                 raise ValueError("Bad dictionary in params of operation.")
             try:
-                fee = self.fees[exhange][definitions.trading][definitions.taker]
+                fee = self.fees[exchange][definitions.trading][definitions.taker]
             except:
                 raise ValueError("Fees have not been loaded propertly.")
 
@@ -535,12 +547,16 @@ class EmulatedWorld(World):
 
         try:
             if side == definitions.buy:
-                self._virtual_portfolio[exchange][account][base] += amount
-                self._virtual_portfolio[exchange][account][quote] -= amount*price*(1+fee)
+                self._virtual_portfolio[exchange][account][base][definitions.free] += amount
+                self._virtual_portfolio[exchange][account][base][definitions.total] += amount
+                self._virtual_portfolio[exchange][account][quote][definitions.free] -= amount*price*(1+fee)
+                self._virtual_portfolio[exchange][account][quote][definitions.total] -= amount*price*(1+fee)
 
             elif side == definitions.sell:
-                self._virtual_portfolio[exchange][account][base] -= amount
-                self._virtual_portfolio[exchange][account][quote] += amount*price*(1-fee)
+                self._virtual_portfolio[exchange][account][base][definitions.free] -= amount
+                self._virtual_portfolio[exchange][account][base][definitions.total] -= amount
+                self._virtual_portfolio[exchange][account][quote][definitions.free] += amount*price*(1-fee)
+                self._virtual_portfolio[exchange][account][quote][definitions.total] += amount*price*(1-fee)
 
         except:
             raise ValueError("Error in virtual portfolio trying to acces to exchange: '"+
@@ -607,6 +623,18 @@ class RealWorld(World):
         """
 
         return datetime.datetime.now()
+
+    def show_time(self):
+
+        """
+        Description: Print world time.
+        + Input:
+        -
+        + Output:
+        - datetime
+        """
+
+        print("\nWORLD TIME: "+str(datetime.datetime.now()))
 
     def request_data(self, data_module_id):
 
@@ -705,7 +733,12 @@ class RealWorld(World):
         - balance: dict with asset balances per account.
         """
 
-        pass
+        balances = {
+            definitions.margin_trading: self._exchanges[exchange].get_margin_balance(),
+            definitions.trading: self._exchanges[exchange].get_trading_balance()
+        }
+
+        return balances
 
     def post_order(self, params):
 
