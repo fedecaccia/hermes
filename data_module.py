@@ -1,8 +1,10 @@
 import definitions
 
-from abc import ABC, abstractmethod
+import datetime
 
 import numpy as np
+
+from abc import ABC, abstractmethod
 
 
 class DataModule(ABC):
@@ -238,7 +240,65 @@ class Orderbook(DataModule):
         -
         """
 
-        self.data.append(incoming_data)
+        book = incoming_data
+        if self.book_is_valid(book):
+            bid_weight_val_1, bid_weight_count_1 = self.weighted_orders(book['bids'], limit=5)
+            bid_weight_val_2, bid_weight_count_2 = self.weighted_orders(book['bids'], limit=10)
+            ask_weight_val_1, ask_weight_count_1 = self.weighted_orders(book['asks'], limit=5)
+            ask_weight_val_2, ask_weight_count_2 = self.weighted_orders(book['asks'], limit=10)
+            data = {"datetime": datetime.now(),                    
+                    "bid_weight_val_1":bid_weight_val_1,
+                    "bid_weight_count_1":bid_weight_count_1,
+                    "bid_weight_val_2":bid_weight_val_2,
+                    "bid_weight_count_2":bid_weight_count_2,
+                    "bid_val_2":book['bids'][2][0],
+                    "bid_count_2":book['bids'][2][1],                    
+                    "bid_val_1":book['bids'][1][0],
+                    "bid_count_1":book['bids'][1][1],
+                    "bid_val_0":book['bids'][0][0],
+                    "bid_count_0":book['bids'][0][1],
+                    "ask_val_0":book['asks'][0][0],
+                    "ask_count_0":book['asks'][0][1],
+                    "ask_val_1":book['asks'][1][0],
+                    "ask_count_1":book['asks'][1][1],
+                    "ask_val_2":book['asks'][2][0],
+                    "ask_count_2":book['asks'][2][1], 
+                    "ask_weight_val_1":ask_weight_val_1, 
+                    "ask_weight_count_1":ask_weight_count_1, 
+                    "ask_weight_val_2":ask_weight_val_2, 
+                    "ask_weight_count_2":ask_weight_count_2}
+        
+            self.data.append(data)
+
+    def book_is_valid(self, book):
+        if book == None:
+            return False
+        if book == []:
+            return False
+        if len(book['bids'])<3:
+            return False
+        if len(book['asks'])<3:
+            return False
+        return True
+
+    def weighted_orders(self, book, limit):
+        
+        weighted_value = 0
+        count = 0
+
+        for i_order, order in enumerate(book, 0):
+            if i_order<limit:              
+                weighted_value += order[0]*order[1]
+                count += order[1]
+            else:
+                break
+
+        try:
+            weighted_value /= count
+        except:
+            print(self.exchange, book)
+
+        return weighted_value, count
 
 
 class Tickers(DataModule):
