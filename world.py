@@ -53,6 +53,67 @@ class World(ABC):
     def post_order(self, params):
         pass
 
+    def _load_api_keys(self, api_key_file):
+
+        """
+        + Description: load exchange api keys.
+        + Input:
+        - api_key_file: string file name where keys are located.
+        + Output:
+        - dict of api keys, using ccxt format.
+        """
+
+        keys = {
+            'apiKey':None,
+            'secret':None
+        }
+
+        try:
+            api_key_file = open(api_key_file, "r")
+            keys['apiKey'] = api_key_file.readline()
+            if(keys['apiKey'][-1]=="\n"):
+                keys['apiKey'] = keys['apiKey'][:-1]
+            keys['secret'] = api_key_file.readline()
+            if(keys['secret'][-1]=="\n"):
+                keys['secret'] = keys['secret'][:-1]
+            api_key_file.close()
+        
+        except:
+            raise ValueError("ERROR: Trying to read key file: "+api_key_file)
+
+        return keys
+
+    def _create_clients(self, exchanges_names, api_keys_files):
+        
+        """
+        + Description: create clients which connects whith exchanges using API.
+        Clients could be connected via private keys to enable using private methods.
+        + Input:
+        - exchanges_names: List of strings with exchanges names.
+        - api_keys_files: List of api key files in case private connections are needed
+        + Output:
+        -
+        """
+
+        self._exchanges = {}
+        for exchange in exchanges_names:
+
+            keys = None
+            if api_keys_files is not None:
+                keys = self._load_api_keys(api_keys_files[exchange])
+
+            if exchange == definitions.bittrex:
+                self._exchanges[exchange] = Bittrex(exchange, keys)
+            
+            elif exchange == definitions.binance:
+                self._exchanges[exchange] = Binance(exchange, keys)
+            
+            elif exchange == definitions.bitfinex:
+                self._exchanges[exchange] = Bitfinex(exchange, keys)
+            
+            else:
+                raise ValueError("Exchange: "+exchange+" has not private connection implemented")
+
 
 class EmulatedWorld(World):
 
@@ -80,7 +141,7 @@ class EmulatedWorld(World):
         self._initialize_time_bounds()
         self._initialize_time()
         self._initialize_virtual_portfolio(virtual_portfolio)
-        self._initialize_fees(exchanges_names)
+        self._create_clients(exchanges_names, None)
 
     def _initialize_data(self, data_elements):
 
@@ -333,29 +394,6 @@ class EmulatedWorld(World):
 
         self._virtual_portfolio = virtual_portfolio
 
-    def _initialize_fees(self, exchanges_names):
-
-        """
-        Description: Initialize a dictionary of fees.
-        + Input:
-        - exchanges_names: List of exchanges string names
-        + Output:
-        -
-        """
-
-        self._fees = {}
-        for exchange in exchanges_names:
-            client = getattr(ccxt, exchange)()
-            fees = client.describe()[definitions.fees]
-            taker = fees[definitions.trading][definitions.taker]
-            maker = fees[definitions.trading][definitions.maker]
-            self._fees[exchange] = {
-                definitions.trading:{
-                    definitions.taker: taker,
-                    definitions.maker: maker
-                }
-            }
-
     def request_data(self, data_module_id):
 
         """
@@ -452,7 +490,7 @@ class EmulatedWorld(World):
             except:
                 raise ValueError("Bad dictionary in params of operation.")
             try:
-                fee = self._fees[exchange][definitions.trading][definitions.maker]
+                fee = self._exchanges[exchange].fees[definitions.trading][definitions.maker]
             except:
                 raise ValueError("Fees have not been loaded propertly.")
         
@@ -462,7 +500,7 @@ class EmulatedWorld(World):
             except:
                 raise ValueError("Bad dictionary in params of operation.")
             try:
-                fee = self._fees[exchange][definitions.trading][definitions.taker]
+                fee = self._exchanges[exchange].fees[definitions.trading][definitions.taker]
             except:
                 raise ValueError("Fees have not been loaded propertly.")
 
@@ -508,70 +546,8 @@ class RealWorld(World):
         """
 
         super().__init__(data_elements)
-        self.mode = mode
-        if self.mode == definitions.real:
-            self.exchanges = self._create_clients_with_private_connections(exchanges_names, api_keys_files)
 
-    def _create_clients_with_private_connections(self, exchanges_names, api_keys_files):
-        
-        """
-        + Description: create clients which connects whith exchanges using API.
-        Clients are connected via private keys to enable using private methods.
-        + Input:
-        - exchanges_names: list of strings with exchanges names.
-        - keys: dict of api keys.
-        + Output:
-        - list of exchanges clients.
-        """
-
-        exchanges = {}
-        for exchange in exchanges_names:
-
-            keys = self._load_api_keys(api_keys_files[exchange])
-
-            if exchange == definitions.bittrex:
-                exchanges[exchange] = Bittrex(keys)
-            
-            elif exchange == definitions.binance:
-                exchanges[exchange] = Binance(keys)
-            
-            elif exchange == definitions.bitfinex:
-                exchanges[exchange] = Bitfinex(keys)
-            
-            else:
-                raise ValueError("Exchange: "+exchange+" has not private connection implemented")
-        
-        return exchanges
-
-    def _load_api_keys(self, api_key_file):
-
-        """
-        + Description: load exchange api keys.
-        + Input:
-        - api_key_file: string file name where keys are located.
-        + Output:
-        - dict of api keys, using ccxt format.
-        """
-
-        keys = {
-            'apiKey':None,
-            'secret':None
-        }
-
-        try:
-            api_key_file = open(api_key_file, "r")
-            keys['apiKey'] = api_key_file.readline()
-            if(keys['apiKey'][-1]=="\n"):
-                keys['apiKey'] = keys['apiKey'][:-1]
-            keys['secret'] = api_key_file.readline()
-            if(keys['secret'][-1]=="\n"):
-                keys['secret'] = keys['secret'][:-1]
-            api_key_file.close()
-        
-        except:
-            raise ValueError("ERROR: Trying to read key file: "+api_key_file)
-
-        return keys
+        self._create_clients(exchanges_names, api_keys_files)
 
     def is_connected(self):
 
