@@ -79,16 +79,18 @@ class Exchange(ABC):
         """
 
         trading_balances = None
+        self._wait_rate_limit()
         try:
             res = self.client.fetch_balance()
         except DDoSProtection:
-            self.last_request_time = time.time()
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
         else:
             trading_balances = {}
             for key, values in res.items():
                 if key not in ["total", "free", "used", "info"]:
                     trading_balances[key] = values
+        finally:
+            self.last_request_time = time.time()
 
         return trading_balances
 
@@ -123,11 +125,13 @@ class Exchange(ABC):
         """
         
         tickers = None
+        self._wait_rate_limit()
         try:
             tickers =  self.client.fetch_tickers()
         except DDoSProtection:
-            self.last_request_time = time.time()
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
+        finally:
+            self.last_request_time = time.time()
 
         return tickers
 
@@ -146,8 +150,9 @@ class Exchange(ABC):
         try:
             tickers = self.client.fetch_tickers()
         except DDoSProtection:
-            self.last_request_time = time.time()
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
+        finally:
+            self.last_request_time = time.time()
 
         return tickers
 
@@ -167,8 +172,9 @@ class Exchange(ABC):
         try:
             orderbook = self.client.fetch_orderbook(ticker)
         except DDoSProtection:
+            print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
+        finally:
             self.last_request_time = time.time()
-            print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)            
 
         return orderbook
 
@@ -190,16 +196,20 @@ class Exchange(ABC):
         self.synchronize(barrier)
         try:
             candles = self.client.fetch_ohlcv(ticker, timeframe, since, limit)
-        except DDoSProtection:
-            self.last_request_time = time.time()
+        except DDoSProtection:            
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
+        finally:
+            self.last_request_time = time.time()
             
         return candles
 
     def synchronize(self, barrier):
+        self._wait_rate_limit()
+        barrier.wait()
+
+    def _wait_rate_limit(self):
         while (time.time() - self.last_request_time)<self.client.rateLimit/1000:
             pass
-        barrier.wait()
 
 
 class Binance(Exchange):
@@ -256,8 +266,15 @@ class Bitfinex(Exchange):
         'incorrect (deprecated). You will find the correct ones under '
         'margin_limits, for each pair. Please update your code as soon as '
         'possible.'
-        """    
-        res = self.client.private_post_margin_infos()[0]
+        """
+        
+        self._wait_rate_limit()
+        try:
+            res = self.client.private_post_margin_infos()[0]
+        except DDoSProtection:            
+            print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
+        finally:
+            self.last_request_time = time.time()        
         
         leverage = res[definitions.bitfinex_leverage]
         # Your net value (the USD value of your trading wallet, including your margin balance, your unrealized P/L and margin funding)

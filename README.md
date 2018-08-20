@@ -12,7 +12,7 @@ Under development.
 
 ## TODO
 
-- [ ] **Exchanges: Implement counter to avoid request rate limit. Implement barriers.**
+- [X] ~~Exchanges: Implement counter to avoid request rate limit. Implement barriers.~~
 - [x] ~~EmulatedWorld: emulate fees by exhchanges (price increment or amount decrement according to exchange).~~
 - [x] ~~Algorithms: load fees per exchanges.~~
 - [x] ~~Oracle: implement pricing.~~
