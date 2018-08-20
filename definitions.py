@@ -141,6 +141,12 @@ params = "params"
 full = "full"
 last = "last"
 
+# Fees
+
+fees = "fees"
+taker = "taker"
+maker = "maker"
+
 # Useful definitions
 
 data_id = "data_id"

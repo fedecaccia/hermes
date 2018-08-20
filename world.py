@@ -1,5 +1,5 @@
 import definitions
-import exchange
+from exchange import *
 
 import dataset
 import ccxt
@@ -61,12 +61,13 @@ class EmulatedWorld(World):
     Inherit from World.
     """
 
-    def __init__(self, data_elements, time_step, virtual_portfolio):
+    def __init__(self, data_elements, exchanges_names, time_step, virtual_portfolio):
 
         """
         + Description: constructor. Initializes corresponding data.
         + Input:
         - data_elements: Dictionary of data elements.
+        - exchanges_names: List of exchange string names.
         - time_step: String time step to advance in each step.
         - virtual_portfolio: Dictionary containing virtual portfolio.
         + Output:
@@ -79,6 +80,7 @@ class EmulatedWorld(World):
         self._initialize_time_bounds()
         self._initialize_time()
         self._initialize_virtual_portfolio(virtual_portfolio)
+        self._initialize_fees(exchanges_names)
 
     def _initialize_data(self, data_elements):
 
@@ -331,6 +333,29 @@ class EmulatedWorld(World):
 
         self._virtual_portfolio = virtual_portfolio
 
+    def _initialize_fees(self, exchanges_names):
+
+        """
+        Description: Initialize a dictionary of fees.
+        + Input:
+        - exchanges_names: List of exchanges string names
+        + Output:
+        -
+        """
+
+        self._fees = {}
+        for exchange in exchanges_names:
+            client = getattr(ccxt, exchange)()
+            fees = client.describe()[definitions.fees]
+            taker = fees[definitions.trading][definitions.taker]
+            maker = fees[definitions.trading][definitions.maker]
+            self._fees[exchange] = {
+                definitions.trading:{
+                    definitions.taker: taker,
+                    definitions.maker: maker
+                }
+            }
+
     def request_data(self, data_module_id):
 
         """
@@ -422,18 +447,31 @@ class EmulatedWorld(World):
         """
 
         if order_type==definitions.limit:
-            price = params[definitions.limit]
+            try:
+                price = params[definitions.limit]                
+            except:
+                raise ValueError("Bad dictionary in params of operation.")
+            try:
+                fee = self._fees[exchange][definitions.trading][definitions.maker]
+            except:
+                raise ValueError("Fees have not been loaded propertly.")
         
         elif order_type==definitions.market:
-            price = params[definitions.last]
+            try:
+                price = params[definitions.last]
+            except:
+                raise ValueError("Bad dictionary in params of operation.")
+            try:
+                fee = self._fees[exchange][definitions.trading][definitions.taker]
+            except:
+                raise ValueError("Fees have not been loaded propertly.")
 
         else:
             # nothing to do with stop / stop_limit / trailing_stop orders
             return
 
         base = symbol.split("/")[0]
-        quote = symbol.split("/")[1]
-        fee = 0.002 # ocasional
+        quote = symbol.split("/")[1]        
 
         try:
             if side == definitions.buy:
@@ -456,15 +494,15 @@ class RealWorld(World):
     Inherit from World.
     """
 
-    def __init__(self, data_elements, mode, exchanges_names, api_keys_files = None):
+    def __init__(self, data_elements, exchanges_names, mode, api_keys_files = None):
 
         """
         + Description: constructor
         + Input:
         - data_elements: Dictionary of data elements.
-        - mode: string trading mode.
-        - exchanges_names = set cointaining unique string names of exchanges.
-        - api_keys_files = lsit of api key files in case private connections are needed.
+        - exchanges_names: List of exchange string names.
+        - mode: String trading mode.
+        - api_keys_files = List of api key files in case private connections are needed.
         + Output:
         -
         """
@@ -486,19 +524,19 @@ class RealWorld(World):
         - list of exchanges clients.
         """
 
-        exchanges = []
+        exchanges = {}
         for exchange in exchanges_names:
 
             keys = self._load_api_keys(api_keys_files[exchange])
 
             if exchange == definitions.bittrex:
-                exchange.append(exchange.Bittrex(keys))
+                exchanges[exchange] = Bittrex(keys)
             
             elif exchange == definitions.binance:
-                exchange.append(exchange.Binance(keys))
+                exchanges[exchange] = Binance(keys)
             
             elif exchange == definitions.bitfinex:
-                exchange.append(exchange.Bitfinex(keys))
+                exchanges[exchange] = Bitfinex(keys)
             
             else:
                 raise ValueError("Exchange: "+exchange+" has not private connection implemented")

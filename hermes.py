@@ -234,6 +234,7 @@ class Hermes(object):
 
         if self.mode == definitions.backtest:
             self.world = EmulatedWorld(self.data_elements,
+                                       self.exchanges_names,
                                        self._time_step,
                                        self._virtual_portfolio)
 
@@ -241,13 +242,13 @@ class Hermes(object):
         
             if self.mode == definitions.paper:
                 self.world = RealWorld(self.data_elements,
-                                       self.mode,
-                                       self.exchanges_names)
+                                       self.exchanges_names,
+                                       self.mode)
             
             else:
                 self.world = RealWorld(self.data_elements,
-                                       self.mode,
                                        self.exchanges_names,
+                                       self.mode,                                       
                                        config.api_keys_files)
 
     def _create_oracle(self):
