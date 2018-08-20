@@ -14,18 +14,18 @@ Under development.
 
 - [x] ~~EmulatedWorld: emulate fees by exhchanges (price increment or amount decrement according to exchange).~~
 - [x] ~~Algorithms: load fees per exchanges.~~
-- [] Strategy: check available funds in portfolio to execute algorithms in trading accounts. (check asssets by thrs keys)
-- [] Portfolio: margin structure.
-- [] Strategy: check available margin in portfolio to execute algorithms in margin accounts. (check asssets by thrs keys)
-- [] Strategy: check order status (and wait for that).
-- [] World: save order ids.
-- [] EmulatedWorld: load data from sql.
-- [] EmulatedWorld: load data from mongo.
-- [] Algorithms: implement pair trading.
-- [] RealWorld: online public orderbook requests.
-- [] RealWorld: online public candles requests.
-- [] RealWorld: online public balances requests.
-- [] RealWorld: online private post order requests.
+- [ ] Strategy: check available funds in portfolio to execute algorithms in trading accounts. (check asssets by thrs keys)
+- [ ] Portfolio: margin structure.
+- [ ] Strategy: check available margin in portfolio to execute algorithms in margin accounts. (check asssets by thrs keys)
+- [ ] Strategy: check order status (and wait for that).
+- [ ] World: save order ids.
+- [ ] EmulatedWorld: load data from sql.
+- [ ] EmulatedWorld: load data from mongo.
+- [ ] Algorithms: implement pair trading.
+- [ ] RealWorld: online public orderbook requests.
+- [ ] RealWorld: online public candles requests.
+- [ ] RealWorld: online public balances requests.
+- [ ] RealWorld: online private post order requests.
 
 ## Notes
 Different exchanges charge fees in different ways.
