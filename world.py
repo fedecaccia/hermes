@@ -433,15 +433,16 @@ class EmulatedWorld(World):
 
         base = symbol.split("/")[0]
         quote = symbol.split("/")[1]
+        fee = 0.002 # ocasional
 
         try:
             if side == definitions.buy:
                 self._virtual_portfolio[exchange][account][base] += amount
-                self._virtual_portfolio[exchange][account][quote] -= amount*price
+                self._virtual_portfolio[exchange][account][quote] -= amount*price*(1+fee)
 
             elif side == definitions.sell:
                 self._virtual_portfolio[exchange][account][base] -= amount
-                self._virtual_portfolio[exchange][account][quote] += amount*price
+                self._virtual_portfolio[exchange][account][quote] += amount*price*(1-fee)
 
         except:
             raise ValueError("Error in virtual portfolio trying to acces to exchange: '"+
