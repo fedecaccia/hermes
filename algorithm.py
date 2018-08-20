@@ -382,7 +382,7 @@ class Volume(Algorithm):
         )
         
         eth_usd = last_price*btc_usd
-        amount = eth_usd / self._usd_amount_to_trade
+        amount = self._usd_amount_to_trade / eth_usd
 
         if vol>ma_vol and last_price > ma_price:
             self._shoot_long_signal(asset)

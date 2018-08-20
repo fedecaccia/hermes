@@ -44,40 +44,67 @@ class Trade(object):
         -
         """
         
-        symbol = self.assets[asset_id].symbol
         exchange = self.assets[asset_id].exchange
-        account = self.assets[asset_id].account        
+        account = self.assets[asset_id].account
+        symbol = self.assets[asset_id].symbol
+        coin = symbol.split("/")[0]
+        quote = symbol.split("/")[1]
 
-        if amount==definitions.full and side==definitions.sell:
-            coin = symbol.split("/")[0]
-            amount = self.portfolio.get_balance_in_exchange(coin, exchange)
+        trade_available = False
+
+        if side == definitions.sell:
+
+            if amount == definitions.full:
+                
+                amount = self.portfolio.get_balance_in_exchange(coin, exchange)                
+            
+            trade_available = self._funds_are_available(exchange, account, coin, amount)
+
+        elif side == definitions.buy:
+
+            if amount == definitions.full:
+
+                quote_available = self.portfolio.get_balance_in_exchange(quote, exchange)                
+                # in this case we are trying to buy as much as we can
+                # to secure this, we try to buy the 97% if the aproximated value the oracle tell us
+                amount = self.oracle.get_amount_in_base(coin, quote, quote_available)*0.97               
+            
+            trade_available = self._funds_are_available(exchange, account, quote, amount)
+
+        if trade_available:
         
-        elif amount==definitions.full and side==definitions.buy:
-            coin = symbol.split("/")[0]
-            quote = symbol.split("/")[1]
-            quote_amount = self.portfolio.get_balance_in_exchange(quote, exchange)
-            # in this case we are trying to buy as much as we can
-            # to secure this, we try to buy the 97% if the aproximated value the oracle tell us
-            amount = self.oracle.get_amount_in_base(coin, quote, quote_amount)*0.97
+            self.request_flag[0] += 1
+            self.request_pile.put({
+                definitions.function:self.world.post_order,
+                definitions.params:{
+                    definitions.asset_id:asset_id,
+                    definitions.symbol:symbol,
+                    definitions.exchange:exchange,
+                    definitions.account:account,
+                    definitions.side:side,
+                    definitions.amount:amount,
+                    definitions.order_type:order_type,
+                    definitions.params:params                
+                    }
+                })
+
+            while self.request_flag[0]>0:
+                pass
 
         else:
-            # amount is rightly calculated
-            pass
-        
-        self.request_flag[0] += 1
-        self.request_pile.put({
-            definitions.function:self.world.post_order,
-            definitions.params:{
-                definitions.asset_id:asset_id,
-                definitions.symbol:symbol,
-                definitions.exchange:exchange,
-                definitions.account:account,
-                definitions.side:side,
-                definitions.amount:amount,
-                definitions.order_type:order_type,
-                definitions.params:params                
-                }
-            })
+            print("WARNING: Funds are not enough")
 
-        while self.request_flag[0]>0:
-            pass
+    def _funds_are_available(self, exchange, account, currency, amount):
+
+        """
+        + Description: Check if funds are available to trade.
+        + Input:
+        - 
+        + Output:
+        -
+        """
+
+        if self.portfolio.get_amount_of_asset(exchange, account, currency) >= amount:
+            return True
+        
+        return False

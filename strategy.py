@@ -97,8 +97,7 @@ class Strategy(object):
         -
         """
 
-        print("\nExecuting strategy id: "+str(self.id))
-        # self._check_available_funds()
+        print("\nExecuting strategy id: "+str(self.id))        
         self._restart_valuation()
         self._restart_params()
         self._request_update_in_data_modules()

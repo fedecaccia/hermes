@@ -31,9 +31,9 @@ class Portfolio(object):
         """
         + Description: returns total balance of portfolio valuated in coin.
         + Input:
-        - coin: string of the reference coin.
+        - coin: String of the reference coin.
         + Output:
-        - value: float portfolio value in coin.
+        - value: Float portfolio value in coin.
         """    
 
         pass
@@ -43,13 +43,29 @@ class Portfolio(object):
         """
         + Description: returns balance of funds in a particular exchange valuated in coin.
         + Input:
-        - coin: string of the reference coin.
-        - exchange: string of the exchange.
+        - coin: String of the reference coin.
+        - exchange: Exchange string name.
         + Output:
-        - value: float portfolio value in coin.
+        - value: Float portfolio value in coin.
         """    
 
         pass
+
+    def get_amount_of_asset(self, exchange, account, asset):
+
+        """
+        + Description: returns amount of asset in a particular account of a given exchange.
+        If the account refers to margin trading, it returns the maximum amount available to trade
+        (using leverage).
+        + Input:
+        - exchange: Exchange string name.
+        - account: Account string name.
+        - asset: Asset string name.
+        + Output:
+        - value: Float amount of asset.
+        """    
+
+        return self.balance[exchange].get_amount_of_asset(account, asset)
 
     def update(self):
 

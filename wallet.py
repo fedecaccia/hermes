@@ -40,6 +40,22 @@ class Wallet(object):
             for asset, amount in assets.items():
                 self.accounts[account][asset] = amount
 
+    def get_amount_of_asset(self, account, asset):
+
+        """
+        If the account refers to margin trading, it returns the maximum amount available to trade
+        (using leverage).
+        + Input:
+        - account: Account string name.
+        - asset: Asset string name.
+        + Output:
+        - value: Float amount of asset.
+        """    
+        if account != definitions.margin_trading:
+            return self.accounts[account][asset]
+        else:
+            return self.accounts[definitions.margin_trading][asset]
+
     def show(self):
 
         """
