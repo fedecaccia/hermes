@@ -24,6 +24,8 @@ Under development.
 - [ ] Strategy: check margin limits to show warnings.
 - [ ] Strategy: check order status (and wait for that).
 - [ ] World: save order ids.
+- [x] ~~DataModule: create pandas dataframe requesting candles.~~
+- [ ] DataModule: create pandas dataframe requesting orderbooks.
 - [ ] EmulatedWorld: load data from sql.
 - [ ] EmulatedWorld: load data from mongo.
 - [ ] Algorithms: implement crossing moving average algorithm.
