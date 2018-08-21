@@ -37,6 +37,8 @@ Under development.
 - [x] ~~RealWorld: online public balances requests.~~
 - [ ] RealWorld: online private post order requests.
 - [ ] **TESTS**.
+- [ ] Implement function to save data in data_module. Similar to crypto_monitor.
+- [ ] Implement mode *saving_data* which only saves data.
 
 ## Notes
 
