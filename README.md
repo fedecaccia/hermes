@@ -32,6 +32,12 @@ Under development.
 - [ ] Algorithms: implement crossing moving average algorithm.
 - [ ] Algorithms: implement crossing moving average with volume algorithm.
 - [ ] Algorithms: implement pair trading.
+- [ ] Trade: Store transactions.
+- [ ] Portolio: Compute P&L per asset.
+- [ ] Portolio: Compute P&L in usd.
+- [ ] Portolio: Compute P&L in other coins.
+- [ ] Hermes: Save status (...).
+- [ ] Hermes: Load status (...).
 - [x] ~~RealWorld: online public orderbook requests.~~
 - [x] ~~RealWorld: online public candles requests.~~
 - [x] ~~RealWorld: online public balances requests.~~
@@ -39,6 +45,7 @@ Under development.
 - [ ] **TESTS**.
 - [ ] Implement function to save data in data_module. Similar to crypto_monitor.
 - [ ] Implement mode *saving_data* which only saves data.
+- [ ] Implement multiIP.
 
 ## Notes
 
