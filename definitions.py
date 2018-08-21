@@ -159,6 +159,14 @@ margin_limits = "margin_limits"
 on_pair = "on_pair"
 tradable_balance = "tradable_balance"
 
+# Candles
+
+open_ = "open"
+high = "high"
+low = "low"
+close = "close"
+volume = "volume"
+
 # Bitfinex margin trading definitions
 
 bitfinex_leverage = "leverage"

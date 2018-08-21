@@ -425,7 +425,7 @@ class Volume(Algorithm):
         - last_volume: float
         """
         
-        return self.data_modules[0].data[-1]["volume"]
+        return self.data_modules[0].data.iloc[-1][definitions.volume]
 
     def _get_ma_price(self, periods):
 
@@ -449,7 +449,7 @@ class Volume(Algorithm):
         - last_price: float
         """
 
-        return self.data_modules[0].data[-1]["close"]
+        return self.data_modules[0].data.iloc[-1][definitions.close]
 
 
 class VirtualTransfer(Algorithm):

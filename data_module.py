@@ -3,6 +3,7 @@ import definitions
 import datetime
 
 import numpy as np
+import pandas as pd
 
 from abc import ABC, abstractmethod
 
@@ -143,7 +144,7 @@ class Candles(DataModule):
         -
         """
 
-        self.data = []
+        self.data = pd.DataFrame()
 
     def _particular_update(self, incoming_data):
 
@@ -157,12 +158,12 @@ class Candles(DataModule):
         
         candles = np.array(incoming_data)
     
-        # discard last candle: yet incomplete
-        candles = np.delete(candles, -1, 0)
+        # discard last candle?: yet incomplete
+        # candles = np.delete(candles, -1, 0)
 
         # remove old values
         for time in candles.transpose()[0]:
-            if time <= self.last_data_datetime:
+            if time < self.last_data_datetime: # we update last saved data (last candle is always incomplete)
                 candles = np.delete(candles, 0, 0)
 
         # if new values
@@ -172,16 +173,26 @@ class Candles(DataModule):
             self.last_data_datetime = candles[-1][0]
             
             for candle in candles:
-                candle = {"datetime": candle[0],
-                        # "symbol": symbol,
-                        # "exchange": self.exchange,
-                        "open":candle[1],
-                        "high":candle[2],
-                        "low":candle[3],
-                        "close":candle[4],
-                        "volume":candle[5]}
+                index = [datetime.datetime.fromtimestamp(candle[0]/1000).strftime('%Y-%m-%d %H:%M:%S.%f')]
+                candle = {
+                    definitions.open_:candle[1],
+                    definitions.high:candle[2],
+                    definitions.low:candle[3],
+                    definitions.close:candle[4],
+                    definitions.volume:candle[5]
+                }
 
-                self.data.append(candle)
+                df = pd.DataFrame(candle, index)
+
+                try: 
+                    # update row, only works with repeated index
+                    # the only repeated index could be the last one saved in the last request
+                    # this index refers to a candle which was incomplete
+                    # so if we have new data here, we update it
+                    self.data.loc[index] = df.loc[index]
+                except:
+                    # new data only appends
+                    self.data = self.data.append(df)
 
 
 class Orderbook(DataModule):

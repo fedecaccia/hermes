@@ -26,6 +26,8 @@ Under development.
 - [ ] World: save order ids.
 - [ ] EmulatedWorld: load data from sql.
 - [ ] EmulatedWorld: load data from mongo.
+- [ ] Algorithms: implement crossing moving average algorithm.
+- [ ] Algorithms: implement crossing moving average with volume algorithm.
 - [ ] Algorithms: implement pair trading.
 - [x] ~~RealWorld: online public orderbook requests.~~
 - [x] ~~RealWorld: online public candles requests.~~

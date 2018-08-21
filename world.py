@@ -460,6 +460,7 @@ class EmulatedWorld(World):
         data_module = self.data[data_module_id]
         data = data_module[definitions.values]
         try:
+
             # Slowest approach
             # idx = data.index.get_loc(key=self._time,
             #                          method="pad", # only looks for previous time
@@ -479,12 +480,21 @@ class EmulatedWorld(World):
         else:
 
             # if world_time >= arr[idx] and world_time-arr[idx]<=self._max_delay_in_data:
-            row = data.iloc[idx]
+            #     return data.iloc[idx]
             #     print("YAHOO")
             # else:
             #     return None
+            if data_module[definitions.data_type] == definitions.candles:
+                limit = data_module[definitions.limit]
+                idx0 = max(0,idx-(limit-1))
 
-        return row
+                request = []
+                for i in range(idx0, idx+1):
+                    request.append(np.insert(np.array(data.iloc[i]), 0, arr[i], axis=0))
+            else:
+                request = np.insert(data.iloc[idx], 0, arr[idx], axis=0)
+
+        return request
 
     def request_balance(self, exchange):
 

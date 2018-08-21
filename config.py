@@ -14,7 +14,7 @@ data_elements = {
     data_type: candles,
     timeframe: one_min,
     since: None,
-    limit: 10,
+    limit: 3,
     data_format: csv,
     header_format: cdm,
     file_name: "./sample/candlesbittrexETHBTC.csv"
@@ -74,7 +74,7 @@ strategies_elements = {
 
 # Trading mode
 
-trading_mode = paper
+trading_mode = backtest # paper # backtest
 n_request_threads = 2
 max_delay_in_data = 0.5 # seconds
 
