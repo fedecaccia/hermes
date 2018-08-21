@@ -239,7 +239,7 @@ class Orderbook(DataModule):
         -
         """
 
-        pass
+        self.data = pd.DataFrame()
 
     def _particular_update(self, incoming_data):
         
@@ -257,29 +257,38 @@ class Orderbook(DataModule):
             bid_weight_val_2, bid_weight_count_2 = self.weighted_orders(book['bids'], limit=10)
             ask_weight_val_1, ask_weight_count_1 = self.weighted_orders(book['asks'], limit=5)
             ask_weight_val_2, ask_weight_count_2 = self.weighted_orders(book['asks'], limit=10)
-            data = {"datetime": datetime.now(),                    
-                    "bid_weight_val_1":bid_weight_val_1,
-                    "bid_weight_count_1":bid_weight_count_1,
-                    "bid_weight_val_2":bid_weight_val_2,
-                    "bid_weight_count_2":bid_weight_count_2,
-                    "bid_val_2":book['bids'][2][0],
-                    "bid_count_2":book['bids'][2][1],                    
-                    "bid_val_1":book['bids'][1][0],
-                    "bid_count_1":book['bids'][1][1],
-                    "bid_val_0":book['bids'][0][0],
-                    "bid_count_0":book['bids'][0][1],
-                    "ask_val_0":book['asks'][0][0],
-                    "ask_count_0":book['asks'][0][1],
-                    "ask_val_1":book['asks'][1][0],
-                    "ask_count_1":book['asks'][1][1],
-                    "ask_val_2":book['asks'][2][0],
-                    "ask_count_2":book['asks'][2][1], 
-                    "ask_weight_val_1":ask_weight_val_1, 
-                    "ask_weight_count_1":ask_weight_count_1, 
-                    "ask_weight_val_2":ask_weight_val_2, 
-                    "ask_weight_count_2":ask_weight_count_2}
+            index = [datetime.datetime.now()]
+            data = {
+                "bid_weight_val_1":bid_weight_val_1,
+                "bid_weight_count_1":bid_weight_count_1,
+                "bid_weight_val_2":bid_weight_val_2,
+                "bid_weight_count_2":bid_weight_count_2,
+                "bid_val_2":book['bids'][2][0],
+                "bid_count_2":book['bids'][2][1],                    
+                "bid_val_1":book['bids'][1][0],
+                "bid_count_1":book['bids'][1][1],
+                "bid_val_0":book['bids'][0][0],
+                "bid_count_0":book['bids'][0][1],
+                "ask_val_0":book['asks'][0][0],
+                "ask_count_0":book['asks'][0][1],
+                "ask_val_1":book['asks'][1][0],
+                "ask_count_1":book['asks'][1][1],
+                "ask_val_2":book['asks'][2][0],
+                "ask_count_2":book['asks'][2][1], 
+                "ask_weight_val_1":ask_weight_val_1, 
+                "ask_weight_count_1":ask_weight_count_1, 
+                "ask_weight_val_2":ask_weight_val_2, 
+                "ask_weight_count_2":ask_weight_count_2
+            }
+
+            df = pd.DataFrame(data, index)
         
-            self.data.append(data)
+            try:
+                # update row, only works with repeated index
+                self.data.loc[index] = df.loc[index]
+            except:
+                # new data only appends
+                self.data = self.data.append(df)
 
     def book_is_valid(self, book):
         if book == None:
