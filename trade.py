@@ -47,9 +47,7 @@ class Trade(object):
         exchange = self.assets[asset_id].exchange
         account = self.assets[asset_id].account
         symbol = self.assets[asset_id].symbol
-        base = symbol.split("/")[0]
-        quote = symbol.split("/")[1]
-
+        base, quote = symbol.split("/")[:2]
         trade_available = False
 
         if side == definitions.sell:
@@ -103,8 +101,4 @@ class Trade(object):
         + Output:
         -
         """
-
-        if self.portfolio.get_amount_of_asset(exchange, account, currency) >= amount:
-            return True
-        
-        return False
+        return self.portfolio.get_amount_of_asset(exchange, account, currency) >= amount
