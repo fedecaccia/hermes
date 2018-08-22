@@ -55,6 +55,7 @@ Under development.
 - [ ] Algorithms: implement crossing moving average algorithm.
 - [ ] Algorithms: implement crossing moving average with volume algorithm.
 - [ ] Algorithms: implement pair trading.
+- [ ] DataModule: implement efficient TA calculation (only update new values and not recalculate everything).
 - [ ] Trade: Store transactions.
 - [ ] Portolio: Compute P&L per asset.
 - [ ] Portolio: Compute P&L in usd.
