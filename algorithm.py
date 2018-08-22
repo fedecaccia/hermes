@@ -42,7 +42,7 @@ class Algorithm(ABC):
     def _define_signals(self, signals):
 
         """
-        + Description: define signals parameters
+        + Description: Define signals parameters.
         + Input:
         - signals: Dictionary with long and short signal per asset id.
         + Output:
@@ -59,6 +59,19 @@ class Algorithm(ABC):
                 definitions.long_signal:0,
                 definitions.short_signal:0
             }
+
+    def _reinitialize_signals(self):
+
+        """
+        + Description: Reinitialize signal values.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
+        for asset in self._signals.keys():
+            self._signals[asset]=0
 
     @abstractmethod
     def _check_data_modules(self):        
@@ -353,6 +366,9 @@ class Volume(Algorithm):
         - params: Dictionary of order parameters.
         """
 
+        # reinitialize signals
+        self._reinitialize_signals()
+
         # asset key should be the same as defined in # Assets in config.py
         asset = list(self._signals.keys())[0]
         
@@ -365,15 +381,20 @@ class Volume(Algorithm):
         
         params = {asset:{
             definitions.limit:0,
-            definitions.last:0
+            definitions.amount:0
         } for asset in list(self._signals.keys())} 
 
         # print(self.data_modules[0].data)
-        ma_vol = self._get_ma_volume(periods = 5)
+        ma_vol = self._get_last_sma_volume(periods = 5)
         vol = self._get_last_volume()
         
-        ma_price = self._get_ma_price(periods = 5)
+        ma_price = self._get_last_sma_price(periods = 5)
+        prev_price = self._get_prev_price()
         last_price = self._get_last_price()
+
+        # We don't resolve any signal when we don't have enough data
+        if ma_vol is None or vol is None or ma_price is None or prev_price is None or last_price is None:
+            return self._signals, params
         
         btc_usd = self._oracle.get_amount_in_base(
             definitions.btc,
@@ -388,32 +409,45 @@ class Volume(Algorithm):
         else:
             amount = self._usd_amount_to_trade / eth_usd
 
-        if vol>ma_vol and last_price > ma_price:
+        # high volume & prices over SMA & prices pumping
+        if vol>ma_vol and last_price > ma_price and last_price > prev_price:
             self._shoot_long_signal(asset)
             params[asset] = {
-                definitions.limit:last_price*self._limit_buy_pct/100.,
-                definitions.last:last_price
+                definitions.amount:amount,
+                definitions.limit:last_price*self._limit_buy_pct/100.                
             }
-        else:
+
+        # high volume & prices below SMA & prices dumping
+        elif vol>ma_vol and last_price < ma_price  and last_price < prev_price:
             self._shoot_short_signal(asset)
             params[asset] = {
                 definitions.amount:amount,
                 definitions.limit:last_price*self._limit_sell_pct/100.
             }
+        else:
+
+            # do nothing
+            pass
 
         return self._signals, params
 
-    def _get_ma_volume(self, periods):
+    def _get_last_sma_volume(self, periods):
 
         """
-        + Description: Calculate moving average volume in "periods".
+        + Description: Get last volume average volume using "periods".
         + Input:
-        -
+        - periods: Integer number of periods to use in calculation.
         + Output:
-        - ma_volume: float
+        - sma_volume: Float last simple moving volume.
         """
 
-        return 10
+        column = "vol_sma_"+str(periods)
+        self.data_modules[0].compute_vol_sma(periods, column)
+
+        if len(self.data_modules[0].data) > 1:
+            return self.data_modules[0].data.iloc[-1][column]
+        else:
+            return None
 
     def _get_last_volume(self):
 
@@ -422,22 +456,30 @@ class Volume(Algorithm):
         + Input:
         -
         + Output:
-        - last_volume: float
+        - last_volume: Float last volume.
         """
         
-        return self.data_modules[0].data.iloc[-1][definitions.volume]
+        if len(self.data_modules[0].data) > 1:
+            return self.data_modules[0].data.iloc[-1][definitions.volume]
+        else:
+            return None
 
-    def _get_ma_price(self, periods):
+    def _get_last_sma_price(self, periods):
 
         """
         + Description: Calculate moving average price in "periods".
         + Input:
-        -
+        - periods: Integer number of periods to use in calculation.
         + Output:
-        - ma_price: float
+        - sma_price: Float last simple moving average price.
         """
 
-        return 5
+        column = "sma_"+str(periods)
+        self.data_modules[0].compute_sma(periods, column)
+        if len(self.data_modules[0].data) > 1:
+            return self.data_modules[0].data.iloc[-1][column]
+        else:
+            return None
 
     def _get_last_price(self):
 
@@ -446,10 +488,28 @@ class Volume(Algorithm):
         + Input:
         -
         + Output:
-        - last_price: float
+        - last_price: Float last price (close).
         """
 
-        return self.data_modules[0].data.iloc[-1][definitions.close]
+        if len(self.data_modules[0].data) > 1:
+            return self.data_modules[0].data.iloc[-1][definitions.close]
+        else:
+            return None
+
+    def _get_prev_price(self):
+
+        """
+        + Description: Get previous price.
+        + Input:
+        -
+        + Output:
+        - prev_price: Float previous price (close).
+        """
+
+        if len(self.data_modules[0].data) > 2:
+            return self.data_modules[0].data.iloc[-2][definitions.close]
+        else:
+            return None
 
 
 class VirtualTransfer(Algorithm):

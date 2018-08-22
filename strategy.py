@@ -208,7 +208,8 @@ class Strategy(object):
         for algorithm in self._algorithms:
             signals, params = algorithm.evaluate()
 
-            for asset, signal in signals.items():              
+            for asset, signal in signals.items():
+                print(signal)
                 self._valuation[asset] += signal
 
             for asset, param in params.items():

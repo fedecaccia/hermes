@@ -50,7 +50,8 @@ Under development.
 - [x] ~~DataModule: create pandas dataframe requesting orderbooks.~~
 - [ ] EmulatedWorld: load data from sql.
 - [ ] EmulatedWorld: load data from mongo.
-- [ ] **DataModule: implement ta-lib.**
+- [x] ~~DataModule: implement ta-lib.~~
+- [x] ~~Algorithms: implement simple pumping and dumping follower.~~
 - [ ] Algorithms: implement crossing moving average algorithm.
 - [ ] Algorithms: implement crossing moving average with volume algorithm.
 - [ ] Algorithms: implement pair trading.

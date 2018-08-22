@@ -4,6 +4,7 @@ import datetime
 
 import numpy as np
 import pandas as pd
+import talib
 
 from abc import ABC, abstractmethod
 
@@ -194,8 +195,33 @@ class Candles(DataModule):
                     # new data only appends
                     self.data = self.data.append(df)
 
-    def compute_ma():
-        
+    def compute_sma(self, periods, column):
+
+        """
+        + Description: Compute simple moving average price using "close" values and save in data.
+        + Input:
+        - periods: Integer number of periods to use in calculation.
+        - column: Column string name to save results.
+        + Output:
+        -
+        """
+
+        close = self.data[definitions.close]
+        self.data["sma_"+str(periods)] = talib.SMA(close, periods)
+
+    def compute_vol_sma(self, periods, column):
+
+        """
+        + Description: Compute simple moving average volume using "volume" values and save in data.
+        + Input:
+        - periods: Integer number of periods to use in calculation.
+        - column: Column string name to save results.
+        + Output:
+        -
+        """
+
+        volume = self.data[definitions.volume]
+        self.data[column] = talib.SMA(volume, periods)
 
 
 class Orderbook(DataModule):
