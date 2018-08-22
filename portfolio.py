@@ -86,8 +86,8 @@ class Portfolio(object):
 
         if self.world.get_time() - self._last_update > self._delta_update:
 
-            for exchange in self.exchanges_names:
-                self.balance[exchange].update(self.world.request_balance(exchange))
+            for exchange, wallet in self.balance.items():
+                wallet.update(self.world.request_balance(exchange))
             
             self._last_update = self.world.get_time()
 
