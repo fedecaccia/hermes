@@ -4,6 +4,26 @@ Hermes is a crypto platform to test and run trading algorithms.
 ## Main features
 Under development.
 
+## Installation
+Hermes uses [ta-Lib](https://github.com/mrjbq7/ta-lib) library to compute technical analysis calculations, which is a python wrapper for [TA-Lib](http://ta-lib.org/). To use [ta-Lib](https://github.com/mrjbq7/ta-lib) for python, you need to have the [TA-Lib](http://ta-lib.org/) already installed. You should probably follow their installation directions for your platform, but some suggestions are included below for reference.
+**Linux**
+Download [ta-lib-0.4.0-src.tar.gz](http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz) and:
+
+´´´[bash]
+untar and cd
+./configure --prefix=/usr
+make
+sudo make install
+´´´
+Then you can install requirements typing in your terminal:
+´´´[bash]
+sudo pip3 install -r requirements.txt
+´´´
+which installs:
+- [numpy](http://www.numpy.org/)
+- [pandas](https://pandas.pydata.org/)
+- [ta-lib](https://github.com/mrjbq7/ta-lib) (python wrapper)
+
 ## Quickstart
 Under development.
 

@@ -194,6 +194,9 @@ class Candles(DataModule):
                     # new data only appends
                     self.data = self.data.append(df)
 
+    def compute_ma():
+        
+
 
 class Orderbook(DataModule):
 
