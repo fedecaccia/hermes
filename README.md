@@ -9,16 +9,16 @@ Hermes uses [ta-Lib](https://github.com/mrjbq7/ta-lib) library to compute techni
 **Linux**
 Download [ta-lib-0.4.0-src.tar.gz](http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz) and:
 
-´´´[bash]
+```bash
 untar and cd
 ./configure --prefix=/usr
 make
 sudo make install
-´´´
+```
 Then you can install requirements typing in your terminal:
-´´´[bash]
+```bash
 sudo pip3 install -r requirements.txt
-´´´
+```
 which installs:
 - [numpy](http://www.numpy.org/)
 - [pandas](https://pandas.pydata.org/)
