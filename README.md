@@ -54,6 +54,7 @@ Under development.
 - [x] ~~Algorithms: implement simple pumping and dumping follower.~~
 - [ ] Algorithms: implement crossing moving average algorithm.
 - [ ] Algorithms: implement crossing moving average with volume algorithm.
+- [x] ~~Algorithms: implement simple virtual transfer idea.~~
 - [ ] Algorithms: implement pair trading.
 - [ ] DataModule: implement efficient TA calculation (only update new values and not recalculate everything).
 - [ ] Trade: Store transactions.
