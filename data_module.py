@@ -1,5 +1,6 @@
 import definitions
 
+import time
 import datetime
 
 import numpy as np
@@ -15,11 +16,12 @@ class DataModule(ABC):
     DataModule: Module to store data description, content and analysis.
     """
 
-    def __init__(self, data_id, data_values, world):
+    def __init__(self, mode, data_id, data_values, world):
 
         """
         + Description: constructor
         + Input:
+        - mode: Trading mode string name.
         - data_id: Data id string.
         - data_values: Dictionary with main parameter values.
         - world:
@@ -27,6 +29,7 @@ class DataModule(ABC):
         -
         """
 
+        self.mode = mode
         self._check_element_consistency(data_values)
         self.id = data_id
         self.description = data_values[definitions.description]
@@ -106,11 +109,12 @@ class Candles(DataModule):
     Candles: Module to store candles data description, content and analysis.
     """
 
-    def __init__(self, data_id, data_values, world):
+    def __init__(self, mode, data_id, data_values, world):
 
         """
         + Description: constructor
         + Input:
+        - mode: Trading mode string name.
         - data_id: Data id string.
         - data_values: Dictionary with main parameter values.
         - world:
@@ -118,7 +122,7 @@ class Candles(DataModule):
         -
         """
 
-        super().__init__(data_id, data_values, world)
+        super().__init__(mode, data_id, data_values, world)
         self.ticker = data_values[definitions.description]
         self.exchange = data_values[definitions.source]
         self.timeframe = data_values[definitions.timeframe]
@@ -230,11 +234,12 @@ class Orderbook(DataModule):
     Orderbook: Module to store orderbook data description, content and analysis.
     """
 
-    def __init__(self, data_id, data_values, world):
+    def __init__(self, mode, data_id, data_values, world):
 
         """
         + Description: constructor
         + Input:
+        - mode: Trading mode string name.
         - data_id: Data id string.
         - data_values: Dictionary with main parameter values.
         - world:
@@ -242,7 +247,7 @@ class Orderbook(DataModule):
         -
         """
 
-        super().__init__(data_id, data_values, world)
+        super().__init__(mode, data_id, data_values, world)
         self.ticker = data_values[definitions.description]
         self.exchange = data_values[definitions.source]
 
@@ -282,51 +287,60 @@ class Orderbook(DataModule):
 
         book = incoming_data
         if self.book_is_valid(book):
-            bid_weight_val_1, bid_weight_count_1 = self.weighted_orders(book['bids'], limit=5)
-            bid_weight_val_2, bid_weight_count_2 = self.weighted_orders(book['bids'], limit=10)
-            ask_weight_val_1, ask_weight_count_1 = self.weighted_orders(book['asks'], limit=5)
-            ask_weight_val_2, ask_weight_count_2 = self.weighted_orders(book['asks'], limit=10)
-            index = [datetime.datetime.now()]
-            data = {
-                "bid_weight_val_1":bid_weight_val_1,
-                "bid_weight_count_1":bid_weight_count_1,
-                "bid_weight_val_2":bid_weight_val_2,
-                "bid_weight_count_2":bid_weight_count_2,
-                "bid_val_2":book['bids'][2][0],
-                "bid_count_2":book['bids'][2][1],                    
-                "bid_val_1":book['bids'][1][0],
-                "bid_count_1":book['bids'][1][1],
-                "bid_val_0":book['bids'][0][0],
-                "bid_count_0":book['bids'][0][1],
-                "ask_val_0":book['asks'][0][0],
-                "ask_count_0":book['asks'][0][1],
-                "ask_val_1":book['asks'][1][0],
-                "ask_count_1":book['asks'][1][1],
-                "ask_val_2":book['asks'][2][0],
-                "ask_count_2":book['asks'][2][1], 
-                "ask_weight_val_1":ask_weight_val_1, 
-                "ask_weight_count_1":ask_weight_count_1, 
-                "ask_weight_val_2":ask_weight_val_2, 
-                "ask_weight_count_2":ask_weight_count_2
-            }
+            if self.mode == definitions.backtest:
+
+                index = [book["datetime"]]
+                data = book
+                data.pop("datetime")
+                
+            else:
+                bid_weight_val_1, bid_weight_count_1 = self.weighted_orders(book['bids'], limit=5)
+                bid_weight_val_2, bid_weight_count_2 = self.weighted_orders(book['bids'], limit=10)
+                ask_weight_val_1, ask_weight_count_1 = self.weighted_orders(book['asks'], limit=5)
+                ask_weight_val_2, ask_weight_count_2 = self.weighted_orders(book['asks'], limit=10)
+                index = [datetime.datetime.now()]
+                data = {
+                    "bid_weight_val_1":bid_weight_val_1,
+                    "bid_weight_count_1":bid_weight_count_1,
+                    "bid_weight_val_2":bid_weight_val_2,
+                    "bid_weight_count_2":bid_weight_count_2,
+                    "bid_val_2":book['bids'][2][0],
+                    "bid_count_2":book['bids'][2][1],                    
+                    "bid_val_1":book['bids'][1][0],
+                    "bid_count_1":book['bids'][1][1],
+                    "bid_val_0":book['bids'][0][0],
+                    "bid_count_0":book['bids'][0][1],
+                    "ask_val_0":book['asks'][0][0],
+                    "ask_count_0":book['asks'][0][1],
+                    "ask_val_1":book['asks'][1][0],
+                    "ask_count_1":book['asks'][1][1],
+                    "ask_val_2":book['asks'][2][0],
+                    "ask_count_2":book['asks'][2][1], 
+                    "ask_weight_val_1":ask_weight_val_1, 
+                    "ask_weight_count_1":ask_weight_count_1, 
+                    "ask_weight_val_2":ask_weight_val_2, 
+                    "ask_weight_count_2":ask_weight_count_2
+                }
 
             df = pd.DataFrame(data, index)
-        
-            try:
-                # update row, only works with repeated index
-                self.data.loc[index] = df.loc[index]
-            except:
+
+            if len(self.data.index)>1:
+                if self.data.index[-1] == index[0]:            
+                    # update row, only works with repeated index                
+                    self.data.loc[index] = df.loc[index]                
+            else:
                 # new data only appends
                 self.data = self.data.append(df)
 
     def book_is_valid(self, book):
-        if book == None:
+
+        if book is None:
             return False
         if book == []:
             return False
-        if len(book['bids'])<3:
+        if self.mode != definitions.backtest and len(book['bids'])<3:
             return False
-        if len(book['asks'])<3:
+        if self.mode != definitions.backtest and len(book['asks'])<3:
             return False
         return True
 
@@ -345,7 +359,7 @@ class Orderbook(DataModule):
         try:
             weighted_value /= count
         except:
-            print(self.exchange, book)
+            raise ValueError("ERROR trying to weight order. weighterd_value or count is 0.")
 
         return weighted_value, count
 
@@ -356,11 +370,12 @@ class Tickers(DataModule):
     Tickers: Module to store tickers data description, content and analysis.
     """
 
-    def __init__(self, data_id, data_values, world):
+    def __init__(self, mode, data_id, data_values, world):
 
         """
         + Description: constructor
         + Input:
+        - mode: Trading mode string name.
         - data_id: Data id string.
         - data_values: Dictionary with main parameter values.
         - world:
@@ -368,7 +383,7 @@ class Tickers(DataModule):
         -
         """
 
-        super().__init__(data_id, data_values, world)
+        super().__init__(mode, data_id, data_values, world)
         self.ticker = data_values[definitions.description]
         self.exchange = data_values[definitions.source]
     
@@ -415,11 +430,12 @@ class Tweets(DataModule):
     Tweets: Module to store tweets data description, content and analysis.
     """
 
-    def __init__(self, data_id, data_values, world):
+    def __init__(self, mode, data_id, data_values, world):
 
         """
         + Description: constructor
         + Input:
+        - mode: Trading mode string name.
         - data_id: Data id string.
         - data_values: Dictionary with main parameter values.
         - world:
@@ -427,7 +443,7 @@ class Tweets(DataModule):
         -
         """
 
-        super().__init__(data_id, data_values, world)
+        super().__init__(mode, data_id, data_values, world)
         self.description = data_values[definitions.description]
         self.source = data_values[definitions.source]
 

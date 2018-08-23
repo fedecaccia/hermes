@@ -4,7 +4,10 @@ import config
 from world import EmulatedWorld, RealWorld, PaperWorld, Oracle
 from data_module import Candles, Orderbook, Tickers, Tweets
 from asset import Asset
-from algorithm import CrossingMA, Volume, TwitterAnalysis, VirtualTransfer
+from crossing_sma import CrossingSMA
+from volume import Volume
+from twitter_analysis import TwitterAnalysis
+from virtual_transfer import VirtualTransfer
 from strategy import Strategy
 from portfolio import Portfolio
 from trade import Trade
@@ -295,16 +298,16 @@ class Hermes(object):
         for data_id, data_values in self.data_elements.items():
             
             if data_values[definitions.data_type] == definitions.candles:                
-                self.data_modules[data_id] = Candles(data_id, data_values, self.world)
+                self.data_modules[data_id] = Candles(self.mode, data_id, data_values, self.world)
             
             elif data_values[definitions.data_type] == definitions.orderbook:
-                self.data_modules[data_id] = Orderbook(data_id, data_values, self.world)
+                self.data_modules[data_id] = Orderbook(self.mode, data_id, data_values, self.world)
             
             elif data_values[definitions.data_type] == definitions.tickers:
-                self.data_modules[data_id] = Tickers(data_id, data_values, self.world)
+                self.data_modules[data_id] = Tickers(self.mode, data_id, data_values, self.world)
             
             elif data_values[definitions.data_type] == definitions.tweets_count:
-                self.data_modules[data_id] = Tweets(data_id, data_values, self.world)
+                self.data_modules[data_id] = Tweets(self.mode, data_id, data_values, self.world)
 
             else:
                 raise ValueError("Bad data_type: '"
@@ -341,8 +344,8 @@ class Hermes(object):
         self.algorithms = {}
         for algo_id, algo_values in self.algorithms_elements.items():
 
-            if algo_values[definitions.algorithm] == definitions.crossing_ma:
-                self.algorithms[algo_id] = CrossingMA(algo_id, algo_values, self.data_modules, self.oracle)
+            if algo_values[definitions.algorithm] == definitions.crossing_sma:
+                self.algorithms[algo_id] = CrossingSMA(algo_id, algo_values, self.data_modules, self.oracle)
 
             elif algo_values[definitions.algorithm] == definitions.volume:
                 self.algorithms[algo_id] = Volume(algo_id, algo_values, self.data_modules, self.oracle)

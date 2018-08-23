@@ -8,19 +8,28 @@ from definitions import *
 # Data modules
 
 data_elements = {
-  "candles_ethbtc_bittrex":{
+  "orderbook_ethbtc_bittrex":{
     description: ethbtc,
     source: bittrex,
-    data_type: candles,
-    timeframe: one_min,
-    since: None,
-    limit: 3,
+    data_type: orderbook,
+    timeframe: one_sec,
     data_format: csv,
     header_format: cdm,
-    file_name: "./sample/candlesbittrexETHBTC.csv"
+    file_name: "./sample/orderbookbittrexETHBTC.csv"
     # db_file = "sqlite:///data/data.db"
     # mongo_port = ""
-  }
+  },
+  "orderbook_ethbtc_binance":{
+    description: ethbtc,
+    source: binance,
+    data_type: orderbook,
+    timeframe: one_sec,
+    data_format: csv,
+    header_format: cdm,
+    file_name: "./sample/orderbookbinanceETHBTC.csv"
+    # db_file = "sqlite:///data/data.db"
+    # mongo_port = ""
+  },
 }
 
 # Assets
@@ -32,26 +41,38 @@ assets_elements = {
     quote:btc,
     exchange:bittrex,
     account:trading
+  },
+  "ethbtc_binance":{
+    symbol:ethbtc,
+    base:eth,
+    quote:btc,
+    exchange:binance,
+    account:trading
   }
 }
 
 # Algorithms
 
 algorithms_elements = {
-  "vol":{
-    algorithm:volume,
-    data_modules_array:["candles_ethbtc_bittrex"],
+  "virtual_arbitrage":{
+    algorithm:virtual_transfer,
+    data_modules_array:[
+      "orderbook_ethbtc_bittrex",
+      "orderbook_ethbtc_binance"
+      ],
     signals:{
       "ethbtc_bittrex":{
+        long_signal:+1,
+        short_signal:-1
+      },
+      "ethbtc_binance":{
         long_signal:+1,
         short_signal:-1
       }
     },
     algo_params:{
-      vol_growth:0.5,
-      ma_periods:5,
-      limit_buy_pct: 101,
-      limit_sell_pct:99,
+      limit_buy_pct:100,
+      limit_sell_pct:100,
       usd_amount_to_trade:50 # 10, 15, full
     }
   }
@@ -60,17 +81,88 @@ algorithms_elements = {
 # Strategies
 
 strategies_elements = {
-  "test":{
-    algorithms_array:["vol"],
+  "arbitrage":{
+    algorithms_array:["virtual_arbitrage"],
     thresholds:{
       "ethbtc_bittrex":{
         long_threshold:1,
         short_threshold:-1
+      },
+      "ethbtc_binance":{
+        long_threshold:1,
+        short_threshold:-1
       }
     },
-    order_type:limit    
+    order_type:limit   
   }
 }
+
+# # Data modules
+
+# data_elements = {
+#   "candles_ethbtc_bittrex":{
+#     description: ethbtc,
+#     source: bittrex,
+#     data_type: candles,
+#     timeframe: one_min,
+#     since: None,
+#     limit: 3,
+#     data_format: csv,
+#     header_format: cdm,
+#     file_name: "./sample/candlesbittrexETHBTC.csv"
+#     # db_file = "sqlite:///data/data.db"
+#     # mongo_port = ""
+#   }
+# }
+
+# # Assets
+
+# assets_elements = {
+#   "ethbtc_bittrex":{
+#     symbol:ethbtc,
+#     base:eth,
+#     quote:btc,
+#     exchange:bittrex,
+#     account:trading
+#   }
+# }
+
+# # Algorithms
+
+# algorithms_elements = {
+#   "vol":{
+#     algorithm:volume,
+#     data_modules_array:["candles_ethbtc_bittrex"],
+#     signals:{
+#       "ethbtc_bittrex":{
+#         long_signal:+1,
+#         short_signal:-1
+#       }
+#     },
+#     algo_params:{
+#       vol_growth:0.5,
+#       ma_periods:5,
+#       limit_buy_pct: 101,
+#       limit_sell_pct:99,
+#       usd_amount_to_trade:50 # 10, 15, full
+#     }
+#   }
+# }
+
+# # Strategies
+
+# strategies_elements = {
+#   "test":{
+#     algorithms_array:["vol"],
+#     thresholds:{
+#       "ethbtc_bittrex":{
+#         long_threshold:1,
+#         short_threshold:-1
+#       }
+#     },
+#     order_type:limit    
+#   }
+# }
 
 # Trading mode
 
@@ -171,7 +263,7 @@ api_keys_files = {
   # algorithms_elements = [
 #   # {
 #   #   algorithm_id: 0,
-#   #   algorithm: crossing_ma,
+#   #   algorithm: crossing_sma,
 #   #   parameters: {
 #   #     ema_low: 10,
 #   #     ema_fast: 20,

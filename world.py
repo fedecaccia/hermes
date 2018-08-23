@@ -491,8 +491,12 @@ class EmulatedWorld(World):
                 request = []
                 for i in range(idx0, idx+1):
                     request.append(np.insert(np.array(data.iloc[i]), 0, arr[i], axis=0))
+            elif data_module[definitions.data_type] == definitions.orderbook:
+                request = dict(data.iloc[idx])
+                request["datetime"] = arr[idx]
+                
             else:
-                request = np.insert(data.iloc[idx], 0, arr[idx], axis=0)
+                request = np.insert(np.array(data.iloc[idx]), 0, arr[idx], axis=0)
 
         return request
 

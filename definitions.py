@@ -76,7 +76,7 @@ nosql = "nosql"
 
 # Algorithms definition
 
-crossing_ma = "crossing_ma"
+crossing_sma = "crossing_sma"
 crossing_ema = "crossing_ema"
 volume = "volume"
 virtual_transfer = "virtual_transfer"

@@ -170,7 +170,7 @@ class Exchange(ABC):
         orderbook = None
         self.synchronize(barrier)
         try:
-            orderbook = self.client.fetch_orderbook(ticker)
+            orderbook = self.client.fetchOrderBook(ticker)
         except DDoSProtection:
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
         finally:
