@@ -24,7 +24,8 @@ twitter = "twitter"
 btcusd = "BTC/USD"
 ethusd = "ETH/USD"
 ethbtc = "ETH/BTC"
-all_tickers = [btcusd, ethusd, ethbtc]
+batbtc = "BAT/BTC"
+all_tickers = [btcusd, ethusd, ethbtc, batbtc]
 
 # Coins definition
 
@@ -32,6 +33,7 @@ usd = "USD"
 eur = "EUR"
 btc = "BTC"
 eth = "ETH"
+bat = "BAT"
 asset_id = "asset_id"
 
 # Other description definitions

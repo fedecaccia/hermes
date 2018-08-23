@@ -57,8 +57,16 @@ class Oracle(object):
         symbol = base.upper()+"/"+quote.upper()
 
         try:
-            amount = self.tickers[symbol][definitions.last]
+            price = self.tickers[symbol][definitions.last]
+            amount = quote_amount/price
         except:
-            raise ValueError("Error in oracle trying to retrieve last for symbol: '"+symbol+"'.")
+            if quote.upper() == "USD":
+                try:
+                    price = self.tickers[symbol+"T"][definitions.last]
+                    amount = quote_amount/price
+                except:
+                    raise ValueError("Error in oracle trying to retrieve last for symbol: '"+symbol+"'.")
+            else:
+                raise ValueError("Error in oracle trying to retrieve last for symbol: '"+symbol+"'.")
         
         return amount

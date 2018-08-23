@@ -58,18 +58,22 @@ class Trade(object):
                 
                 amount = self.portfolio.get_amount_of_asset(exchange, account, base)
             
-            trade_available = self._funds_are_available(exchange, account, base, amount)
+            trade_available = self._funds_are_available_to_sell(exchange, account, base, amount)
 
         elif side == definitions.buy:
 
-            if amount == definitions.full:
+            quote_available = self.portfolio.get_amount_of_asset(exchange, account, quote)
+            print("quote available", quote_available)
+            amount_available_to_buy = self.oracle.get_amount_in_base(base, quote, quote_available)
+            print("base available", amount_available_to_buy)
 
-                quote_available = self.portfolio.get_amount_of_asset(exchange, account, quote)           
+            if amount == definitions.full:
+                
                 # in this case we are trying to buy as much as we can
                 # to secure this, we try to buy the 97% if the aproximated value the oracle tell us
-                amount = self.oracle.get_amount_in_base(base, quote, quote_available)*0.97             
+                amount = amount_available_to_buy*0.97
             
-            trade_available = self._funds_are_available(exchange, account, quote, amount)
+            trade_available = amount < amount_available_to_buy
 
         if trade_available:
         
@@ -106,13 +110,14 @@ class Trade(object):
         else:
             print("WARNING: Funds are not enough")
 
-    def _funds_are_available(self, exchange, account, currency, amount):
+    def _funds_are_available_to_sell(self, exchange, account, currency, amount):
 
         """
-        + Description: Check if funds are available to trade.
+        + Description: Check if amount of funds are available to sell.
         + Input:
         - 
         + Output:
         -
         """
+        
         return self.portfolio.get_amount_of_asset(exchange, account, currency) >= amount

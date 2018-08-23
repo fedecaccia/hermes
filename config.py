@@ -8,9 +8,9 @@ from definitions import *
 # Data modules
 
 data_elements = {
-  "orderbook_ethbtc_bittrex":{
-    description: ethbtc,
-    source: bittrex,
+  "orderbook_batbtc_binance":{
+    description: batbtc,
+    source: binance,
     data_type: orderbook,
     timeframe: one_sec,
     data_format: csv,
@@ -19,9 +19,9 @@ data_elements = {
     # db_file = "sqlite:///data/data.db"
     # mongo_port = ""
   },
-  "orderbook_ethbtc_binance":{
-    description: ethbtc,
-    source: binance,
+  "orderbook_batbtc_bitfinex":{
+    description: batbtc,
+    source: bitfinex,
     data_type: orderbook,
     timeframe: one_sec,
     data_format: csv,
@@ -35,16 +35,16 @@ data_elements = {
 # Assets
 
 assets_elements = {
-  "ethbtc_bittrex":{
-    symbol:ethbtc,
-    base:eth,
+  "batbtc_bitfinex":{
+    symbol:batbtc,
+    base:bat,
     quote:btc,
-    exchange:bittrex,
+    exchange:bitfinex,
     account:trading
   },
-  "ethbtc_binance":{
-    symbol:ethbtc,
-    base:eth,
+  "batbtc_binance":{
+    symbol:batbtc,
+    base:bat,
     quote:btc,
     exchange:binance,
     account:trading
@@ -57,15 +57,15 @@ algorithms_elements = {
   "virtual_arbitrage":{
     algorithm:virtual_transfer,
     data_modules_array:[
-      "orderbook_ethbtc_bittrex",
-      "orderbook_ethbtc_binance"
+      "orderbook_batbtc_bitfinex",
+      "orderbook_batbtc_binance"
       ],
     signals:{
-      "ethbtc_bittrex":{
+      "batbtc_bitfinex":{
         long_signal:+1,
         short_signal:-1
       },
-      "ethbtc_binance":{
+      "batbtc_binance":{
         long_signal:+1,
         short_signal:-1
       }
@@ -85,11 +85,11 @@ strategies_elements = {
   "arbitrage":{
     algorithms_array:["virtual_arbitrage"],
     thresholds:{
-      "ethbtc_bittrex":{
+      "batbtc_bitfinex":{
         long_threshold:1,
         short_threshold:-1
       },
-      "ethbtc_binance":{
+      "batbtc_binance":{
         long_threshold:1,
         short_threshold:-1
       }
@@ -97,6 +97,99 @@ strategies_elements = {
     order_type:limit   
   }
 }
+
+# # Data modules
+
+# data_elements = {
+#   "orderbook_ethbtc_bittrex":{
+#     description: ethbtc,
+#     source: bittrex,
+#     data_type: orderbook,
+#     timeframe: one_sec,
+#     data_format: csv,
+#     header_format: cdm,
+#     file_name: "./sample/orderbookbittrexETHBTC.csv"
+#     # db_file = "sqlite:///data/data.db"
+#     # mongo_port = ""
+#   },
+#   "orderbook_ethbtc_binance":{
+#     description: ethbtc,
+#     source: binance,
+#     data_type: orderbook,
+#     timeframe: one_sec,
+#     data_format: csv,
+#     header_format: cdm,
+#     file_name: "./sample/orderbookbinanceETHBTC.csv"
+#     # db_file = "sqlite:///data/data.db"
+#     # mongo_port = ""
+#   },
+# }
+
+# # Assets
+
+# assets_elements = {
+#   "ethbtc_bittrex":{
+#     symbol:ethbtc,
+#     base:eth,
+#     quote:btc,
+#     exchange:bittrex,
+#     account:trading
+#   },
+#   "ethbtc_binance":{
+#     symbol:ethbtc,
+#     base:eth,
+#     quote:btc,
+#     exchange:binance,
+#     account:trading
+#   }
+# }
+
+# # Algorithms
+
+# algorithms_elements = {
+#   "virtual_arbitrage":{
+#     algorithm:virtual_transfer,
+#     data_modules_array:[
+#       "orderbook_ethbtc_bittrex",
+#       "orderbook_ethbtc_binance"
+#       ],
+#     signals:{
+#       "ethbtc_bittrex":{
+#         long_signal:+1,
+#         short_signal:-1
+#       },
+#       "ethbtc_binance":{
+#         long_signal:+1,
+#         short_signal:-1
+#       }
+#     },
+#     algo_params:{
+#       limit_buy_pct:100,
+#       limit_sell_pct:100,
+#       max_delay_in_data:2, # seconds
+#       usd_amount_to_trade:50 # 10, 15, full
+#     }
+#   }
+# }
+
+# # Strategies
+
+# strategies_elements = {
+#   "arbitrage":{
+#     algorithms_array:["virtual_arbitrage"],
+#     thresholds:{
+#       "ethbtc_bittrex":{
+#         long_threshold:1,
+#         short_threshold:-1
+#       },
+#       "ethbtc_binance":{
+#         long_threshold:1,
+#         short_threshold:-1
+#       }
+#     },
+#     order_type:limit   
+#   }
+# }
 
 # # Data modules
 
@@ -167,7 +260,7 @@ strategies_elements = {
 
 # Trading mode
 
-trading_mode = backtest # paper # backtest
+trading_mode = paper # paper # backtest
 n_request_threads = 2
 
 
@@ -203,6 +296,30 @@ virtual_portfolio = {
         free:10,
         used:0,
         total:10,
+      },
+      bat:{
+        free:1000,
+        used:0,
+        total:1000,
+      }
+    }
+  },
+  bitfinex:{
+    trading:{
+      eth:{
+        free:100,
+        used:0,
+        total:100,
+      },
+      btc:{
+        free:10,
+        used:0,
+        total:10,
+      },
+      bat:{
+        free:1000,
+        used:0,
+        total:1000,
       }
     }
   }
