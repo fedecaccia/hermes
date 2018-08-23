@@ -2,6 +2,7 @@ import definitions
 
 import datetime
 
+import pandas as pd
 
 class Oracle(object):
 

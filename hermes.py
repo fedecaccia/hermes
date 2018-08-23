@@ -1,7 +1,8 @@
 import definitions
 import config
 
-from world import EmulatedWorld, RealWorld, PaperWorld, Oracle
+from world import EmulatedWorld, RealWorld, PaperWorld
+from oracle import Oracle
 from data_module import Candles, Orderbook, Tickers, Tweets
 from asset import Asset
 from crossing_sma import CrossingSMA
@@ -345,16 +346,16 @@ class Hermes(object):
         for algo_id, algo_values in self.algorithms_elements.items():
 
             if algo_values[definitions.algorithm] == definitions.crossing_sma:
-                self.algorithms[algo_id] = CrossingSMA(algo_id, algo_values, self.data_modules, self.oracle)
+                self.algorithms[algo_id] = CrossingSMA(algo_id, algo_values, self.data_modules, self.assets, self.oracle)
 
             elif algo_values[definitions.algorithm] == definitions.volume:
-                self.algorithms[algo_id] = Volume(algo_id, algo_values, self.data_modules, self.oracle)
+                self.algorithms[algo_id] = Volume(algo_id, algo_values, self.data_modules, self.assets, self.oracle)
 
             elif algo_values[definitions.algorithm] == definitions.twitter_analysis:
-                self.algorithms[algo_id] = TwitterAnalysis(algo_id, algo_values, self.data_modules, self.oracle)
+                self.algorithms[algo_id] = TwitterAnalysis(algo_id, algo_values, self.data_modules, self.assets, self.oracle)
 
             elif algo_values[definitions.algorithm] == definitions.virtual_transfer:
-                self.algorithms[algo_id] = VirtualTransfer(algo_id, algo_values, self.data_modules, self.oracle)
+                self.algorithms[algo_id] = VirtualTransfer(algo_id, algo_values, self.data_modules, self.assets, self.oracle, self.world)
 
             else:
                 raise ValueError("Bad algorithm: '"

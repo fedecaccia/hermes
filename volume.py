@@ -5,7 +5,7 @@ from algorithm import Algorithm
 
 class Volume(Algorithm):
 
-    def __init__(self, algo_id, algo_values, data_modules, oracle):
+    def __init__(self, algo_id, algo_values, data_modules, assets, oracle):
         
         """
         + Description: constructor
@@ -13,12 +13,13 @@ class Volume(Algorithm):
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - algo_values: Dictionary with algorithm parameters values.
         - data_modules: Array of all data modules objects. Super only saves what here cares.
+        - assets: Dictionary of all assets objetcs. Super only saves what here cares.
         - oracle: Oracle object.
         + Output:
         -
         """
         
-        super().__init__(algo_id, algo_values, data_modules, oracle)
+        super().__init__(algo_id, algo_values, data_modules, assets, oracle)
 
     def _check_data_modules(self):
 
@@ -147,10 +148,10 @@ class Volume(Algorithm):
         self._reinitialize_signals()
 
         # asset key should be the same as defined in # Assets in config.py
-        asset = list(self._signals.keys())[0]
+        asset = list(self.assets.keys())[0]
         
         # quick access to exchange name
-        exchange = self.data_modules[0].source
+        exchange = self.assets[asset].exchange
 
         # quick access to fees
         maker_fee = self._fees[exchange][definitions.trading][definitions.maker]

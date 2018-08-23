@@ -70,9 +70,17 @@ class Wallet(object):
         - value: Float amount of asset.
         """    
         if account != definitions.margin_trading:
-            return self.accounts[account][asset][definitions.free]
+            try:
+                return self.accounts[account][asset][definitions.free]
+            except:
+                print("WARNING: without funds: "+asset+" in account: "+account+" in: "+self.exchange)
+                return 0
         else:
-            return self.accounts[definitions.margin_trading][definitions.tradable_balance][asset]
+            try:
+                return self.accounts[definitions.margin_trading][definitions.tradable_balance][asset]
+            except:
+                print("WARNING: without tradable balance for: "+asset+" in margin trading account in: "+self.exchange)
+                return 0
 
     def show(self):
 

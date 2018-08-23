@@ -5,7 +5,7 @@ from algorithm import Algorithm
 
 class CrossingSMA(Algorithm):
 
-    def __init__(self, algo_id, algo_values, data_modules, oracle):
+    def __init__(self, algo_id, algo_values, data_modules, assets, oracle):
 
         """
         + Description: constructor
@@ -13,12 +13,13 @@ class CrossingSMA(Algorithm):
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - algo_values: Dictionary with algorithm parameters values.
         - data_modules: Array of all data modules objects. Super only saves what here cares.
+        - assets: Dictionary of all assets objetcs. Super only saves what here cares.
         - oracle: Oracle object.
         + Output:
         -
         """
         
-        super().__init__(algo_id, algo_values, data_modules, oracle)
+        super().__init__(algo_id, algo_values, data_modules, assets, oracle)
 
     def _check_data_modules(self):
 

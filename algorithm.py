@@ -12,14 +12,15 @@ class Algorithm(ABC):
     Shoots a punctuation to Strategy.
     """
 
-    def __init__(self, algo_id, algo_values, data_modules, oracle):
+    def __init__(self, algo_id, algo_values, data_modules, assets, oracle):
 
         """
         + Description: constructor
         + Input:
         - algo_id: Algorithm id (with particular combination of name, parameters and data modules).
         - algo_values: Dictionary with algorithm parameters values.
-        - data_modules: Array of all data modules objects. Super only saves what here cares.
+        - data_modules: Array of all data modules objects. It only saves what here cares.
+        - assets: Array of all assets objetcs. It only saves what here cares.
         - oracle: Oracle object.
         + Output:
         -
@@ -28,11 +29,18 @@ class Algorithm(ABC):
         self.id = algo_id
         self.data_modules = []
         self.data_modules_ids = []
+
         for data_module_id, data_module_values in data_modules.items():
             if data_module_id in algo_values[definitions.data_modules_array]:
                 self.data_modules.append(data_module_values)
                 self.data_modules_ids.append(data_module_id)
         self._check_data_modules()
+
+        self.assets = {}
+        for asset_key, asset_values in assets.items():
+            if asset_key in algo_values[definitions.signals].keys():
+                self.assets[asset_key] = asset_values
+            
         self._check_parameters(algo_values)
         self._define_signals(algo_values[definitions.signals])
         self._oracle = oracle

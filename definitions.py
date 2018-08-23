@@ -176,6 +176,10 @@ bitfinex_margin_limits = "margin_limits"
 bitfinex_on_pair = "on_pair"
 bitfinex_tradable_balance = "tradable_balance"
 
+# Algorithms
+
+max_delay_in_data = "max_delay_in_data"
+
 # Useful definitions
 
 data_id = "data_id"

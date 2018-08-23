@@ -289,6 +289,7 @@ class Orderbook(DataModule):
         if self.book_is_valid(book):
             if self.mode == definitions.backtest:
 
+                # index is correctly readed in world as a pandas timestamp
                 index = [book["datetime"]]
                 data = book
                 data.pop("datetime")
@@ -328,6 +329,9 @@ class Orderbook(DataModule):
                 if self.data.index[-1] == index[0]:            
                     # update row, only works with repeated index                
                     self.data.loc[index] = df.loc[index]                
+                else:
+                    # new data only appends
+                    self.data = self.data.append(df)
             else:
                 # new data only appends
                 self.data = self.data.append(df)

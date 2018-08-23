@@ -73,6 +73,7 @@ algorithms_elements = {
     algo_params:{
       limit_buy_pct:100,
       limit_sell_pct:100,
+      max_delay_in_data:2, # seconds
       usd_amount_to_trade:50 # 10, 15, full
     }
   }
@@ -166,9 +167,8 @@ strategies_elements = {
 
 # Trading mode
 
-trading_mode = backtest # paper # backtest
+trading_mode = paper # paper # backtest
 n_request_threads = 2
-max_delay_in_data = 0.5 # seconds
 
 
 #######################################################
@@ -194,8 +194,16 @@ virtual_portfolio = {
   },
   binance:{
     trading:{
-      eth:100,
-      btc:10
+      eth:{
+        free:100,
+        used:0,
+        total:100,
+      },
+      btc:{
+        free:10,
+        used:0,
+        total:10,
+      }
     }
   }
 }
