@@ -393,7 +393,8 @@ class Hermes(object):
             self.assets,
             self.portfolio,
             self.request_pile,
-            self.request_flag
+            self.request_flag,
+            Lock()
         )
         print("\nTrading platform")
         pprint(self.trading)

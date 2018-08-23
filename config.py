@@ -167,7 +167,7 @@ strategies_elements = {
 
 # Trading mode
 
-trading_mode = paper # paper # backtest
+trading_mode = backtest # paper # backtest
 n_request_threads = 2
 
 

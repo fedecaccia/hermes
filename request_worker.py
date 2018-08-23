@@ -14,11 +14,11 @@ class RequestWorker(Thread):
         """
         + Description: constructor
         + Input:
-        - thread_id: integer thread id.
-        - request_queue: pile where requests are stacked.
-        None element act as a signal to finish
-        - request_flag: list of 1 flag ([flag]) to indicate how many workers are bussy.
-        - mutext: thread locker
+        - thread_id: Integer thread id.
+        - request_queue: Pile where requests are stacked.
+        None element act as a signal to finish.
+        - request_flag: List of 1 flag ([flag]) to indicate how many workers are bussy.
+        - mutext: Thread locker.
         + Output:
         -
         """

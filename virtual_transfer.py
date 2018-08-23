@@ -180,11 +180,14 @@ class VirtualTransfer(Algorithm):
             world_time-time0<=self._max_delay_in_data and\
             world_time-time1<=self._max_delay_in_data:
             
-            bid0 = self.data_modules[1].data.iloc[-1]["bid_val_0"]
-            ask0 = self.data_modules[1].data.iloc[-1]["ask_val_0"]
+            bid0 = self.data_modules[0].data.iloc[-1]["bid_val_0"]
+            ask0 = self.data_modules[0].data.iloc[-1]["ask_val_0"]
 
             bid1 = self.data_modules[1].data.iloc[-1]["bid_val_0"]
             ask1 = self.data_modules[1].data.iloc[-1]["ask_val_0"]
+
+            print(ask0, bid0)
+            print(ask1, bid1)
 
             # Compute amount
 
@@ -201,7 +204,7 @@ class VirtualTransfer(Algorithm):
             else:
                 amount = self._usd_amount_to_trade / eth_usd
 
-            # Analyze boyh cases
+            # Analyze both cases
 
             if self._arbitrage_opportunity(bid=bid0, ask=ask1, fee_bid=taker_fee0, fee_ask=taker_fee1):
                 
