@@ -3,5 +3,4 @@ data/*.csv
 data/*.db
 *.pyc
 keys/*.key
-transactions.dat
-
+trades/ini*

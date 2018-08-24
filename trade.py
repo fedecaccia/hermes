@@ -1,5 +1,7 @@
 import definitions
 
+import datetime
+
 
 class Trade(object):
 
@@ -30,6 +32,8 @@ class Trade(object):
         self.request_pile = request_pile
         self.request_flag = request_flag
         self.mutex = mutex
+        # self._transactions_file = "transactions.dat"
+        self._transactions_file = "trades/ini"+str(datetime.datetime.now())+".dat"
 
     def execute_order(self, asset_id, order_type, side, amount, params):
         
@@ -58,13 +62,9 @@ class Trade(object):
 
             self._call_threads_to_trade(asset_id, symbol, exchange, account, side, amount_to_trade, order_type, params)
         
-            with open("transactions.dat", "a") as out:
+            with open(self._transactions_file, "a") as out:
                 out.write("\n"+str(self.world.get_time()))
-                out.write("\n"+asset_id)
-                out.write("\n"+order_type)
-                out.write("\n"+side)
-                out.write("\n"+str(amount_to_trade))
-                out.write("\n"+str(params))
+                out.write("\n"+asset_id + " " + side + " " + str(params))
                 out.write("\n")
 
         else:

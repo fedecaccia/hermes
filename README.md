@@ -43,6 +43,7 @@ Under development.
 - [x] ~~Strategy: check available margin in portfolio to execute algorithms in margin accounts. (check asssets by thrs keys)~~
 - [x] ~~Strategy: manage oracle updates.~~
 - [X] ~~Strategy: manage portfolio updates.~~
+- [ ] **config.py: Make a config file creator reading a simple output.**
 - [ ] Strategy: check margin limits to show warnings.
 - [ ] Strategy: check order status (and wait for that).
 - [ ] World: save order ids.
@@ -57,7 +58,7 @@ Under development.
 - [x] ~~Algorithms: implement simple virtual transfer idea.~~
 - [ ] Algorithms: implement pair trading.
 - [ ] DataModule: implement efficient TA calculation (only update new values and not recalculate everything).
-- [ ] Trade: Store transactions.
+- [x] ~~Trade: Store transactions.~~
 - [ ] Portolio: Compute P&L per asset.
 - [ ] Portolio: Compute P&L in usd.
 - [ ] Portolio: Compute P&L in other coins.

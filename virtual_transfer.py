@@ -186,9 +186,6 @@ class VirtualTransfer(Algorithm):
             bid1 = self.data_modules[1].data.iloc[-1]["bid_val_0"]
             ask1 = self.data_modules[1].data.iloc[-1]["ask_val_0"]
 
-            print(ask0, bid0)
-            print(ask1, bid1)
-
             # Compute amount
 
             btc_usd = self._oracle.get_price(
