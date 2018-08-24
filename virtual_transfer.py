@@ -191,10 +191,9 @@ class VirtualTransfer(Algorithm):
 
             # Compute amount
 
-            btc_usd = self._oracle.get_amount_in_base(
+            btc_usd = self._oracle.get_price(
                 definitions.btc,
-                definitions.usd,
-                self._usd_amount_to_trade
+                definitions.usd
             )
             
             eth_usd = ask1*btc_usd # ask1 as price example

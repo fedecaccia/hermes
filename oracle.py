@@ -42,31 +42,29 @@ class Oracle(object):
             self.tickers = self.world.get_tickers()
             self._last_update = self.world.get_time()
 
-    def get_amount_in_base(self, base, quote, quote_amount):
+    def get_price(self, base, quote):
 
         """
-        + Description: Returns the equivalent value of base amount to quote_amount.
+        + Description: Returns the last saved price of the symbol given: base/quote.
         + Input:
         - base: Asset currency string name.
         - quote: Quote currency string name.
-        - quote_amount: Float amount of quote currency.
         + Output:
-        -
+        - price: float price.
         """
 
         symbol = base.upper()+"/"+quote.upper()
 
         try:
             price = self.tickers[symbol][definitions.last]
-            amount = quote_amount/price
         except:
-            if quote.upper() == "USD":
+            if quote.upper() == "USD": # look for price in USDT
                 try:
                     price = self.tickers[symbol+"T"][definitions.last]
-                    amount = quote_amount/price
                 except:
-                    raise ValueError("Error in oracle trying to retrieve last for symbol: '"+symbol+"'.")
+                    raise ValueError("Error in oracle trying to retrieve last for symbol: '"+symbol+"T'.")
             else:
                 raise ValueError("Error in oracle trying to retrieve last for symbol: '"+symbol+"'.")
         
-        return amount
+        return price
+

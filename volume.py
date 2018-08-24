@@ -174,10 +174,9 @@ class Volume(Algorithm):
         if ma_vol is None or vol is None or ma_price is None or prev_price is None or last_price is None:
             return self._signals, params
         
-        btc_usd = self._oracle.get_amount_in_base(
+        btc_usd = self._oracle.get_price(
             definitions.btc,
-            definitions.usd,
-            self._usd_amount_to_trade
+            definitions.usd
         )
         
         eth_usd = last_price*btc_usd

@@ -50,32 +50,37 @@ class Trade(object):
         account = self.assets[asset_id].account
         symbol = self.assets[asset_id].symbol
         base, quote = symbol.split("/")[:2]
-        trade_available = False
+        funds_available = False
 
         if side == definitions.sell:
 
-            if amount == definitions.full:
-                
-                amount = self.portfolio.get_amount_of_asset(exchange, account, base)
+            base_in_portfolio = self.portfolio.get_amount_of_asset(exchange, account, base)
+
+            if amount == definitions.full:                
+                amount_to_sell = base_in_portfolio
+            else:
+                amount_to_sell = amount
             
-            trade_available = self._funds_are_available_to_sell(exchange, account, base, amount)
+            funds_available = amount_to_sell <= base_in_portfolio
+            amount_to_trade = amount_to_sell
 
         elif side == definitions.buy:
 
-            quote_available = self.portfolio.get_amount_of_asset(exchange, account, quote)
-            print("quote available", quote_available)
-            amount_available_to_buy = self.oracle.get_amount_in_base(base, quote, quote_available)
-            print("base available", amount_available_to_buy)
+            quote_in_portfolio = self.portfolio.get_amount_of_asset(exchange, account, quote)
+            base_price = self.oracle.get_price(base, quote)
+            max_base_to_buy = quote_in_portfolio / base_price
 
-            if amount == definitions.full:
-                
+            if amount == definitions.full:                
                 # in this case we are trying to buy as much as we can
-                # to secure this, we try to buy the 97% if the aproximated value the oracle tell us
-                amount = amount_available_to_buy*0.97
+                # to secure this, we try to buy the 97% of the aproximated value the oracle tell us
+                amount_to_buy = max_base_to_buy*0.97
+            else:
+                amount_to_buy = amount
             
-            trade_available = amount < amount_available_to_buy
+            funds_available = max_base_to_buy >= amount_to_buy
+            amount_to_trade = amount_to_buy
 
-        if trade_available:
+        if funds_available:
         
             self.mutex.acquire()
             self.request_flag[0] += 1
@@ -89,7 +94,7 @@ class Trade(object):
                     definitions.exchange:exchange,
                     definitions.account:account,
                     definitions.side:side,
-                    definitions.amount:amount,
+                    definitions.amount:amount_to_trade,
                     definitions.order_type:order_type,
                     definitions.params:params                
                     }
@@ -103,21 +108,9 @@ class Trade(object):
                 out.write("\n"+asset_id)
                 out.write("\n"+order_type)
                 out.write("\n"+side)
-                out.write("\n"+str(amount))
+                out.write("\n"+str(amount_to_trade))
                 out.write("\n"+str(params))
                 out.write("\n")
 
         else:
             print("WARNING: Funds are not enough")
-
-    def _funds_are_available_to_sell(self, exchange, account, currency, amount):
-
-        """
-        + Description: Check if amount of funds are available to sell.
-        + Input:
-        - 
-        + Output:
-        -
-        """
-        
-        return self.portfolio.get_amount_of_asset(exchange, account, currency) >= amount
