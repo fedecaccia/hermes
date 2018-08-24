@@ -50,7 +50,43 @@ class Trade(object):
         account = self.assets[asset_id].account
         symbol = self.assets[asset_id].symbol
         base, quote = symbol.split("/")[:2]
-        funds_available = False
+        funds_are_available = False
+
+        funds_are_available, amount_to_trade = self._evaluate_funds(side, amount, exchange, account, base, quote)
+
+        if funds_are_available:
+
+            self._call_threads_to_trade(asset_id, symbol, exchange, account, side, amount_to_trade, order_type, params)
+        
+            with open("transactions.dat", "a") as out:
+                out.write("\n"+str(self.world.get_time()))
+                out.write("\n"+asset_id)
+                out.write("\n"+order_type)
+                out.write("\n"+side)
+                out.write("\n"+str(amount_to_trade))
+                out.write("\n"+str(params))
+                out.write("\n")
+
+        else:
+            print("WARNING: Funds are not enough")
+
+
+    def _evaluate_funds(self, side, amount, exchange, account, base, quote):
+
+        """
+        + Description: Evaluate if funds are available to trade.
+        + Input:
+        - side: "buy" or "sell" string sides.
+        - amount: float amount to trade or "full" string.
+        In "full" case, the function computes the maximum amount able to trade.
+        - exchange: Exchange string name.
+        - account: Account in exchange string name.
+        - base: Base currency string name.
+        - quote: Quote currency string name.
+        + Output:
+        - funds_are_available: Bool indicating whether funds are available to trade or not.
+        - amount_to_trade: Float amount to buy or to sell.
+        """
 
         if side == definitions.sell:
 
@@ -61,7 +97,7 @@ class Trade(object):
             else:
                 amount_to_sell = amount
             
-            funds_available = amount_to_sell <= base_in_portfolio
+            funds_are_available = amount_to_sell <= base_in_portfolio
             amount_to_trade = amount_to_sell
 
         elif side == definitions.buy:
@@ -77,40 +113,45 @@ class Trade(object):
             else:
                 amount_to_buy = amount
             
-            funds_available = max_base_to_buy >= amount_to_buy
+            funds_are_available = max_base_to_buy >= amount_to_buy
             amount_to_trade = amount_to_buy
 
-        if funds_available:
-        
-            self.mutex.acquire()
-            self.request_flag[0] += 1
-            self.mutex.release()
+        return funds_are_available, amount_to_trade
 
-            self.request_pile.put({
-                definitions.function:self.world.post_order,
-                definitions.params:{
-                    definitions.asset_id:asset_id,
-                    definitions.symbol:symbol,
-                    definitions.exchange:exchange,
-                    definitions.account:account,
-                    definitions.side:side,
-                    definitions.amount:amount_to_trade,
-                    definitions.order_type:order_type,
-                    definitions.params:params                
-                    }
-                })
+    def _call_threads_to_trade(self, asset_id, symbol, exchange, account, side, amount_to_trade, order_type, params):
 
-            while self.request_flag[0]>0:
-                pass
+        """
+        + Description: Put trade order in a pile where workers collect works.
+        + Input:
+        - asset_id: Asset id string name.
+        - symbol: Symbol string name.
+        - exchange: Exchange string name.
+        - account: Account in exchange string name.
+        - side: "buy" or "sell" string sides.
+        - amount_to_trade: Float amount to buy or to sell.
+        - order_type: Type of order string name.
+        - params: Dictionary of parameters required to post order.
+        + Output:
+        -
+        """
 
-            with open("transactions.dat", "a") as out:
-                out.write("\n"+str(self.world.get_time()))
-                out.write("\n"+asset_id)
-                out.write("\n"+order_type)
-                out.write("\n"+side)
-                out.write("\n"+str(amount_to_trade))
-                out.write("\n"+str(params))
-                out.write("\n")
+        self.mutex.acquire()
+        self.request_flag[0] += 1
+        self.mutex.release()
 
-        else:
-            print("WARNING: Funds are not enough")
+        self.request_pile.put({
+            definitions.function:self.world.post_order,
+            definitions.params:{
+                definitions.asset_id:asset_id,
+                definitions.symbol:symbol,
+                definitions.exchange:exchange,
+                definitions.account:account,
+                definitions.side:side,
+                definitions.amount:amount_to_trade,
+                definitions.order_type:order_type,
+                definitions.params:params                
+                }
+            })
+
+        while self.request_flag[0]>0:
+            pass
