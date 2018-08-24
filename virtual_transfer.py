@@ -246,9 +246,9 @@ class VirtualTransfer(Algorithm):
         """
 
         profit = -bid*(1+fee_bid) + ask*(1-fee_ask)
-        print("profit", profit)
-
+        
         if profit>0.0000001:
+            print("profit", profit)
             return True
 
         else:
