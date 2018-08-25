@@ -5,6 +5,8 @@ from definitions import *
 #                  ALGORITHM SECTION
 #######################################################
 
+# PAIR TRADING
+
 # Data modules
 
 data_elements = {
@@ -54,8 +56,8 @@ assets_elements = {
 # Algorithms
 
 algorithms_elements = {
-  "virtual_arbitrage":{
-    algorithm:virtual_transfer,
+  "pair_trading":{
+    algorithm:statarb,
     data_modules_array:[
       "orderbook_batbtc_bitfinex",
       "orderbook_batbtc_binance"
@@ -74,7 +76,8 @@ algorithms_elements = {
       limit_buy_pct:100,
       limit_sell_pct:100,
       max_delay_in_data:2, # seconds
-      usd_amount_to_trade:50 # 10, 15, full
+      usd_amount_to_trade:50, # 10, 15, full
+      period:30, # amount of data points to compute mean
     }
   }
 }
@@ -83,7 +86,7 @@ algorithms_elements = {
 
 strategies_elements = {
   "arbitrage":{
-    algorithms_array:["virtual_arbitrage"],
+    algorithms_array:["pair_trading"],
     thresholds:{
       "batbtc_bitfinex":{
         long_threshold:1,
@@ -97,6 +100,103 @@ strategies_elements = {
     order_type:limit   
   }
 }
+
+# VIRTUAL ARBITRAGE BATBTC
+
+# # Data modules
+
+# data_elements = {
+#   "orderbook_batbtc_binance":{
+#     description: batbtc,
+#     source: binance,
+#     data_type: orderbook,
+#     timeframe: one_sec,
+#     data_format: csv,
+#     header_format: cdm,
+#     file_name: "./sample/orderbookbittrexETHBTC.csv"
+#     # db_file = "sqlite:///data/data.db"
+#     # mongo_port = ""
+#   },
+#   "orderbook_batbtc_bitfinex":{
+#     description: batbtc,
+#     source: bitfinex,
+#     data_type: orderbook,
+#     timeframe: one_sec,
+#     data_format: csv,
+#     header_format: cdm,
+#     file_name: "./sample/orderbookbinanceETHBTC.csv"
+#     # db_file = "sqlite:///data/data.db"
+#     # mongo_port = ""
+#   },
+# }
+
+# # Assets
+
+# assets_elements = {
+#   "batbtc_bitfinex":{
+#     symbol:batbtc,
+#     base:bat,
+#     quote:btc,
+#     exchange:bitfinex,
+#     account:trading
+#   },
+#   "batbtc_binance":{
+#     symbol:batbtc,
+#     base:bat,
+#     quote:btc,
+#     exchange:binance,
+#     account:trading
+#   }
+# }
+
+# # Algorithms
+
+# algorithms_elements = {
+#   "virtual_arbitrage":{
+#     algorithm:virtual_transfer,
+#     data_modules_array:[
+#       "orderbook_batbtc_bitfinex",
+#       "orderbook_batbtc_binance"
+#       ],
+#     signals:{
+#       "batbtc_bitfinex":{
+#         long_signal:+1,
+#         short_signal:-1
+#       },
+#       "batbtc_binance":{
+#         long_signal:+1,
+#         short_signal:-1
+#       }
+#     },
+#     algo_params:{
+#       limit_buy_pct:100,
+#       limit_sell_pct:100,
+#       max_delay_in_data:2, # seconds
+#       usd_amount_to_trade:50 # 10, 15, full
+#     }
+#   }
+# }
+
+# # Strategies
+
+# strategies_elements = {
+#   "arbitrage":{
+#     algorithms_array:["virtual_arbitrage"],
+#     thresholds:{
+#       "batbtc_bitfinex":{
+#         long_threshold:1,
+#         short_threshold:-1
+#       },
+#       "batbtc_binance":{
+#         long_threshold:1,
+#         short_threshold:-1
+#       }
+#     },
+#     order_type:limit   
+#   }
+# }
+
+# VIRTUAL ARBITRAGE ETHBTC
 
 # # Data modules
 
@@ -190,6 +290,8 @@ strategies_elements = {
 #     order_type:limit   
 #   }
 # }
+
+# VOLUME
 
 # # Data modules
 

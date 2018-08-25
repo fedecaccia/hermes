@@ -297,6 +297,9 @@ class Bitfinex(Exchange):
         return margin_balance
 
     def _wait_rate_limit(self):
+        # candles: 30 req/min
+        # orderbooks: 60 req/min
+        # others: see https://docs.bitfinex.com/v1/reference
         while (time.time() - self.last_request_time)<self.client.rateLimit*2/1000:
             pass
 
