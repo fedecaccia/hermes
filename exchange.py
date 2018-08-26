@@ -6,6 +6,7 @@ import time
 import pandas as pd
 
 from ccxt.base.errors import DDoSProtection
+from ccxt.base.errors import RequestTimeout
 from abc import ABC, abstractmethod
 
 
@@ -84,6 +85,8 @@ class Exchange(ABC):
             res = self.client.fetch_balance()
         except DDoSProtection:
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
+        except RequestTimeout:
+            print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
         else:
             trading_balances = {}
             for key, values in res.items():
@@ -130,6 +133,8 @@ class Exchange(ABC):
             tickers =  self.client.fetch_tickers()
         except DDoSProtection:
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
+        except RequestTimeout:
+            print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
         finally:
             self.last_request_time = time.time()
 
@@ -151,6 +156,8 @@ class Exchange(ABC):
             tickers = self.client.fetch_tickers()
         except DDoSProtection:
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
+        except RequestTimeout:
+            print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
         finally:
             self.last_request_time = time.time()
 
@@ -173,6 +180,8 @@ class Exchange(ABC):
             orderbook = self.client.fetchOrderBook(ticker)
         except DDoSProtection:
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
+        except RequestTimeout:
+            print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
         finally:
             self.last_request_time = time.time()
 
@@ -198,6 +207,8 @@ class Exchange(ABC):
             candles = self.client.fetch_ohlcv(ticker, timeframe, since, limit)
         except DDoSProtection:            
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
+        except RequestTimeout:
+            print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
         finally:
             self.last_request_time = time.time()
             
@@ -273,6 +284,8 @@ class Bitfinex(Exchange):
             res = self.client.private_post_margin_infos()[0]
         except DDoSProtection:            
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
+        except RequestTimeout:
+            print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
         finally:
             self.last_request_time = time.time()        
         

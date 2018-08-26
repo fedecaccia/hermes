@@ -25,7 +25,9 @@ btcusd = "BTC/USD"
 ethusd = "ETH/USD"
 ethbtc = "ETH/BTC"
 batbtc = "BAT/BTC"
-all_tickers = [btcusd, ethusd, ethbtc, batbtc]
+neobtc = "NEO/BTC"
+adabtc = "ADA/BTC"
+all_tickers = [btcusd, ethusd, ethbtc, batbtc, neobtc, adabtc]
 
 # Coins definition
 
@@ -34,6 +36,8 @@ eur = "EUR"
 btc = "BTC"
 eth = "ETH"
 bat = "BAT"
+neo = "NEO"
+ada = "ADA"
 asset_id = "asset_id"
 
 # Other description definitions

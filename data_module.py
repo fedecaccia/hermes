@@ -286,7 +286,7 @@ class Orderbook(DataModule):
         """
 
         book = incoming_data
-        if self.book_is_valid(book):
+        if self._book_is_valid(book):
             if self.mode == definitions.backtest:
 
                 # index is correctly readed in world as a pandas timestamp
@@ -295,10 +295,10 @@ class Orderbook(DataModule):
                 data.pop("datetime")
                 
             else:
-                bid_weight_val_1, bid_weight_count_1 = self.weighted_orders(book['bids'], limit=5)
-                bid_weight_val_2, bid_weight_count_2 = self.weighted_orders(book['bids'], limit=10)
-                ask_weight_val_1, ask_weight_count_1 = self.weighted_orders(book['asks'], limit=5)
-                ask_weight_val_2, ask_weight_count_2 = self.weighted_orders(book['asks'], limit=10)
+                bid_weight_val_1, bid_weight_count_1 = self._weighted_orders(book['bids'], limit=5)
+                bid_weight_val_2, bid_weight_count_2 = self._weighted_orders(book['bids'], limit=10)
+                ask_weight_val_1, ask_weight_count_1 = self._weighted_orders(book['asks'], limit=5)
+                ask_weight_val_2, ask_weight_count_2 = self._weighted_orders(book['asks'], limit=10)
                 index = [datetime.datetime.now()]
                 data = {
                     "bid_weight_val_1":bid_weight_val_1,
@@ -336,7 +336,7 @@ class Orderbook(DataModule):
                 # new data only appends
                 self.data = self.data.append(df)
 
-    def book_is_valid(self, book):
+    def _book_is_valid(self, book):
 
         if book is None:
             return False
@@ -348,7 +348,7 @@ class Orderbook(DataModule):
             return False
         return True
 
-    def weighted_orders(self, book, limit):
+    def _weighted_orders(self, book, limit):
         
         weighted_value = 0
         count = 0

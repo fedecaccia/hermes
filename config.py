@@ -32,6 +32,50 @@ data_elements = {
     # db_file = "sqlite:///data/data.db"
     # mongo_port = ""
   },
+  "orderbook_neobtc_binance":{
+    description: neobtc,
+    source: binance,
+    data_type: orderbook,
+    timeframe: one_sec,
+    data_format: csv,
+    header_format: cdm,
+    file_name: "./sample/orderbookbittrexETHBTC.csv"
+    # db_file = "sqlite:///data/data.db"
+    # mongo_port = ""
+  },
+  "orderbook_neobtc_bittrex":{
+    description: neobtc,
+    source: bittrex,
+    data_type: orderbook,
+    timeframe: one_sec,
+    data_format: csv,
+    header_format: cdm,
+    file_name: "./sample/orderbookbinanceETHBTC.csv"
+    # db_file = "sqlite:///data/data.db"
+    # mongo_port = ""
+  },
+  "orderbook_adabtc_binance":{
+    description: adabtc,
+    source: binance,
+    data_type: orderbook,
+    timeframe: one_sec,
+    data_format: csv,
+    header_format: cdm,
+    file_name: "./sample/orderbookbittrexETHBTC.csv"
+    # db_file = "sqlite:///data/data.db"
+    # mongo_port = ""
+  },
+  "orderbook_adabtc_bittrex":{
+    description: adabtc,
+    source: bittrex,
+    data_type: orderbook,
+    timeframe: one_sec,
+    data_format: csv,
+    header_format: cdm,
+    file_name: "./sample/orderbookbinanceETHBTC.csv"
+    # db_file = "sqlite:///data/data.db"
+    # mongo_port = ""
+  }
 }
 
 # Assets
@@ -50,13 +94,41 @@ assets_elements = {
     quote:btc,
     exchange:binance,
     account:trading
+  },
+  "neobtc_bittrex":{
+    symbol:neobtc,
+    base:neo,
+    quote:btc,
+    exchange:bittrex,
+    account:trading
+  },
+  "neobtc_binance":{
+    symbol:neobtc,
+    base:neo,
+    quote:btc,
+    exchange:binance,
+    account:trading
+  },
+  "adabtc_bittrex":{
+    symbol:adabtc,
+    base:ada,
+    quote:btc,
+    exchange:bittrex,
+    account:trading
+  },
+  "adabtc_binance":{
+    symbol:adabtc,
+    base:ada,
+    quote:btc,
+    exchange:binance,
+    account:trading
   }
 }
 
 # Algorithms
 
 algorithms_elements = {
-  "pair_trading":{
+  "arbitrage_batbtc":{
     algorithm:statarb,
     data_modules_array:[
       "orderbook_batbtc_bitfinex",
@@ -79,14 +151,62 @@ algorithms_elements = {
       usd_amount_to_trade:50, # 10, 15, full
       period:30, # amount of data points to compute mean
     }
+  },
+  "arbitrage_neobtc":{
+    algorithm:statarb,
+    data_modules_array:[
+      "orderbook_neobtc_bittrex",
+      "orderbook_neobtc_binance"
+      ],
+    signals:{
+      "neobtc_bittrex":{
+        long_signal:+1,
+        short_signal:-1
+      },
+      "neobtc_binance":{
+        long_signal:+1,
+        short_signal:-1
+      }
+    },
+    algo_params:{
+      limit_buy_pct:100,
+      limit_sell_pct:100,
+      max_delay_in_data:2, # seconds
+      usd_amount_to_trade:50, # 10, 15, full
+      period:30, # amount of data points to compute mean
+    }
+  },
+  "arbitrage_adabtc":{
+    algorithm:statarb,
+    data_modules_array:[
+      "orderbook_adabtc_bittrex",
+      "orderbook_adabtc_binance"
+      ],
+    signals:{
+      "adabtc_bittrex":{
+        long_signal:+1,
+        short_signal:-1
+      },
+      "adabtc_binance":{
+        long_signal:+1,
+        short_signal:-1
+      }
+    },
+    algo_params:{
+      limit_buy_pct:100,
+      limit_sell_pct:100,
+      max_delay_in_data:2, # seconds
+      usd_amount_to_trade:50, # 10, 15, full
+      period:30, # amount of data points to compute mean
+    }
   }
 }
 
 # Strategies
 
 strategies_elements = {
-  "arbitrage":{
-    algorithms_array:["pair_trading"],
+  "arbitrage1":{
+    algorithms_array:["arbitrage_batbtc"],
     thresholds:{
       "batbtc_bitfinex":{
         long_threshold:1,
@@ -97,7 +217,35 @@ strategies_elements = {
         short_threshold:-1
       }
     },
-    order_type:limit   
+    order_type:limit
+  },
+  "arbitrage2":{
+    algorithms_array:["arbitrage_neobtc"],
+    thresholds:{
+      "neobtc_bittrex":{
+        long_threshold:1,
+        short_threshold:-1
+      },
+      "neobtc_binance":{
+        long_threshold:1,
+        short_threshold:-1
+      }
+    },
+    order_type:limit
+  },
+  "arbitrage3":{
+    algorithms_array:["arbitrage_adabtc"],
+    thresholds:{
+      "adabtc_bittrex":{
+        long_threshold:1,
+        short_threshold:-1
+      },
+      "adabtc_binance":{
+        long_threshold:1,
+        short_threshold:-1
+      }
+    },
+    order_type:limit
   }
 }
 
@@ -378,12 +526,22 @@ virtual_portfolio = {
       eth:{
         free:100,
         used:0,
-        total:100,
+        total:100
       },
       btc:{
         free:10,
         used:0,
-        total:10,
+        total:10
+      },
+      neo:{
+        free:1000,
+        used:0,
+        total:1000
+      },
+      ada:{
+        free:1000,
+        used:0,
+        total:1000
       }
     }
   },
@@ -392,17 +550,27 @@ virtual_portfolio = {
       eth:{
         free:100,
         used:0,
-        total:100,
+        total:100
       },
       btc:{
         free:10,
         used:0,
-        total:10,
+        total:10
       },
       bat:{
         free:1000,
         used:0,
-        total:1000,
+        total:1000
+      },
+      neo:{
+        free:1000,
+        used:0,
+        total:1000
+      },
+      ada:{
+        free:1000,
+        used:0,
+        total:1000
       }
     }
   },
@@ -411,17 +579,27 @@ virtual_portfolio = {
       eth:{
         free:100,
         used:0,
-        total:100,
+        total:100
       },
       btc:{
         free:10,
         used:0,
-        total:10,
+        total:10
       },
       bat:{
         free:1000,
         used:0,
         total:1000,
+      },
+      neo:{
+        free:1000,
+        used:0,
+        total:1000
+      },
+      ada:{
+        free:1000,
+        used:0,
+        total:1000
       }
     }
   }
