@@ -1,0 +1,51 @@
+data
+  data_type orderbook
+  timeframe one_sec
+  data_format csv
+  header_format cdm
+  elements
+    BTC/USD Bitstamp data/orderbookBitstampBTCUSD.csv
+    BTC/USD Bittrex data/orderbookBittrexpBTCUSD.csv
+    BTC/USD Cex data/orderbookCexBTCUSD.csv
+    BTC/USD Exmo data/orderbookExmoBTCUSD.csv
+    BTC/USD Gatecoin data/orderbookGatecoinBTCUSD.csv
+    BTC/USD Gdax data/orderbookGdaxBTCUSD.csv
+    BTC/USD Gemini data/orderbookGeminiBTCUSD.csv
+    BTC/USD Kraken data/orderbookKrakenBTCUSD.csv
+    BTC/USD Okex data/orderbookOkexBTCUSD.csv
+    BTC/USD Yobit data/orderbookYobitBTCUSD.csv
+  end
+end
+
+algorithms
+  signals 1 -1
+  algo_params
+    limit_buy_pct 100
+    limit_sell_pct 100
+    max_delay_in_data 2
+    usd_amount_to_trade 50
+    period 30
+  end
+end
+
+strategies
+  thresholds 1 -1
+  order_type limit
+end
+
+general_settings
+  trading_mode backtest
+  n_request_threads 2
+  time_step one_min
+  virtual_portfolio infinite
+  virtual_tickers
+    btcusd 6500
+    ethusd 300
+    ethbtc 0.046
+  end
+  api_keys_files 
+    binance: keys/binance.key
+    bitfinex: keys/bitfinex.key
+    bittrex: keys/bittrex.key
+  end
+end
