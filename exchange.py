@@ -313,7 +313,10 @@ class Bitfinex(Exchange):
         # candles: 30 req/min
         # orderbooks: 60 req/min
         # others: see https://docs.bitfinex.com/v1/reference
-        while (time.time() - self.last_request_time)<self.client.rateLimit*2/1000:
+        # their actual rate limit is significantly more strict than documented!
+        # 'rateLimit': 3000, # once every 3 seconds, 20 times per minute – will work
+        rateLimit = 3000
+        while (time.time() - self.last_request_time)<rateLimit/1000:
             pass
 
 class Bittrex(Exchange):
