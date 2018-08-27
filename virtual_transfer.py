@@ -193,12 +193,12 @@ class VirtualTransfer(Algorithm):
                 definitions.usd
             )
             
-            eth_usd = ask1*btc_usd # ask1 as price example
+            asset_usd = ask1*btc_usd # ask1 as price example
 
             if self._usd_amount_to_trade == definitions.full:
                 raise ValueError("ERROR! You can't use full amount in arbitrage!")
             else:
-                amount = self._usd_amount_to_trade / eth_usd
+                amount = self._usd_amount_to_trade / asset_usd
 
             # Analyze both cases
 

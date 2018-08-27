@@ -67,6 +67,7 @@ Under development.
 - [x] ~~RealWorld: online public orderbook requests.~~
 - [x] ~~RealWorld: online public candles requests.~~
 - [x] ~~RealWorld: online public balances requests.~~
+- [ ] World & DataModule: specify eactly how data should be stored so users can modify it.
 - [ ] RealWorld: online private post order requests.
 - [ ] **TESTS**.
 - [ ] Implement function to save data in data_module. Similar to crypto_monitor.
@@ -74,6 +75,15 @@ Under development.
 - [ ] Implement multiIP.
 
 ## Notes
+
+### Data
+In order to use the backtesting mode, you are going to need some data. You can use [crypto data monitor](https://github.com/fedecaccia/crypto_data_monitor) to retrieve candles and ordebooks from exchanges and save them as csv, SQL or NoSQL databases. You can also download data from [kaggle](https://www.kaggle.com), [blockchaininfo](https://www.blockchain.com/), [coinmetris](https://coinmetrics.io/) or others (even using your own python script using the [ccxt](https://www.github.com/ccxt/ccxt) library), but be sure to use the same format as Hermes uses to read. The format Hermes requires to read candles is the same format that ccxt uses to return candles. The format required to read orderbooks is a compressed format in wich only the peak points and some weighted orders are stored. If you want to implement your own readers, you should modify the following functions:
+- _load_data_from_csv in class EmulatedWorld (world.py)
+- request_data in class EmulatedWorld (world.py)
+- _particular_update in class Candles (data_module.py)
+- _particular_update in class Orderbook (data_module.py)
+- _book_is_valid in class Orderbook (data_module.py)
+- _weighted_orders in class Orderbook (data_module.py)
 
 ### Fees
 Different exchanges charge fees in different ways.

@@ -25,7 +25,9 @@ btcusd = "BTC/USD"
 ethusd = "ETH/USD"
 ethbtc = "ETH/BTC"
 batbtc = "BAT/BTC"
-all_tickers = [btcusd, ethusd, ethbtc, batbtc]
+neobtc = "NEO/BTC"
+adabtc = "ADA/BTC"
+all_tickers = [btcusd, ethusd, ethbtc, batbtc, neobtc, adabtc]
 
 # Coins definition
 
@@ -34,6 +36,8 @@ eur = "EUR"
 btc = "BTC"
 eth = "ETH"
 bat = "BAT"
+neo = "NEO"
+ada = "ADA"
 asset_id = "asset_id"
 
 # Other description definitions
@@ -82,6 +86,7 @@ crossing_sma = "crossing_sma"
 crossing_ema = "crossing_ema"
 volume = "volume"
 virtual_transfer = "virtual_transfer"
+statarb = "statarb"
 twitter_analysis = "twitter_analysis"
 
 # Backtest data format
@@ -181,6 +186,12 @@ bitfinex_tradable_balance = "tradable_balance"
 # Algorithms
 
 max_delay_in_data = "max_delay_in_data"
+period = "period"
+
+# Positions
+
+short_position = "short_position"
+long_position = "long_position"
 
 # Useful definitions
 

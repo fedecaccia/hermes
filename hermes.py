@@ -9,6 +9,7 @@ from crossing_sma import CrossingSMA
 from volume import Volume
 from twitter_analysis import TwitterAnalysis
 from virtual_transfer import VirtualTransfer
+from statarb import StatArb
 from strategy import Strategy
 from portfolio import Portfolio
 from trade import Trade
@@ -356,6 +357,9 @@ class Hermes(object):
 
             elif algo_values[definitions.algorithm] == definitions.virtual_transfer:
                 self.algorithms[algo_id] = VirtualTransfer(algo_id, algo_values, self.data_modules, self.assets, self.oracle, self.world)
+            
+            elif algo_values[definitions.algorithm] == definitions.statarb:
+                self.algorithms[algo_id] = StatArb(algo_id, algo_values, self.data_modules, self.assets, self.oracle, self.world)
 
             else:
                 raise ValueError("Bad algorithm: '"

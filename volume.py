@@ -179,12 +179,12 @@ class Volume(Algorithm):
             definitions.usd
         )
         
-        eth_usd = last_price*btc_usd
+        asset_usd = last_price*btc_usd
 
         if self._usd_amount_to_trade == definitions.full:
             amount = definitions.full
         else:
-            amount = self._usd_amount_to_trade / eth_usd
+            amount = self._usd_amount_to_trade / asset_usd
 
         # high volume & prices over SMA & prices pumping
         if vol>ma_vol and last_price > ma_price and last_price > prev_price:
