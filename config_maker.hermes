@@ -44,8 +44,8 @@ general_settings
     ethbtc 0.046
   end
   api_keys_files 
-    binance: keys/binance.key
-    bitfinex: keys/bitfinex.key
-    bittrex: keys/bittrex.key
+    binance keys/binance.key
+    bitfinex keys/bitfinex.key
+    bittrex keys/bittrex.key
   end
 end
