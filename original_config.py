@@ -2,7 +2,7 @@ from definitions import *
 
 
 #######################################################
-#                  ALGORITHM SECTION
+#                      DATA SECTION
 #######################################################
 
 # PAIR TRADING
@@ -78,7 +78,9 @@ data_elements = {
   }
 }
 
-# Assets
+#######################################################
+#                      ASSETS SECTION
+#######################################################
 
 assets_elements = {
   "batbtc_bitfinex":{
@@ -125,7 +127,9 @@ assets_elements = {
   }
 }
 
-# Algorithms
+#######################################################
+#                  ALGORITHM SECTION
+#######################################################
 
 algorithms_elements = {
   "arbitrage_batbtc":{
