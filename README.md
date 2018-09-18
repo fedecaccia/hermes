@@ -2,7 +2,17 @@
 Hermes is a crypto platform to test and run trading algorithms.
 
 ## Main features
-Under development.
+
+* Pre-processing: When you work with big data, and you want to prepare tests for multiple combinations of data, you need to write hugh inputs. You can use the config_maker tool to easly prepare these inputs. Now, there is only one tool, the *statarb_config_maker* which is useful to prepare inputs for statistical arbitrage cases, where one would like to specify multiple combinations of opportunities, like testing all BTC/USD arbitrage possibilities among 20 exchanges.
+
+To use the *config_maker* tool, first you need to write with a high level sintaxis the *config_maker.hermes* file, and then execute in the command line:
+```bash
+python3 <type>_config_maker.py
+```
+where <type> should be replaced with the *config_maker* type (which for now there is only one, the *statarb_config_maker* type.)
+The *config_maker* preprocessing tool prepares the *config.py* file which is the real input hermes reads. In case you need it, you can use the pre-processing tool just to prepare a first version of the input, and then modify it.
+
+More features not descripted yet.
 
 ## Installation
 Hermes uses [ta-Lib](https://github.com/mrjbq7/ta-lib) library to compute technical analysis calculations, which is a python wrapper for [TA-Lib](http://ta-lib.org/). To use [ta-Lib](https://github.com/mrjbq7/ta-lib) for python, you need to have [TA-Lib](http://ta-lib.org/) already installed. You should probably follow their installation directions for your platform, but some suggestions are included below for reference.
@@ -42,8 +52,8 @@ Under development.
 - [x] ~~Portfolio: margin structure.~~
 - [x] ~~Strategy: check available margin in portfolio to execute algorithms in margin accounts. (check asssets by thrs keys)~~
 - [x] ~~Strategy: manage oracle updates.~~
-- [X] ~~Strategy: manage portfolio updates.~~
-- [ ] **config.py: Make a config file creator reading a simple output.**
+- [x] ~~Strategy: manage portfolio updates.~~
+- [x] ~~config.py: Make a config file creator reading a simple output.~~
 - [ ] Strategy: check margin limits to show warnings.
 - [ ] Strategy: check order status (and wait for that).
 - [ ] World: save order ids.
