@@ -4,16 +4,16 @@ data
   data_format csv
   header_format cdm
   elements
-    btcusd trading Bitstamp data/orderbookBitstampBTCUSD.csv
-    btcusd trading Bittrex data/orderbookBittrexpBTCUSD.csv
-    btcusd trading Cex data/orderbookCexBTCUSD.csv
-    btcusd trading Exmo data/orderbookExmoBTCUSD.csv
-    btcusd trading Gatecoin data/orderbookGatecoinBTCUSD.csv
-    btcusd trading Gdax data/orderbookGdaxBTCUSD.csv
-    btcusd trading Gemini data/orderbookGeminiBTCUSD.csv
-    btcusd trading Kraken data/orderbookKrakenBTCUSD.csv
-    btcusd trading Okex data/orderbookOkexBTCUSD.csv
-    btcusd trading Yobit data/orderbookYobitBTCUSD.csv
+    btcusd trading bitstamp data/orderbookBitstampBTCUSD.csv
+    btcusd trading bittrex data/orderbookBittrexpBTCUSD.csv
+    btcusd trading cex data/orderbookCexBTCUSD.csv
+    btcusd trading exmo data/orderbookExmoBTCUSD.csv
+    btcusd trading gatecoin data/orderbookGatecoinBTCUSD.csv
+    btcusd trading gdax data/orderbookGdaxBTCUSD.csv
+    btcusd trading gemini data/orderbookGeminiBTCUSD.csv
+    btcusd trading kraken data/orderbookKrakenBTCUSD.csv
+    btcusd trading okex data/orderbookOkexBTCUSD.csv
+    btcusd trading yobit data/orderbookYobitBTCUSD.csv
   end
 end
 

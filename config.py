@@ -6,90 +6,90 @@ from definitions import *
 #######################################################
 
 data_elements = {
-	"orderbook_btcusd_Bitstamp":{
+	"orderbook_btcusd_bitstamp":{
 		description: btcusd,
-		source: Bitstamp,
+		source: bitstamp,
 		data_type: orderbook,
 		timeframe: one_sec,
 		data_format: csv,
 		header_format: cdm,
 		file_name: "data/orderbookBitstampBTCUSD.csv",
 	},
-	"orderbook_btcusd_Bittrex":{
+	"orderbook_btcusd_bittrex":{
 		description: btcusd,
-		source: Bittrex,
+		source: bittrex,
 		data_type: orderbook,
 		timeframe: one_sec,
 		data_format: csv,
 		header_format: cdm,
 		file_name: "data/orderbookBittrexpBTCUSD.csv",
 	},
-	"orderbook_btcusd_Cex":{
+	"orderbook_btcusd_cex":{
 		description: btcusd,
-		source: Cex,
+		source: cex,
 		data_type: orderbook,
 		timeframe: one_sec,
 		data_format: csv,
 		header_format: cdm,
 		file_name: "data/orderbookCexBTCUSD.csv",
 	},
-	"orderbook_btcusd_Exmo":{
+	"orderbook_btcusd_exmo":{
 		description: btcusd,
-		source: Exmo,
+		source: exmo,
 		data_type: orderbook,
 		timeframe: one_sec,
 		data_format: csv,
 		header_format: cdm,
 		file_name: "data/orderbookExmoBTCUSD.csv",
 	},
-	"orderbook_btcusd_Gatecoin":{
+	"orderbook_btcusd_gatecoin":{
 		description: btcusd,
-		source: Gatecoin,
+		source: gatecoin,
 		data_type: orderbook,
 		timeframe: one_sec,
 		data_format: csv,
 		header_format: cdm,
 		file_name: "data/orderbookGatecoinBTCUSD.csv",
 	},
-	"orderbook_btcusd_Gdax":{
+	"orderbook_btcusd_gdax":{
 		description: btcusd,
-		source: Gdax,
+		source: gdax,
 		data_type: orderbook,
 		timeframe: one_sec,
 		data_format: csv,
 		header_format: cdm,
 		file_name: "data/orderbookGdaxBTCUSD.csv",
 	},
-	"orderbook_btcusd_Gemini":{
+	"orderbook_btcusd_gemini":{
 		description: btcusd,
-		source: Gemini,
+		source: gemini,
 		data_type: orderbook,
 		timeframe: one_sec,
 		data_format: csv,
 		header_format: cdm,
 		file_name: "data/orderbookGeminiBTCUSD.csv",
 	},
-	"orderbook_btcusd_Kraken":{
+	"orderbook_btcusd_kraken":{
 		description: btcusd,
-		source: Kraken,
+		source: kraken,
 		data_type: orderbook,
 		timeframe: one_sec,
 		data_format: csv,
 		header_format: cdm,
 		file_name: "data/orderbookKrakenBTCUSD.csv",
 	},
-	"orderbook_btcusd_Okex":{
+	"orderbook_btcusd_okex":{
 		description: btcusd,
-		source: Okex,
+		source: okex,
 		data_type: orderbook,
 		timeframe: one_sec,
 		data_format: csv,
 		header_format: cdm,
 		file_name: "data/orderbookOkexBTCUSD.csv",
 	},
-	"orderbook_btcusd_Yobit":{
+	"orderbook_btcusd_yobit":{
 		description: btcusd,
-		source: Yobit,
+		source: yobit,
 		data_type: orderbook,
 		timeframe: one_sec,
 		data_format: csv,
@@ -103,74 +103,74 @@ data_elements = {
 #######################################################
 
 assets_elements = {
-	"btcusd_Bitstamp":{
+	"btcusd_bitstamp":{
 		symbol: btcusd,
 		base: btc,
 		quote: usd,
-		exchange: Bitstamp,
+		exchange: bitstamp,
 		account: trading,
 	},
-	"btcusd_Bittrex":{
+	"btcusd_bittrex":{
 		symbol: btcusd,
 		base: btc,
 		quote: usd,
-		exchange: Bittrex,
+		exchange: bittrex,
 		account: trading,
 	},
-	"btcusd_Cex":{
+	"btcusd_cex":{
 		symbol: btcusd,
 		base: btc,
 		quote: usd,
-		exchange: Cex,
+		exchange: cex,
 		account: trading,
 	},
-	"btcusd_Exmo":{
+	"btcusd_exmo":{
 		symbol: btcusd,
 		base: btc,
 		quote: usd,
-		exchange: Exmo,
+		exchange: exmo,
 		account: trading,
 	},
-	"btcusd_Gatecoin":{
+	"btcusd_gatecoin":{
 		symbol: btcusd,
 		base: btc,
 		quote: usd,
-		exchange: Gatecoin,
+		exchange: gatecoin,
 		account: trading,
 	},
-	"btcusd_Gdax":{
+	"btcusd_gdax":{
 		symbol: btcusd,
 		base: btc,
 		quote: usd,
-		exchange: Gdax,
+		exchange: gdax,
 		account: trading,
 	},
-	"btcusd_Gemini":{
+	"btcusd_gemini":{
 		symbol: btcusd,
 		base: btc,
 		quote: usd,
-		exchange: Gemini,
+		exchange: gemini,
 		account: trading,
 	},
-	"btcusd_Kraken":{
+	"btcusd_kraken":{
 		symbol: btcusd,
 		base: btc,
 		quote: usd,
-		exchange: Kraken,
+		exchange: kraken,
 		account: trading,
 	},
-	"btcusd_Okex":{
+	"btcusd_okex":{
 		symbol: btcusd,
 		base: btc,
 		quote: usd,
-		exchange: Okex,
+		exchange: okex,
 		account: trading,
 	},
-	"btcusd_Yobit":{
+	"btcusd_yobit":{
 		symbol: btcusd,
 		base: btc,
 		quote: usd,
-		exchange: Yobit,
+		exchange: yobit,
 		account: trading,
 	},
 }
@@ -183,901 +183,901 @@ algorithms_elements = {
 	"arbitrage_0":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bitstamp,
-			orderbook_btcusd_Bittrex
+			orderbook_btcusd_bitstamp,
+			orderbook_btcusd_bittrex
 		],
 		signals: {
-			btcusd_Bitstamp:{
+			btcusd_bitstamp:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_1":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bitstamp,
-			orderbook_btcusd_Cex
+			orderbook_btcusd_bitstamp,
+			orderbook_btcusd_cex
 		],
 		signals: {
-			btcusd_Bitstamp:{
+			btcusd_bitstamp:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_2":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bitstamp,
-			orderbook_btcusd_Exmo
+			orderbook_btcusd_bitstamp,
+			orderbook_btcusd_exmo
 		],
 		signals: {
-			btcusd_Bitstamp:{
+			btcusd_bitstamp:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_3":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bitstamp,
-			orderbook_btcusd_Gatecoin
+			orderbook_btcusd_bitstamp,
+			orderbook_btcusd_gatecoin
 		],
 		signals: {
-			btcusd_Bitstamp:{
+			btcusd_bitstamp:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_4":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bitstamp,
-			orderbook_btcusd_Gdax
+			orderbook_btcusd_bitstamp,
+			orderbook_btcusd_gdax
 		],
 		signals: {
-			btcusd_Bitstamp:{
+			btcusd_bitstamp:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_5":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bitstamp,
-			orderbook_btcusd_Gemini
+			orderbook_btcusd_bitstamp,
+			orderbook_btcusd_gemini
 		],
 		signals: {
-			btcusd_Bitstamp:{
+			btcusd_bitstamp:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_6":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bitstamp,
-			orderbook_btcusd_Kraken
+			orderbook_btcusd_bitstamp,
+			orderbook_btcusd_kraken
 		],
 		signals: {
-			btcusd_Bitstamp:{
+			btcusd_bitstamp:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_7":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bitstamp,
-			orderbook_btcusd_Okex
+			orderbook_btcusd_bitstamp,
+			orderbook_btcusd_okex
 		],
 		signals: {
-			btcusd_Bitstamp:{
+			btcusd_bitstamp:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_8":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bitstamp,
-			orderbook_btcusd_Yobit
+			orderbook_btcusd_bitstamp,
+			orderbook_btcusd_yobit
 		],
 		signals: {
-			btcusd_Bitstamp:{
+			btcusd_bitstamp:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_9":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bittrex,
-			orderbook_btcusd_Cex
+			orderbook_btcusd_bittrex,
+			orderbook_btcusd_cex
 		],
 		signals: {
-			btcusd_Bittrex:{
+			btcusd_bittrex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_10":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bittrex,
-			orderbook_btcusd_Exmo
+			orderbook_btcusd_bittrex,
+			orderbook_btcusd_exmo
 		],
 		signals: {
-			btcusd_Bittrex:{
+			btcusd_bittrex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_11":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bittrex,
-			orderbook_btcusd_Gatecoin
+			orderbook_btcusd_bittrex,
+			orderbook_btcusd_gatecoin
 		],
 		signals: {
-			btcusd_Bittrex:{
+			btcusd_bittrex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_12":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bittrex,
-			orderbook_btcusd_Gdax
+			orderbook_btcusd_bittrex,
+			orderbook_btcusd_gdax
 		],
 		signals: {
-			btcusd_Bittrex:{
+			btcusd_bittrex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_13":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bittrex,
-			orderbook_btcusd_Gemini
+			orderbook_btcusd_bittrex,
+			orderbook_btcusd_gemini
 		],
 		signals: {
-			btcusd_Bittrex:{
+			btcusd_bittrex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_14":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bittrex,
-			orderbook_btcusd_Kraken
+			orderbook_btcusd_bittrex,
+			orderbook_btcusd_kraken
 		],
 		signals: {
-			btcusd_Bittrex:{
+			btcusd_bittrex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_15":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bittrex,
-			orderbook_btcusd_Okex
+			orderbook_btcusd_bittrex,
+			orderbook_btcusd_okex
 		],
 		signals: {
-			btcusd_Bittrex:{
+			btcusd_bittrex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_16":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Bittrex,
-			orderbook_btcusd_Yobit
+			orderbook_btcusd_bittrex,
+			orderbook_btcusd_yobit
 		],
 		signals: {
-			btcusd_Bittrex:{
+			btcusd_bittrex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_17":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Cex,
-			orderbook_btcusd_Exmo
+			orderbook_btcusd_cex,
+			orderbook_btcusd_exmo
 		],
 		signals: {
-			btcusd_Cex:{
+			btcusd_cex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_18":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Cex,
-			orderbook_btcusd_Gatecoin
+			orderbook_btcusd_cex,
+			orderbook_btcusd_gatecoin
 		],
 		signals: {
-			btcusd_Cex:{
+			btcusd_cex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_19":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Cex,
-			orderbook_btcusd_Gdax
+			orderbook_btcusd_cex,
+			orderbook_btcusd_gdax
 		],
 		signals: {
-			btcusd_Cex:{
+			btcusd_cex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_20":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Cex,
-			orderbook_btcusd_Gemini
+			orderbook_btcusd_cex,
+			orderbook_btcusd_gemini
 		],
 		signals: {
-			btcusd_Cex:{
+			btcusd_cex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_21":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Cex,
-			orderbook_btcusd_Kraken
+			orderbook_btcusd_cex,
+			orderbook_btcusd_kraken
 		],
 		signals: {
-			btcusd_Cex:{
+			btcusd_cex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_22":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Cex,
-			orderbook_btcusd_Okex
+			orderbook_btcusd_cex,
+			orderbook_btcusd_okex
 		],
 		signals: {
-			btcusd_Cex:{
+			btcusd_cex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_23":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Cex,
-			orderbook_btcusd_Yobit
+			orderbook_btcusd_cex,
+			orderbook_btcusd_yobit
 		],
 		signals: {
-			btcusd_Cex:{
+			btcusd_cex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_24":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Exmo,
-			orderbook_btcusd_Gatecoin
+			orderbook_btcusd_exmo,
+			orderbook_btcusd_gatecoin
 		],
 		signals: {
-			btcusd_Exmo:{
+			btcusd_exmo:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_25":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Exmo,
-			orderbook_btcusd_Gdax
+			orderbook_btcusd_exmo,
+			orderbook_btcusd_gdax
 		],
 		signals: {
-			btcusd_Exmo:{
+			btcusd_exmo:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_26":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Exmo,
-			orderbook_btcusd_Gemini
+			orderbook_btcusd_exmo,
+			orderbook_btcusd_gemini
 		],
 		signals: {
-			btcusd_Exmo:{
+			btcusd_exmo:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_27":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Exmo,
-			orderbook_btcusd_Kraken
+			orderbook_btcusd_exmo,
+			orderbook_btcusd_kraken
 		],
 		signals: {
-			btcusd_Exmo:{
+			btcusd_exmo:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_28":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Exmo,
-			orderbook_btcusd_Okex
+			orderbook_btcusd_exmo,
+			orderbook_btcusd_okex
 		],
 		signals: {
-			btcusd_Exmo:{
+			btcusd_exmo:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_29":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Exmo,
-			orderbook_btcusd_Yobit
+			orderbook_btcusd_exmo,
+			orderbook_btcusd_yobit
 		],
 		signals: {
-			btcusd_Exmo:{
+			btcusd_exmo:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_30":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Gatecoin,
-			orderbook_btcusd_Gdax
+			orderbook_btcusd_gatecoin,
+			orderbook_btcusd_gdax
 		],
 		signals: {
-			btcusd_Gatecoin:{
+			btcusd_gatecoin:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_31":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Gatecoin,
-			orderbook_btcusd_Gemini
+			orderbook_btcusd_gatecoin,
+			orderbook_btcusd_gemini
 		],
 		signals: {
-			btcusd_Gatecoin:{
+			btcusd_gatecoin:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_32":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Gatecoin,
-			orderbook_btcusd_Kraken
+			orderbook_btcusd_gatecoin,
+			orderbook_btcusd_kraken
 		],
 		signals: {
-			btcusd_Gatecoin:{
+			btcusd_gatecoin:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_33":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Gatecoin,
-			orderbook_btcusd_Okex
+			orderbook_btcusd_gatecoin,
+			orderbook_btcusd_okex
 		],
 		signals: {
-			btcusd_Gatecoin:{
+			btcusd_gatecoin:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_34":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Gatecoin,
-			orderbook_btcusd_Yobit
+			orderbook_btcusd_gatecoin,
+			orderbook_btcusd_yobit
 		],
 		signals: {
-			btcusd_Gatecoin:{
+			btcusd_gatecoin:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_35":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Gdax,
-			orderbook_btcusd_Gemini
+			orderbook_btcusd_gdax,
+			orderbook_btcusd_gemini
 		],
 		signals: {
-			btcusd_Gdax:{
+			btcusd_gdax:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_36":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Gdax,
-			orderbook_btcusd_Kraken
+			orderbook_btcusd_gdax,
+			orderbook_btcusd_kraken
 		],
 		signals: {
-			btcusd_Gdax:{
+			btcusd_gdax:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_37":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Gdax,
-			orderbook_btcusd_Okex
+			orderbook_btcusd_gdax,
+			orderbook_btcusd_okex
 		],
 		signals: {
-			btcusd_Gdax:{
+			btcusd_gdax:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_38":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Gdax,
-			orderbook_btcusd_Yobit
+			orderbook_btcusd_gdax,
+			orderbook_btcusd_yobit
 		],
 		signals: {
-			btcusd_Gdax:{
+			btcusd_gdax:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_39":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Gemini,
-			orderbook_btcusd_Kraken
+			orderbook_btcusd_gemini,
+			orderbook_btcusd_kraken
 		],
 		signals: {
-			btcusd_Gemini:{
+			btcusd_gemini:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_40":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Gemini,
-			orderbook_btcusd_Okex
+			orderbook_btcusd_gemini,
+			orderbook_btcusd_okex
 		],
 		signals: {
-			btcusd_Gemini:{
+			btcusd_gemini:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_41":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Gemini,
-			orderbook_btcusd_Yobit
+			orderbook_btcusd_gemini,
+			orderbook_btcusd_yobit
 		],
 		signals: {
-			btcusd_Gemini:{
+			btcusd_gemini:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_42":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Kraken,
-			orderbook_btcusd_Okex
+			orderbook_btcusd_kraken,
+			orderbook_btcusd_okex
 		],
 		signals: {
-			btcusd_Kraken:{
+			btcusd_kraken:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_43":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Kraken,
-			orderbook_btcusd_Yobit
+			orderbook_btcusd_kraken,
+			orderbook_btcusd_yobit
 		],
 		signals: {
-			btcusd_Kraken:{
+			btcusd_kraken:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_44":{
 		algorithm: statarb,
 		data_modules_array: [
-			orderbook_btcusd_Okex,
-			orderbook_btcusd_Yobit
+			orderbook_btcusd_okex,
+			orderbook_btcusd_yobit
 		],
 		signals: {
-			btcusd_Okex:{
+			btcusd_okex:{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
 			limit_buy_pct:100,
-			usd_amount_to_trade:50,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
+			usd_amount_to_trade:50,
 			period:30,
+			limit_sell_pct:100,
 		},
 	},
 }
@@ -1090,11 +1090,11 @@ strategies_elements = {
 	"strategy_0":{
 		algorithms_array:["arbitrage_0"],
 		thresholds:{
-			"btcusd_Bitstamp":{
+			"btcusd_bitstamp":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Bittrex":{
+			"btcusd_bittrex":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1104,11 +1104,11 @@ strategies_elements = {
 	"strategy_1":{
 		algorithms_array:["arbitrage_1"],
 		thresholds:{
-			"btcusd_Bitstamp":{
+			"btcusd_bitstamp":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Cex":{
+			"btcusd_cex":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1118,11 +1118,11 @@ strategies_elements = {
 	"strategy_2":{
 		algorithms_array:["arbitrage_2"],
 		thresholds:{
-			"btcusd_Bitstamp":{
+			"btcusd_bitstamp":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Exmo":{
+			"btcusd_exmo":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1132,11 +1132,11 @@ strategies_elements = {
 	"strategy_3":{
 		algorithms_array:["arbitrage_3"],
 		thresholds:{
-			"btcusd_Bitstamp":{
+			"btcusd_bitstamp":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gatecoin":{
+			"btcusd_gatecoin":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1146,11 +1146,11 @@ strategies_elements = {
 	"strategy_4":{
 		algorithms_array:["arbitrage_4"],
 		thresholds:{
-			"btcusd_Bitstamp":{
+			"btcusd_bitstamp":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gdax":{
+			"btcusd_gdax":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1160,11 +1160,11 @@ strategies_elements = {
 	"strategy_5":{
 		algorithms_array:["arbitrage_5"],
 		thresholds:{
-			"btcusd_Bitstamp":{
+			"btcusd_bitstamp":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gemini":{
+			"btcusd_gemini":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1174,11 +1174,11 @@ strategies_elements = {
 	"strategy_6":{
 		algorithms_array:["arbitrage_6"],
 		thresholds:{
-			"btcusd_Bitstamp":{
+			"btcusd_bitstamp":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Kraken":{
+			"btcusd_kraken":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1188,11 +1188,11 @@ strategies_elements = {
 	"strategy_7":{
 		algorithms_array:["arbitrage_7"],
 		thresholds:{
-			"btcusd_Bitstamp":{
+			"btcusd_bitstamp":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Okex":{
+			"btcusd_okex":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1202,11 +1202,11 @@ strategies_elements = {
 	"strategy_8":{
 		algorithms_array:["arbitrage_8"],
 		thresholds:{
-			"btcusd_Bitstamp":{
+			"btcusd_bitstamp":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Yobit":{
+			"btcusd_yobit":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1216,11 +1216,11 @@ strategies_elements = {
 	"strategy_9":{
 		algorithms_array:["arbitrage_9"],
 		thresholds:{
-			"btcusd_Bittrex":{
+			"btcusd_bittrex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Cex":{
+			"btcusd_cex":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1230,11 +1230,11 @@ strategies_elements = {
 	"strategy_10":{
 		algorithms_array:["arbitrage_10"],
 		thresholds:{
-			"btcusd_Bittrex":{
+			"btcusd_bittrex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Exmo":{
+			"btcusd_exmo":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1244,11 +1244,11 @@ strategies_elements = {
 	"strategy_11":{
 		algorithms_array:["arbitrage_11"],
 		thresholds:{
-			"btcusd_Bittrex":{
+			"btcusd_bittrex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gatecoin":{
+			"btcusd_gatecoin":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1258,11 +1258,11 @@ strategies_elements = {
 	"strategy_12":{
 		algorithms_array:["arbitrage_12"],
 		thresholds:{
-			"btcusd_Bittrex":{
+			"btcusd_bittrex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gdax":{
+			"btcusd_gdax":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1272,11 +1272,11 @@ strategies_elements = {
 	"strategy_13":{
 		algorithms_array:["arbitrage_13"],
 		thresholds:{
-			"btcusd_Bittrex":{
+			"btcusd_bittrex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gemini":{
+			"btcusd_gemini":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1286,11 +1286,11 @@ strategies_elements = {
 	"strategy_14":{
 		algorithms_array:["arbitrage_14"],
 		thresholds:{
-			"btcusd_Bittrex":{
+			"btcusd_bittrex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Kraken":{
+			"btcusd_kraken":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1300,11 +1300,11 @@ strategies_elements = {
 	"strategy_15":{
 		algorithms_array:["arbitrage_15"],
 		thresholds:{
-			"btcusd_Bittrex":{
+			"btcusd_bittrex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Okex":{
+			"btcusd_okex":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1314,11 +1314,11 @@ strategies_elements = {
 	"strategy_16":{
 		algorithms_array:["arbitrage_16"],
 		thresholds:{
-			"btcusd_Bittrex":{
+			"btcusd_bittrex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Yobit":{
+			"btcusd_yobit":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1328,11 +1328,11 @@ strategies_elements = {
 	"strategy_17":{
 		algorithms_array:["arbitrage_17"],
 		thresholds:{
-			"btcusd_Cex":{
+			"btcusd_cex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Exmo":{
+			"btcusd_exmo":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1342,11 +1342,11 @@ strategies_elements = {
 	"strategy_18":{
 		algorithms_array:["arbitrage_18"],
 		thresholds:{
-			"btcusd_Cex":{
+			"btcusd_cex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gatecoin":{
+			"btcusd_gatecoin":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1356,11 +1356,11 @@ strategies_elements = {
 	"strategy_19":{
 		algorithms_array:["arbitrage_19"],
 		thresholds:{
-			"btcusd_Cex":{
+			"btcusd_cex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gdax":{
+			"btcusd_gdax":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1370,11 +1370,11 @@ strategies_elements = {
 	"strategy_20":{
 		algorithms_array:["arbitrage_20"],
 		thresholds:{
-			"btcusd_Cex":{
+			"btcusd_cex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gemini":{
+			"btcusd_gemini":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1384,11 +1384,11 @@ strategies_elements = {
 	"strategy_21":{
 		algorithms_array:["arbitrage_21"],
 		thresholds:{
-			"btcusd_Cex":{
+			"btcusd_cex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Kraken":{
+			"btcusd_kraken":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1398,11 +1398,11 @@ strategies_elements = {
 	"strategy_22":{
 		algorithms_array:["arbitrage_22"],
 		thresholds:{
-			"btcusd_Cex":{
+			"btcusd_cex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Okex":{
+			"btcusd_okex":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1412,11 +1412,11 @@ strategies_elements = {
 	"strategy_23":{
 		algorithms_array:["arbitrage_23"],
 		thresholds:{
-			"btcusd_Cex":{
+			"btcusd_cex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Yobit":{
+			"btcusd_yobit":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1426,11 +1426,11 @@ strategies_elements = {
 	"strategy_24":{
 		algorithms_array:["arbitrage_24"],
 		thresholds:{
-			"btcusd_Exmo":{
+			"btcusd_exmo":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gatecoin":{
+			"btcusd_gatecoin":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1440,11 +1440,11 @@ strategies_elements = {
 	"strategy_25":{
 		algorithms_array:["arbitrage_25"],
 		thresholds:{
-			"btcusd_Exmo":{
+			"btcusd_exmo":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gdax":{
+			"btcusd_gdax":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1454,11 +1454,11 @@ strategies_elements = {
 	"strategy_26":{
 		algorithms_array:["arbitrage_26"],
 		thresholds:{
-			"btcusd_Exmo":{
+			"btcusd_exmo":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gemini":{
+			"btcusd_gemini":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1468,11 +1468,11 @@ strategies_elements = {
 	"strategy_27":{
 		algorithms_array:["arbitrage_27"],
 		thresholds:{
-			"btcusd_Exmo":{
+			"btcusd_exmo":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Kraken":{
+			"btcusd_kraken":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1482,11 +1482,11 @@ strategies_elements = {
 	"strategy_28":{
 		algorithms_array:["arbitrage_28"],
 		thresholds:{
-			"btcusd_Exmo":{
+			"btcusd_exmo":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Okex":{
+			"btcusd_okex":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1496,11 +1496,11 @@ strategies_elements = {
 	"strategy_29":{
 		algorithms_array:["arbitrage_29"],
 		thresholds:{
-			"btcusd_Exmo":{
+			"btcusd_exmo":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Yobit":{
+			"btcusd_yobit":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1510,11 +1510,11 @@ strategies_elements = {
 	"strategy_30":{
 		algorithms_array:["arbitrage_30"],
 		thresholds:{
-			"btcusd_Gatecoin":{
+			"btcusd_gatecoin":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gdax":{
+			"btcusd_gdax":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1524,11 +1524,11 @@ strategies_elements = {
 	"strategy_31":{
 		algorithms_array:["arbitrage_31"],
 		thresholds:{
-			"btcusd_Gatecoin":{
+			"btcusd_gatecoin":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gemini":{
+			"btcusd_gemini":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1538,11 +1538,11 @@ strategies_elements = {
 	"strategy_32":{
 		algorithms_array:["arbitrage_32"],
 		thresholds:{
-			"btcusd_Gatecoin":{
+			"btcusd_gatecoin":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Kraken":{
+			"btcusd_kraken":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1552,11 +1552,11 @@ strategies_elements = {
 	"strategy_33":{
 		algorithms_array:["arbitrage_33"],
 		thresholds:{
-			"btcusd_Gatecoin":{
+			"btcusd_gatecoin":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Okex":{
+			"btcusd_okex":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1566,11 +1566,11 @@ strategies_elements = {
 	"strategy_34":{
 		algorithms_array:["arbitrage_34"],
 		thresholds:{
-			"btcusd_Gatecoin":{
+			"btcusd_gatecoin":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Yobit":{
+			"btcusd_yobit":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1580,11 +1580,11 @@ strategies_elements = {
 	"strategy_35":{
 		algorithms_array:["arbitrage_35"],
 		thresholds:{
-			"btcusd_Gdax":{
+			"btcusd_gdax":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Gemini":{
+			"btcusd_gemini":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1594,11 +1594,11 @@ strategies_elements = {
 	"strategy_36":{
 		algorithms_array:["arbitrage_36"],
 		thresholds:{
-			"btcusd_Gdax":{
+			"btcusd_gdax":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Kraken":{
+			"btcusd_kraken":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1608,11 +1608,11 @@ strategies_elements = {
 	"strategy_37":{
 		algorithms_array:["arbitrage_37"],
 		thresholds:{
-			"btcusd_Gdax":{
+			"btcusd_gdax":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Okex":{
+			"btcusd_okex":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1622,11 +1622,11 @@ strategies_elements = {
 	"strategy_38":{
 		algorithms_array:["arbitrage_38"],
 		thresholds:{
-			"btcusd_Gdax":{
+			"btcusd_gdax":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Yobit":{
+			"btcusd_yobit":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1636,11 +1636,11 @@ strategies_elements = {
 	"strategy_39":{
 		algorithms_array:["arbitrage_39"],
 		thresholds:{
-			"btcusd_Gemini":{
+			"btcusd_gemini":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Kraken":{
+			"btcusd_kraken":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1650,11 +1650,11 @@ strategies_elements = {
 	"strategy_40":{
 		algorithms_array:["arbitrage_40"],
 		thresholds:{
-			"btcusd_Gemini":{
+			"btcusd_gemini":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Okex":{
+			"btcusd_okex":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1664,11 +1664,11 @@ strategies_elements = {
 	"strategy_41":{
 		algorithms_array:["arbitrage_41"],
 		thresholds:{
-			"btcusd_Gemini":{
+			"btcusd_gemini":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Yobit":{
+			"btcusd_yobit":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1678,11 +1678,11 @@ strategies_elements = {
 	"strategy_42":{
 		algorithms_array:["arbitrage_42"],
 		thresholds:{
-			"btcusd_Kraken":{
+			"btcusd_kraken":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Okex":{
+			"btcusd_okex":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1692,11 +1692,11 @@ strategies_elements = {
 	"strategy_43":{
 		algorithms_array:["arbitrage_43"],
 		thresholds:{
-			"btcusd_Kraken":{
+			"btcusd_kraken":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Yobit":{
+			"btcusd_yobit":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1706,11 +1706,11 @@ strategies_elements = {
 	"strategy_44":{
 		algorithms_array:["arbitrage_44"],
 		thresholds:{
-			"btcusd_Okex":{
+			"btcusd_okex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_Yobit":{
+			"btcusd_yobit":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -1731,7 +1731,7 @@ trading_mode = backtestn_request_threads = 2
 
 time_step = one_min
 virtual_portfolio = {
-	Yobit:{
+	bitstamp:{
 		margin:{
 			btc:{
 				free:9999999,
@@ -1769,7 +1769,7 @@ virtual_portfolio = {
 			},
 		},
 	},
-	Bitstamp:{
+	bittrex:{
 		margin:{
 			btc:{
 				free:9999999,
@@ -1807,7 +1807,7 @@ virtual_portfolio = {
 			},
 		},
 	},
-	Kraken:{
+	gemini:{
 		margin:{
 			btc:{
 				free:9999999,
@@ -1845,7 +1845,7 @@ virtual_portfolio = {
 			},
 		},
 	},
-	Okex:{
+	kraken:{
 		margin:{
 			btc:{
 				free:9999999,
@@ -1883,7 +1883,7 @@ virtual_portfolio = {
 			},
 		},
 	},
-	Cex:{
+	gdax:{
 		margin:{
 			btc:{
 				free:9999999,
@@ -1921,7 +1921,7 @@ virtual_portfolio = {
 			},
 		},
 	},
-	Gatecoin:{
+	okex:{
 		margin:{
 			btc:{
 				free:9999999,
@@ -1959,7 +1959,7 @@ virtual_portfolio = {
 			},
 		},
 	},
-	Gdax:{
+	exmo:{
 		margin:{
 			btc:{
 				free:9999999,
@@ -1997,7 +1997,7 @@ virtual_portfolio = {
 			},
 		},
 	},
-	Bittrex:{
+	yobit:{
 		margin:{
 			btc:{
 				free:9999999,
@@ -2035,7 +2035,7 @@ virtual_portfolio = {
 			},
 		},
 	},
-	Gemini:{
+	cex:{
 		margin:{
 			btc:{
 				free:9999999,
@@ -2073,7 +2073,7 @@ virtual_portfolio = {
 			},
 		},
 	},
-	Exmo:{
+	gatecoin:{
 		margin:{
 			btc:{
 				free:9999999,
@@ -2116,11 +2116,11 @@ virtual_tickers = {
 	btcusd:{
 		last:6300
 	},
-	ethbtc:{
-		last:0.031
-	},
 	ethusd:{
 		last:200
+	},
+	ethbtc:{
+		last:0.031
 	},
 }
 
@@ -2136,9 +2136,9 @@ virtual_tickers = {
 #######################################################
 
 api_keys_files = {
-	bittrex: "keys/bittrex.key",
-	bitfinex: "keys/bitfinex.key",
 	binance: "keys/binance.key",
+	bitfinex: "keys/bitfinex.key",
+	bittrex: "keys/bittrex.key",
 }
 
 

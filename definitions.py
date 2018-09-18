@@ -7,13 +7,37 @@ real = "real"
 # Exchanges definition
 
 bittrex = "bittrex"
+bitstamp = "bitstamp"
 bitfinex = "bitfinex"
 binance = "binance"
+cex = "cex"
+exmo = "exmo"
+gatecoin = "gatecoin"
+gdax = "gdax"
+gemini = "gemini"
+kraken = "kraken"
 kucoin = "kucoin"
 okex = "okex"
 poloniex = "poloniex"
+yobit = "yobit"
+
 exchange = "exchange"
-all_exchanges = [bittrex, bitfinex, binance, kucoin, okex, poloniex]
+all_exchanges = [
+    bittrex,
+    bitstamp,
+    bitfinex,
+    binance,
+    cex,
+    exmo,
+    gatecoin,
+    gdax,
+    gemini,
+    kraken,
+    kucoin,
+    okex,
+    poloniex,
+    yobit
+]
 
 # Other sources definition
 
