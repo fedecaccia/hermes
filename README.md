@@ -3,7 +3,10 @@ Hermes is a crypto platform to test and run trading algorithms.
 
 ## Main features
 
-* Pre-processing: When you work with big data, and you want to prepare tests for multiple combinations of data, you need to write hugh inputs. You can use the config_maker tool to easly prepare these inputs. Now, there is only one tool, the *statarb_config_maker* which is useful to prepare inputs for statistical arbitrage cases, where one would like to specify multiple combinations of opportunities, like testing all BTC/USD arbitrage possibilities among 20 exchanges.
+### Pre-processing: 
+
+When you work with big data, and you want to prepare tests for multiple combinations of data, you need to write hugh inputs. You can use the config_maker tool to easly prepare these inputs. Now, there is only one tool, the *statarb_config_maker* which is useful to prepare inputs for statistical arbitrage cases, where one would like to specify multiple combinations of opportunities, like testing all BTC/USD arbitrage possibilities among 20 exchanges.
+
 To use the *config_maker* tool, first you need to write with a high level sintaxis the *config_maker.hermes* file, and then execute in the command line:
 ```bash
 python3 <type>_config_maker.py
