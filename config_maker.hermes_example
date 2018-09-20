@@ -4,8 +4,16 @@ data
   data_format csv
   header_format cdm
   elements
-    ethbtc trading bittrex sample/orderbookbinanceETHBTC.csv
-    ethbtc trading binance sample/orderbookbittrexETHBTC.csv
+    btcusd trading bitstamp data/orderbookBitstampBTCUSD.csv
+    btcusd trading bittrex data/orderbookBittrexpBTCUSD.csv
+    btcusd trading cex data/orderbookCexBTCUSD.csv
+    btcusd trading exmo data/orderbookExmoBTCUSD.csv
+    btcusd trading gatecoin data/orderbookGatecoinBTCUSD.csv
+    btcusd trading gdax data/orderbookGdaxBTCUSD.csv
+    btcusd trading gemini data/orderbookGeminiBTCUSD.csv
+    btcusd trading kraken data/orderbookKrakenBTCUSD.csv
+    btcusd trading okex data/orderbookOkexBTCUSD.csv
+    btcusd trading yobit data/orderbookYobitBTCUSD.csv
   end
 end
 
