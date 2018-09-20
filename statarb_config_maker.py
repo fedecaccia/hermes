@@ -228,29 +228,32 @@ algo=0
 algorithms = []
 for i, i_element in enumerate(elements[:-1]):
   for j_element in elements[i+1:]:
+    
+    # check both pairs belong to an arbitrage pair
+    if i_element["symbol"]==j_element["symbol"]:
 
-    al_name = "\""+algo_name+"_"+str(algo)+"\""
-    outfile.write("\t"+al_name+":{\n")
-    outfile.write("\t\t"+"algorithm: "+algo_type+",\n")
-    outfile.write("\t\t"+"data_modules_array: ["+"\n")
-    outfile.write("\t\t\t"+"\""+data_type+"_"+i_element["symbol"]+"_"+i_element["exchange"]+"\",\n")
-    outfile.write("\t\t\t"+"\""+data_type+"_"+j_element["symbol"]+"_"+j_element["exchange"]+"\"\n")
-    outfile.write("\t\t"+"],\n")
-    outfile.write("\t\t"+"signals: {"+"\n")
-    outfile.write("\t\t\t"+"\""+i_element["symbol"]+"_"+i_element["exchange"]+"\":{\n")
-    outfile.write("\t\t\t\t"+"long_signal:"+long_signal+",\n")
-    outfile.write("\t\t\t\t"+"short_signal:"+short_signal+",\n")
-    outfile.write("\t\t\t"+"},\n")
-    outfile.write("\t\t"+"},\n")
-    outfile.write("\t\t"+"algo_params: {"+"\n")
-    for param_key, param_val in algo_params.items():
-      outfile.write("\t\t\t"+param_key+":"+param_val+",\n")
-    outfile.write("\t\t"+"},\n")
-    outfile.write("\t},\n")
-    algo+=1
-    algorithms.append({"name":al_name,
-                       "elem0":"\""+i_element["symbol"]+"_"+i_element["exchange"]+"\"",
-                       "elem1":"\""+j_element["symbol"]+"_"+j_element["exchange"]+"\""})
+      al_name = "\""+algo_name+"_"+str(algo)+"\""
+      outfile.write("\t"+al_name+":{\n")
+      outfile.write("\t\t"+"algorithm: "+algo_type+",\n")
+      outfile.write("\t\t"+"data_modules_array: ["+"\n")
+      outfile.write("\t\t\t"+"\""+data_type+"_"+i_element["symbol"]+"_"+i_element["exchange"]+"\",\n")
+      outfile.write("\t\t\t"+"\""+data_type+"_"+j_element["symbol"]+"_"+j_element["exchange"]+"\"\n")
+      outfile.write("\t\t"+"],\n")
+      outfile.write("\t\t"+"signals: {"+"\n")
+      outfile.write("\t\t\t"+"\""+i_element["symbol"]+"_"+i_element["exchange"]+"\":{\n")
+      outfile.write("\t\t\t\t"+"long_signal:"+long_signal+",\n")
+      outfile.write("\t\t\t\t"+"short_signal:"+short_signal+",\n")
+      outfile.write("\t\t\t"+"},\n")
+      outfile.write("\t\t"+"},\n")
+      outfile.write("\t\t"+"algo_params: {"+"\n")
+      for param_key, param_val in algo_params.items():
+        outfile.write("\t\t\t"+param_key+":"+param_val+",\n")
+      outfile.write("\t\t"+"},\n")
+      outfile.write("\t},\n")
+      algo+=1
+      algorithms.append({"name":al_name,
+                        "elem0":"\""+i_element["symbol"]+"_"+i_element["exchange"]+"\"",
+                        "elem1":"\""+j_element["symbol"]+"_"+j_element["exchange"]+"\""})
 outfile.write("}\n")
 outfile.write("\n")
 
