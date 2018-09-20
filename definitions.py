@@ -142,7 +142,7 @@ trade_amount_value = "trade_amount_value"
 account = "account"
 trading = "trading"
 funding = "funding"
-margin_trading = "margin_trading"
+margin_trading = "margin"
 
 # Algorithm valuations definition
 
