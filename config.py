@@ -6,41 +6,23 @@ from definitions import *
 #######################################################
 
 data_elements = {
-	"orderbook_btcusd_bitstamp":{
-		description: btcusd,
-		source: bitstamp,
-		data_type: orderbook,
-		timeframe: one_sec,
-		data_format: csv,
-		header_format: cdm,
-		file_name: "data/orderbookBitstampBTCUSD.csv",
-	},
-	"orderbook_ethusd_bittrex":{
-		description: ethusd,
+	"orderbook_ethbtc_bittrex":{
+		description: ethbtc,
 		source: bittrex,
 		data_type: orderbook,
 		timeframe: one_sec,
 		data_format: csv,
 		header_format: cdm,
-		file_name: "data/orderbookBittrexpBTCUSD.csv",
+		file_name: "sample/orderbookbinanceETHBTC.csv",
 	},
-	"orderbook_btcusd_cex":{
-		description: btcusd,
-		source: cex,
+	"orderbook_ethbtc_binance":{
+		description: ethbtc,
+		source: binance,
 		data_type: orderbook,
 		timeframe: one_sec,
 		data_format: csv,
 		header_format: cdm,
-		file_name: "data/orderbookCexBTCUSD.csv",
-	},
-	"orderbook_ethusd_exmo":{
-		description: ethusd,
-		source: exmo,
-		data_type: orderbook,
-		timeframe: one_sec,
-		data_format: csv,
-		header_format: cdm,
-		file_name: "data/orderbookExmoBTCUSD.csv",
+		file_name: "sample/orderbookbittrexETHBTC.csv",
 	},
 }
 
@@ -49,32 +31,18 @@ data_elements = {
 #######################################################
 
 assets_elements = {
-	"btcusd_bitstamp":{
-		symbol: btcusd,
-		base: btc,
-		quote: usd,
-		exchange: bitstamp,
-		account: trading,
-	},
-	"ethusd_bittrex":{
-		symbol: ethusd,
+	"ethbtc_bittrex":{
+		symbol: ethbtc,
 		base: eth,
-		quote: usd,
+		quote: btc,
 		exchange: bittrex,
 		account: trading,
 	},
-	"btcusd_cex":{
-		symbol: btcusd,
-		base: btc,
-		quote: usd,
-		exchange: cex,
-		account: trading,
-	},
-	"ethusd_exmo":{
-		symbol: ethusd,
+	"ethbtc_binance":{
+		symbol: ethbtc,
 		base: eth,
-		quote: usd,
-		exchange: exmo,
+		quote: btc,
+		exchange: binance,
 		account: trading,
 	},
 }
@@ -87,41 +55,21 @@ algorithms_elements = {
 	"arbitrage_0":{
 		algorithm: statarb,
 		data_modules_array: [
-			"orderbook_btcusd_bitstamp",
-			"orderbook_btcusd_cex"
+			"orderbook_ethbtc_bittrex",
+			"orderbook_ethbtc_binance"
 		],
 		signals: {
-			"btcusd_bitstamp":{
+			"ethbtc_bittrex":{
 				long_signal:1,
 				short_signal:-1,
 			},
 		},
 		algo_params: {
-			max_delay_in_data:2,
 			limit_sell_pct:100,
 			usd_amount_to_trade:50,
-			limit_buy_pct:100,
 			period:30,
-		},
-	},
-	"arbitrage_1":{
-		algorithm: statarb,
-		data_modules_array: [
-			"orderbook_ethusd_bittrex",
-			"orderbook_ethusd_exmo"
-		],
-		signals: {
-			"ethusd_bittrex":{
-				long_signal:1,
-				short_signal:-1,
-			},
-		},
-		algo_params: {
+			limit_buy_pct:100,
 			max_delay_in_data:2,
-			limit_sell_pct:100,
-			usd_amount_to_trade:50,
-			limit_buy_pct:100,
-			period:30,
 		},
 	},
 }
@@ -134,25 +82,11 @@ strategies_elements = {
 	"strategy_0":{
 		algorithms_array:["arbitrage_0"],
 		thresholds:{
-			"btcusd_bitstamp":{
+			"ethbtc_bittrex":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"btcusd_cex":{
-				long_threshold:1,
-				short_threshold:-1
-			}
-		},
-		order_type:limit
-	},
-	"strategy_1":{
-		algorithms_array:["arbitrage_1"],
-		thresholds:{
-			"ethusd_bittrex":{
-				long_threshold:1,
-				short_threshold:-1
-			},
-			"ethusd_exmo":{
+			"ethbtc_binance":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -165,7 +99,8 @@ strategies_elements = {
 #                  GENERAL SETTINGS
 #######################################################
 
-trading_mode = backtestn_request_threads = 2
+trading_mode = backtest
+n_request_threads = 2
 
 #######################################################
 #                  BACKTEST SECTION
@@ -173,14 +108,9 @@ trading_mode = backtestn_request_threads = 2
 
 time_step = one_min
 virtual_portfolio = {
-	bitstamp:{
+	binance:{
 		margin:{
 			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -197,11 +127,6 @@ virtual_portfolio = {
 				used:0,
 				total:9999999
 			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
 			btc:{
 				free:9999999,
 				used:0,
@@ -210,11 +135,6 @@ virtual_portfolio = {
 		},
 		funding:{
 			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -233,11 +153,6 @@ virtual_portfolio = {
 				used:0,
 				total:9999999
 			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
 			btc:{
 				free:9999999,
 				used:0,
@@ -250,11 +165,6 @@ virtual_portfolio = {
 				used:0,
 				total:9999999
 			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
 			btc:{
 				free:9999999,
 				used:0,
@@ -263,117 +173,6 @@ virtual_portfolio = {
 		},
 		funding:{
 			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			btc:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-		},
-	},
-	exmo:{
-		margin:{
-			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			btc:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-		},
-		trading:{
-			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			btc:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-		},
-		funding:{
-			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			btc:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-		},
-	},
-	cex:{
-		margin:{
-			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			btc:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-		},
-		trading:{
-			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			btc:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-		},
-		funding:{
-			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -387,14 +186,14 @@ virtual_portfolio = {
 	},
 }
 virtual_tickers = {
-	ethusd:{
-		last:200
+	ethbtc:{
+		last:0.031
 	},
 	btcusd:{
 		last:6300
 	},
-	ethbtc:{
-		last:0.031
+	ethusd:{
+		last:200
 	},
 }
 
@@ -410,8 +209,8 @@ virtual_tickers = {
 #######################################################
 
 api_keys_files = {
-	binance: "keys/binance.key",
 	bittrex: "keys/bittrex.key",
+	binance: "keys/binance.key",
 	bitfinex: "keys/bitfinex.key",
 }
 

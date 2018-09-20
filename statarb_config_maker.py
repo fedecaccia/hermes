@@ -290,9 +290,8 @@ outfile.write("#######################################################\n")
 outfile.write("#                  GENERAL SETTINGS\n")
 outfile.write("#######################################################\n\n")
 
-outfile.write("trading_mode = "+trading_mode)
-outfile.write("n_request_threads = "+n_request_threads)
-outfile.write("\n")
+outfile.write("trading_mode = "+trading_mode+"\n")
+outfile.write("n_request_threads = "+n_request_threads+"\n")
 outfile.write("\n")
 
 outfile.write("#######################################################\n")
