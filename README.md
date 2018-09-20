@@ -56,7 +56,7 @@ Under development.
 - [x] ~~Strategy: manage oracle updates.~~
 - [x] ~~Strategy: manage portfolio updates.~~
 - [x] ~~config.py: Make a config file creator reading a simple output.~~
-- [ ] **config.py: only make alogrithms for identical pairs in arbitrage.**
+- [x] ~~config.py: only make alogrithms for identical pairs in arbitrage.~~
 - [ ] Strategy: check margin limits to show warnings.
 - [ ] Strategy: check order status (and wait for that).
 - [ ] World: save order ids.
