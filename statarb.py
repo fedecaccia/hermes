@@ -179,6 +179,7 @@ class StatArb(Algorithm):
         } for asset in list(self._signals.keys())}
 
         # asset key should be the same as defined in # Assets in config.py
+        print(self.assets)
         asset0 = list(self.assets.keys())[0]
         asset1 = list(self.assets.keys())[1]
         

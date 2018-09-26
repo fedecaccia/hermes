@@ -244,6 +244,10 @@ for i, i_element in enumerate(elements[:-1]):
       outfile.write("\t\t\t\t"+"long_signal:"+long_signal+",\n")
       outfile.write("\t\t\t\t"+"short_signal:"+short_signal+",\n")
       outfile.write("\t\t\t"+"},\n")
+      outfile.write("\t\t\t"+"\""+j_element["symbol"]+"_"+j_element["exchange"]+"\":{\n")
+      outfile.write("\t\t\t\t"+"long_signal:"+long_signal+",\n")
+      outfile.write("\t\t\t\t"+"short_signal:"+short_signal+",\n")
+      outfile.write("\t\t\t"+"},\n")
       outfile.write("\t\t"+"},\n")
       outfile.write("\t\t"+"algo_params: {"+"\n")
       for param_key, param_val in algo_params.items():

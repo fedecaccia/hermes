@@ -43,7 +43,7 @@ class Strategy(object):
         """
 
         self.id = strategy_id
-        self._assets = assets        
+        self._assets = assets
         self.request_pile = request_pile
         self.request_flag = request_flag        
         self._portfolio = portfolio

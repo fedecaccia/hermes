@@ -63,13 +63,17 @@ algorithms_elements = {
 				long_signal:1,
 				short_signal:-1,
 			},
+			"ethbtc_binance":{
+				long_signal:1,
+				short_signal:-1,
+			},
 		},
 		algo_params: {
+			max_delay_in_data:2,
 			limit_sell_pct:100,
 			usd_amount_to_trade:50,
-			period:30,
 			limit_buy_pct:100,
-			max_delay_in_data:2,
+			period:30,
 		},
 	},
 }
@@ -108,7 +112,7 @@ n_request_threads = 2
 
 time_step = one_min
 virtual_portfolio = {
-	binance:{
+	bittrex:{
 		margin:{
 			eth:{
 				free:9999999,
@@ -146,7 +150,7 @@ virtual_portfolio = {
 			},
 		},
 	},
-	bittrex:{
+	binance:{
 		margin:{
 			eth:{
 				free:9999999,
@@ -186,11 +190,11 @@ virtual_portfolio = {
 	},
 }
 virtual_tickers = {
-	ethbtc:{
-		last:0.031
-	},
 	btcusd:{
 		last:6300
+	},
+	ethbtc:{
+		last:0.031
 	},
 	ethusd:{
 		last:200
@@ -210,8 +214,8 @@ virtual_tickers = {
 
 api_keys_files = {
 	bittrex: "keys/bittrex.key",
-	binance: "keys/binance.key",
 	bitfinex: "keys/bitfinex.key",
+	binance: "keys/binance.key",
 }
 
 

@@ -2,7 +2,6 @@ import definitions
 
 from abc import ABC, abstractmethod
 
-
 class Algorithm(ABC):
 
     """
@@ -40,7 +39,7 @@ class Algorithm(ABC):
         for asset_key, asset_values in assets.items():
             if asset_key in algo_values[definitions.signals].keys():
                 self.assets[asset_key] = asset_values
-            
+                    
         self._check_parameters(algo_values)
         self._define_signals(algo_values[definitions.signals])
         self._oracle = oracle
