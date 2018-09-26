@@ -109,15 +109,60 @@ class World(ABC):
             keys = None
             if api_keys_files is not None:
                 keys = self._load_api_keys(api_keys_files[exchange])
-
-            if exchange == definitions.bittrex:
-                self._exchanges[exchange] = Bittrex(exchange, keys)
             
-            elif exchange == definitions.binance:
+            if exchange == definitions.binance:
                 self._exchanges[exchange] = Binance(exchange, keys)
             
             elif exchange == definitions.bitfinex:
                 self._exchanges[exchange] = Bitfinex(exchange, keys)
+            
+            elif exchange == definitions.bitstamp:
+                self._exchanges[exchange] = Bitstamp(exchange, keys)
+            
+            elif exchange == definitions.bittrex:
+                self._exchanges[exchange] = Bittrex(exchange, keys)
+            
+            elif exchange == definitions.cex:
+                self._exchanges[exchange] = Cex(exchange, keys)
+            
+            elif exchange == definitions.coinex:
+                self._exchanges[exchange] = Coinex(exchange, keys)
+            
+            elif exchange == definitions.exmo:
+                self._exchanges[exchange] = Exmo(exchange, keys)
+            
+            elif exchange == definitions.gatecoin:
+                self._exchanges[exchange] = Gatecoin(exchange, keys)
+            
+            elif exchange == definitions.gateio:
+                self._exchanges[exchange] = Gateio(exchange, keys)
+            
+            elif exchange == definitions.gdax:
+                self._exchanges[exchange] = Gdax(exchange, keys)
+            
+            elif exchange == definitions.gemini:
+                self._exchanges[exchange] = Gemini(exchange, keys)
+            
+            elif exchange == definitions.hitbtc:
+                self._exchanges[exchange] = Hitbtc(exchange, keys)
+            
+            elif exchange == definitions.huobipro:
+                self._exchanges[exchange] = Huobipro(exchange, keys)
+            
+            elif exchange == definitions.kraken:
+                self._exchanges[exchange] = Kraken(exchange, keys)
+            
+            elif exchange == definitions.kucoin:
+                self._exchanges[exchange] = Kucoin(exchange, keys)
+            
+            elif exchange == definitions.okex:
+                self._exchanges[exchange] = Okex(exchange, keys)
+            
+            elif exchange == definitions.poloniex:
+                self._exchanges[exchange] = Poloniex(exchange, keys)
+            
+            elif exchange == definitions.yobit:
+                self._exchanges[exchange] = Yobit(exchange, keys)
             
             else:
                 raise ValueError("Exchange: "+exchange+" has not private connection implemented")
@@ -474,8 +519,11 @@ class EmulatedWorld(World):
             world_time = pd.to_datetime(self._time).timestamp() # To convert your search value to Unix time
             idx = np.searchsorted(arr, world_time, side='left') # How many elements smaller
             
-            if arr[idx]>world_time: # this case only is false when arr[idx]==world_time
+            if arr[idx]>world_time and idx>0: # arr[idx]>world_time only is false when arr[idx]==world_time
                 idx -= 1 # minus one to get previous index
+            
+            if arr[idx]>world_time and idx==0: # initial case, when current data is the first, newer than world_time
+                return None # data is younger than the world_time
 
         except:
             return None
@@ -496,7 +544,7 @@ class EmulatedWorld(World):
                     request.append(np.insert(np.array(data.iloc[i]), 0, arr[i], axis=0))
                     
             elif data_module[definitions.data_type] == definitions.orderbook:
-                request = dict(data.iloc[idx])
+                request = dict(data.iloc[idx])                
                 request["datetime"] = data.index[idx]
 
             else:

@@ -319,10 +319,310 @@ class Bitfinex(Exchange):
         while (time.time() - self.last_request_time)<rateLimit/1000:
             pass
 
+class Bitstamp(Exchange):
+
+    """
+    Bitstamp: client interface to connect with Bittrex.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
 class Bittrex(Exchange):
 
     """
     Bittrex: client interface to connect with Bittrex.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
+class Cex(Exchange):
+
+    """
+    Cex: client interface to connect with Cex.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
+class Coinex(Exchange):
+
+    """
+    Coinex: client interface to connect with Coinex.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
+class Exmo(Exchange):
+
+    """
+    Exmo: client interface to connect with Exmo.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
+class Gatecoin(Exchange):
+
+    """
+    Gatecoin: client interface to connect with Gatecoin.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
+class Gateio(Exchange):
+
+    """
+    Gateio: client interface to connect with Gateio.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
+class Gdax(Exchange):
+
+    """
+    Gdax: client interface to connect with Gdax.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
+class Gemini(Exchange):
+
+    """
+    Gemini: client interface to connect with Gemini.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
+class Hitbtc(Exchange):
+
+    """
+    Hitbtc: client interface to connect with Hitbtc.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
+class Huobipro(Exchange):
+
+    """
+    Huobipro: client interface to connect with Huobipro.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
+class Kraken(Exchange):
+
+    """
+    Kraken: client interface to connect with Kraken.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
+class Kucoin(Exchange):
+
+    """
+    Kucoin: client interface to connect with Kucoin.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
+class Okex(Exchange):
+
+    """
+    Okex: client interface to connect with Okex.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
+class Poloniex(Exchange):
+
+    """
+    Poloniex: client interface to connect with Poloniex.
+    """
+
+    def __init__(self, exchange, keys = None):
+
+        """
+        Description: Constructor.
+        + Input:
+        - exchange: Exchange string name.
+        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        + Output:
+        -
+        """
+
+        super().__init__(exchange, keys)
+
+
+class Yobit(Exchange):
+
+    """
+    Yobit: client interface to connect with Yobit.
     """
 
     def __init__(self, exchange, keys = None):

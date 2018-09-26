@@ -6,15 +6,19 @@ real = "real"
 
 # Exchanges definition
 
-bittrex = "bittrex"
-bitstamp = "bitstamp"
-bitfinex = "bitfinex"
 binance = "binance"
+bitfinex = "bitfinex"
+bitstamp = "bitstamp"
+bittrex = "bittrex"
 cex = "cex"
+coinex = "coinex"
 exmo = "exmo"
 gatecoin = "gatecoin"
+gateio = "gateio"
 gdax = "gdax"
 gemini = "gemini"
+hitbtc = "hitbtc"
+huobipro = "huobipro"
 kraken = "kraken"
 kucoin = "kucoin"
 okex = "okex"
@@ -23,15 +27,19 @@ yobit = "yobit"
 
 exchange = "exchange"
 all_exchanges = [
-    bittrex,
-    bitstamp,
-    bitfinex,
     binance,
+    bitfinex,    
+    bitstamp,
+    bittrex,
     cex,
+    coinex,
     exmo,
     gatecoin,
+    gateio,
     gdax,
     gemini,
+    hitbtc,
+    huobipro,
     kraken,
     kucoin,
     okex,
@@ -51,7 +59,8 @@ ethbtc = "ETH/BTC"
 batbtc = "BAT/BTC"
 neobtc = "NEO/BTC"
 adabtc = "ADA/BTC"
-all_tickers = [btcusd, ethusd, ethbtc, batbtc, neobtc, adabtc]
+sntbtc = "SNT/BTC"
+all_tickers = [btcusd, ethusd, ethbtc, batbtc, neobtc, adabtc, sntbtc]
 
 # Coins definition
 
@@ -62,6 +71,7 @@ eth = "ETH"
 bat = "BAT"
 neo = "NEO"
 ada = "ADA"
+snt = "SNT"
 asset_id = "asset_id"
 
 # Other description definitions

@@ -179,7 +179,6 @@ class StatArb(Algorithm):
         } for asset in list(self._signals.keys())}
 
         # asset key should be the same as defined in # Assets in config.py
-        print(self.assets)
         asset0 = list(self.assets.keys())[0]
         asset1 = list(self.assets.keys())[1]
         
@@ -194,147 +193,149 @@ class StatArb(Algorithm):
         # world_time
         world_time = self._world.get_time()
 
-        # orderbook0 time
-        time0 = self.data_modules[0].data.index[-1]
-        # orderbook1 time
-        time1 = self.data_modules[1].data.index[-1]
-        
-        if world_time >= time0 and\
-            world_time >= time1 and\
-            world_time-time0<=self._max_delay_in_data and\
-            world_time-time1<=self._max_delay_in_data:
+        if len(self.data_modules[0].data>0) and len(self.data_modules[1].data>0):
+
+            # orderbook0 time
+            time0 = self.data_modules[0].data.index[-1]
+            # orderbook1 time
+            time1 = self.data_modules[1].data.index[-1]
             
-            bid0 = self.data_modules[0].data.iloc[-1]["bid_val_0"]
-            ask0 = self.data_modules[0].data.iloc[-1]["ask_val_0"]
-
-            bid1 = self.data_modules[1].data.iloc[-1]["bid_val_0"]
-            ask1 = self.data_modules[1].data.iloc[-1]["ask_val_0"]
-
-            # Compute amount to trade
-
-            btc_usd = self._oracle.get_price(
-                definitions.btc,
-                definitions.usd
-            )
-                        
-            asset_usd = ask1*btc_usd # approximated price
-
-            if self._usd_amount_to_trade == definitions.full:
-                raise ValueError("ERROR! You can't use full amount in arbitrage!")
-            else:
-                amount = self._usd_amount_to_trade / asset_usd
-
-            # Statistical calculations
-
-            p_l0_s1_actual = -ask0*(1+fee0)+bid1*(1-fee1)
-            p_l1_s0_actual = -ask1*(1+fee1)+bid0*(1-fee0)
-
-            self.p_l0_s1 = np.append(self.p_l0_s1, p_l0_s1_actual)
-            self.p_l1_s0 = np.append(self.p_l1_s0, p_l1_s0_actual)
-
-            if len(self.p_l0_s1) > self._period: # we have enough data
-
-                self.p_l0_s1 = np.delete(self.p_l0_s1, 0)
-                self.p_l1_s0 = np.delete(self.p_l1_s0, 0)
-
-                p_l0_s1_m = np.mean(self.p_l0_s1)
-                p_l1_s0_m = np.mean(self.p_l1_s0)
-
-                print("asset0:", asset0, "bid0", bid0, "ask0", ask0)
-                print("asset1:", asset1, "bid1", bid1, "ask1", ask1)
-
-                print("p_l0_s1_actual", p_l0_s1_actual, "p_l0_s1_m", p_l0_s1_m)
-                print("p_l1_s0_actual", p_l1_s0_actual, "p_l1_s0_m", p_l1_s0_m)
-
-                # Analyze open positions
-
-                if self._positions_are_closed():
-
-                    if p_l0_s1_actual > -p_l1_s0_m and self._positions_are_closed():
-                        
-                        self._shoot_long_signal(asset0)                
-                        params[asset0] = {
-                            definitions.amount:amount,
-                            definitions.limit:bid0
-                        }
-
-                        self._shoot_short_signal(asset1)
-                        params[asset1] = {
-                            definitions.amount:amount,
-                            definitions.limit:ask1
-                        }
-                        
-                        self.status = {
-                            definitions.long_position: asset0,
-                            definitions.short_position: asset1
-                        }
-
-                        self.min_profit = p_l1_s0_m
-                    
-                    elif p_l1_s0_actual > -p_l0_s1_m and self._positions_are_closed():
-                        
-                        self._shoot_short_signal(asset0)
-                        params[asset0] = {
-                            definitions.amount:amount,
-                            definitions.limit:ask0
-                        }
-
-                        self._shoot_long_signal(asset1)
-                        params[asset1] = {
-                            definitions.amount:amount,
-                            definitions.limit:bid1
-                        }
-
-                        self.status = {
-                            definitions.long_position: asset0,
-                            definitions.short_position: asset1
-                        }
-
-                        self.min_profit = p_l0_s1_m
+            if world_time >= time0 and\
+                world_time >= time1 and\
+                world_time-time0<=self._max_delay_in_data and\
+                world_time-time1<=self._max_delay_in_data:
                 
-                # Analyze close positions
+                bid0 = self.data_modules[0].data.iloc[-1]["bid_val_0"]
+                ask0 = self.data_modules[0].data.iloc[-1]["ask_val_0"]
+
+                bid1 = self.data_modules[1].data.iloc[-1]["bid_val_0"]
+                ask1 = self.data_modules[1].data.iloc[-1]["ask_val_0"]
+
+                # Compute amount to trade
+
+                btc_usd = self._oracle.get_price(
+                    definitions.btc,
+                    definitions.usd
+                )
+                            
+                asset_usd = ask1*btc_usd # approximated price
+
+                if self._usd_amount_to_trade == definitions.full:
+                    raise ValueError("ERROR! You can't use full amount in arbitrage!")
                 else:
+                    amount = self._usd_amount_to_trade / asset_usd
 
-                    if p_l0_s1_actual > self.min_profit and self._positions_can_be_closed(long_position=asset1, short_position=asset0):
-                        
-                        self._shoot_long_signal(asset0)                
-                        params[asset0] = {
-                            definitions.amount:amount,
-                            definitions.limit:bid0
-                        }
+                # Statistical calculations
 
-                        self._shoot_short_signal(asset1)
-                        params[asset1] = {
-                            definitions.amount:amount,
-                            definitions.limit:ask1
-                        }
+                p_l0_s1_actual = -ask0*(1+fee0)+bid1*(1-fee1)
+                p_l1_s0_actual = -ask1*(1+fee1)+bid0*(1-fee0)
+
+                self.p_l0_s1 = np.append(self.p_l0_s1, p_l0_s1_actual)
+                self.p_l1_s0 = np.append(self.p_l1_s0, p_l1_s0_actual)
+
+                if len(self.p_l0_s1) > self._period: # we have enough data
+
+                    self.p_l0_s1 = np.delete(self.p_l0_s1, 0)
+                    self.p_l1_s0 = np.delete(self.p_l1_s0, 0)
+
+                    p_l0_s1_m = np.mean(self.p_l0_s1)
+                    p_l1_s0_m = np.mean(self.p_l1_s0)
+
+                    print("asset0:", asset0, "bid0", bid0, "ask0", ask0)
+                    print("asset1:", asset1, "bid1", bid1, "ask1", ask1)
+
+                    print("p_l0_s1_actual", p_l0_s1_actual, "p_l0_s1_m", p_l0_s1_m)
+                    print("p_l1_s0_actual", p_l1_s0_actual, "p_l1_s0_m", p_l1_s0_m)
+
+                    # Analyze open positions
+
+                    if self._positions_are_closed():
+
+                        if p_l0_s1_actual > -p_l1_s0_m and self._positions_are_closed():
+                            
+                            self._shoot_long_signal(asset0)                
+                            params[asset0] = {
+                                definitions.amount:amount,
+                                definitions.limit:bid0
+                            }
+
+                            self._shoot_short_signal(asset1)
+                            params[asset1] = {
+                                definitions.amount:amount,
+                                definitions.limit:ask1
+                            }
+                            
+                            self.status = {
+                                definitions.long_position: asset0,
+                                definitions.short_position: asset1
+                            }
+
+                            self.min_profit = p_l1_s0_m
                         
-                        self.status = {
-                            definitions.long_position: None,
-                            definitions.short_position: None
-                        }
+                        elif p_l1_s0_actual > -p_l0_s1_m and self._positions_are_closed():
+                            
+                            self._shoot_short_signal(asset0)
+                            params[asset0] = {
+                                definitions.amount:amount,
+                                definitions.limit:ask0
+                            }
+
+                            self._shoot_long_signal(asset1)
+                            params[asset1] = {
+                                definitions.amount:amount,
+                                definitions.limit:bid1
+                            }
+
+                            self.status = {
+                                definitions.long_position: asset0,
+                                definitions.short_position: asset1
+                            }
+
+                            self.min_profit = p_l0_s1_m
                     
-                    elif p_l1_s0_actual > self.min_profit and self._positions_can_be_closed(long_position=asset0, short_position=asset1):
+                    # Analyze close positions
+                    else:
+
+                        if p_l0_s1_actual > self.min_profit and self._positions_can_be_closed(long_position=asset1, short_position=asset0):
+                            
+                            self._shoot_long_signal(asset0)                
+                            params[asset0] = {
+                                definitions.amount:amount,
+                                definitions.limit:bid0
+                            }
+
+                            self._shoot_short_signal(asset1)
+                            params[asset1] = {
+                                definitions.amount:amount,
+                                definitions.limit:ask1
+                            }
+                            
+                            self.status = {
+                                definitions.long_position: None,
+                                definitions.short_position: None
+                            }
                         
-                        self._shoot_short_signal(asset0)
-                        params[asset0] = {
-                            definitions.amount:amount,
-                            definitions.limit:ask0
-                        }
+                        elif p_l1_s0_actual > self.min_profit and self._positions_can_be_closed(long_position=asset0, short_position=asset1):
+                            
+                            self._shoot_short_signal(asset0)
+                            params[asset0] = {
+                                definitions.amount:amount,
+                                definitions.limit:ask0
+                            }
 
-                        self._shoot_long_signal(asset1)
-                        params[asset1] = {
-                            definitions.amount:amount,
-                            definitions.limit:bid1
-                        }
+                            self._shoot_long_signal(asset1)
+                            params[asset1] = {
+                                definitions.amount:amount,
+                                definitions.limit:bid1
+                            }
 
-                        self.status = {
-                            definitions.long_position: None,
-                            definitions.short_position: None
-                        }
-                
-            else:
-                print("Doing nothing. Not enough data yet...")  
+                            self.status = {
+                                definitions.long_position: None,
+                                definitions.short_position: None
+                            }
+                    
+                else:
+                    print("Doing nothing. Not enough data yet...")  
 
         return self._signals, params
 
