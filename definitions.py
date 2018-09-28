@@ -60,7 +60,8 @@ batbtc = "BAT/BTC"
 neobtc = "NEO/BTC"
 adabtc = "ADA/BTC"
 sntbtc = "SNT/BTC"
-all_tickers = [btcusd, ethusd, ethbtc, batbtc, neobtc, adabtc, sntbtc]
+trxbtc = "TRX/BTC"
+all_tickers = [btcusd, ethusd, ethbtc, batbtc, neobtc, adabtc, sntbtc, trxbtc]
 
 # Coins definition
 
@@ -72,6 +73,7 @@ bat = "BAT"
 neo = "NEO"
 ada = "ADA"
 snt = "SNT"
+trx = "TRX"
 asset_id = "asset_id"
 
 # Other description definitions

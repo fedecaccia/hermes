@@ -213,12 +213,10 @@ class StatArb(Algorithm):
 
                 # Compute amount to trade
 
-                btc_usd = self._oracle.get_price(
-                    definitions.btc,
-                    definitions.usd
-                )
-                            
-                asset_usd = ask1*btc_usd # approximated price
+                base = ""
+                quote = ""
+                aprox_base_price_in_quote = ask1
+                asset_usd = self.get_usd_base_value(base, quote, aprox_base_price_in_quote)
 
                 if self._usd_amount_to_trade == definitions.full:
                     raise ValueError("ERROR! You can't use full amount in arbitrage!")

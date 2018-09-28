@@ -130,3 +130,40 @@ class Algorithm(ABC):
         """
 
         self._signals[asset] = self._signals_values[asset][definitions.short_signal]
+
+    def get_usd_base_value(self, base, quote, base_price_in_quote):
+
+        """
+        + Description: Return USD price of base coin.
+        + Input:
+        - base: base pair string name.
+        - quote: quote pair string name.
+        - base_price_in_quote: price of base coin in quote coin.
+        + Output:
+        - usd_price: price of base coin in usd coin.
+        """
+
+        if quote==definitions.usd:
+            
+            return base_price_in_quote # approximated price
+
+        elif quote==definitions.btc:
+
+            btc_usd = self._oracle.get_price(
+                definitions.btc,
+                definitions.usd
+            )                   
+            
+            return base_price_in_quote*btc_usd # approximated price
+
+        elif quote==definitions.eth:
+
+            eth_usd = self._oracle.get_price(
+                definitions.eth,
+                definitions.usd
+            )                   
+            
+            return base_price_in_quote*eth_usd # approximated price
+        
+        else:
+            raise ValueError("Error trying to get USD value in pair: "+base+"/"+quote)
