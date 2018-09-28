@@ -1,3 +1,5 @@
+import time
+
 import definitions
 
 from threading import Thread
@@ -66,6 +68,7 @@ class RequestWorker(Thread):
         """
 
         function(params)
+        
         self.mutex.acquire()
         self.request_flag[0] -= 1
         self.mutex.release()

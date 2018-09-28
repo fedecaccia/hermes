@@ -157,6 +157,9 @@ class StatArb(Algorithm):
             definitions.long_position: None,
             definitions.short_position: None
         }
+        # store to compare next round
+        self.time0_prev = datetime.datetime(2000, 1, 1, 0, 0)
+        self.time1_prev = datetime.datetime(2000, 1, 1, 0, 0)
 
     def evaluate(self):
 
@@ -181,6 +184,12 @@ class StatArb(Algorithm):
         # asset key should be the same as defined in # Assets in config.py
         asset0 = list(self.assets.keys())[0]
         asset1 = list(self.assets.keys())[1]
+
+        # bases & quotes
+        base0 = self.assets[asset0].base
+        quote0 = self.assets[asset0].quote
+        base1 = self.assets[asset1].base
+        quote1 = self.assets[asset1].quote
         
         # quick access to exchange name
         exchange0 = self.assets[asset0].exchange
@@ -199,12 +208,18 @@ class StatArb(Algorithm):
             time0 = self.data_modules[0].data.index[-1]
             # orderbook1 time
             time1 = self.data_modules[1].data.index[-1]
-            
+
             if world_time >= time0 and\
                 world_time >= time1 and\
                 world_time-time0<=self._max_delay_in_data and\
-                world_time-time1<=self._max_delay_in_data:
-                
+                world_time-time1<=self._max_delay_in_data and\
+                (time0>self.time0_prev and time1>self.time1_prev): # non repeated request
+                print("ok")
+
+                # store to compare next round
+                self.time0_prev = time0
+                self.time1_prev = time1
+
                 bid0 = self.data_modules[0].data.iloc[-1]["bid_val_0"]
                 ask0 = self.data_modules[0].data.iloc[-1]["ask_val_0"]
 
@@ -213,9 +228,9 @@ class StatArb(Algorithm):
 
                 # Compute amount to trade
 
-                base = ""
-                quote = ""
-                aprox_base_price_in_quote = ask1
+                base = base0
+                quote = quote0
+                aprox_base_price_in_quote = ask0
                 asset_usd = self.get_usd_base_value(base, quote, aprox_base_price_in_quote)
 
                 if self._usd_amount_to_trade == definitions.full:

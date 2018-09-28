@@ -183,6 +183,7 @@ class Strategy(object):
         barrier = Barrier(self._n_data_modules)
 
         for module in self._data_modules:
+            # request update slow in backtesting because looks to closest time
             self.request_pile.put({
                 definitions.function:module.update,
                 definitions.params:{

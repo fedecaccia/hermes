@@ -6,22 +6,6 @@ data
   elements
     ethbtc trading binance data/orderbookBinanceETHBTC.csv
     ethbtc trading bitfinex data/orderbookBitfinexETHBTC.csv
-    ethbtc trading bitstamp data/orderbookBitstampETHBTC.csv
-    ethbtc trading bittrex data/orderbookBittrexETHBTC.csv
-    ethbtc trading cex data/orderbookCexETHBTC.csv
-    ethbtc trading coinex data/orderbookCoinexETHBTC.csv
-    ethbtc trading exmo data/orderbookExmoETHBTC.csv
-    ethbtc trading gatecoin data/orderbookGatecoinETHBTC.csv
-    ethbtc trading gateio data/orderbookGateioETHBTC.csv
-    ethbtc trading gdax data/orderbookGdaxETHBTC.csv
-    ethbtc trading gemini data/orderbookGeminiETHBTC.csv
-    ethbtc trading hitbtc data/orderbookHitbtcETHBTC.csv
-    ethbtc trading huobipro data/orderbookHuobiproETHBTC.csv
-    ethbtc trading kraken data/orderbookKrakenETHBTC.csv
-    ethbtc trading kucoin data/orderbookKucoinETHBTC.csv
-    ethbtc trading okex data/orderbookOkexETHBTC.csv
-    ethbtc trading poloniex data/orderbookPoloniexETHBTC.csv
-    ethbtc trading yobit data/orderbookYobitETHBTC.csv
   end
 end
 
@@ -32,7 +16,7 @@ algorithms
   algo_params
     limit_buy_pct 100
     limit_sell_pct 100
-    max_delay_in_data 2
+    max_delay_in_data 5
     usd_amount_to_trade 50
     period 30
   end
@@ -46,7 +30,7 @@ end
 general_settings
   trading_mode backtest
   n_request_threads 2
-  time_step one_min
+  time_step one_sec
   virtual_portfolio infinite
   virtual_tickers
     btcusd 6300
@@ -59,3 +43,22 @@ general_settings
     bittrex keys/bittrex.key
   end
 end
+
+ethbtc trading binance data/orderbookBinanceETHBTC.csv
+ethbtc trading bitfinex data/orderbookBitfinexETHBTC.csv
+ethbtc trading bitstamp data/orderbookBitstampETHBTC.csv
+ethbtc trading bittrex data/orderbookBittrexETHBTC.csv
+ethbtc trading cex data/orderbookCexETHBTC.csv
+ethbtc trading coinex data/orderbookCoinexETHBTC.csv
+ethbtc trading exmo data/orderbookExmoETHBTC.csv
+ethbtc trading gatecoin data/orderbookGatecoinETHBTC.csv
+ethbtc trading gateio data/orderbookGateioETHBTC.csv
+ethbtc trading gdax data/orderbookGdaxETHBTC.csv
+ethbtc trading gemini data/orderbookGeminiETHBTC.csv
+ethbtc trading hitbtc data/orderbookHitbtcETHBTC.csv
+ethbtc trading huobipro data/orderbookHuobiproETHBTC.csv
+ethbtc trading kraken data/orderbookKrakenETHBTC.csv
+ethbtc trading kucoin data/orderbookKucoinETHBTC.csv
+ethbtc trading okex data/orderbookOkexETHBTC.csv
+ethbtc trading poloniex data/orderbookPoloniexETHBTC.csv
+ethbtc trading yobit data/orderbookYobitETHBTC.csv

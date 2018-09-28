@@ -63,12 +63,15 @@ class DataModule(ABC):
         except:
             raise ValueError("Barrier has not been received to update data module.")
 
-        incoming_data = self._world.request_data(self.id, barrier)
 
+        # slow in backtesting because looks to closest time
+        time0 = time.time()
+        incoming_data = self._world.request_data(self.id, barrier)
+        print("incoming data:", time.time()-time0)
+                
         if self._data_is_new(incoming_data) and self._data_is_not_none(incoming_data):
             self._particular_update(incoming_data)
             print("Data module: "+str(self.id)+" updated.")
-
         else:
             print("Data module is old or None")
 
