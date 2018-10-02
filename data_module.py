@@ -65,9 +65,7 @@ class DataModule(ABC):
 
 
         # slow in backtesting because looks to closest time
-        time0 = time.time()
         incoming_data = self._world.request_data(self.id, barrier)
-        print("incoming data:", time.time()-time0)
                 
         if self._data_is_new(incoming_data) and self._data_is_not_none(incoming_data):
             self._particular_update(incoming_data)

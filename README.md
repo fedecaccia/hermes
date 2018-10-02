@@ -105,6 +105,10 @@ Most exchanges charge fees on the currency you are using to pay when you buy (or
 If you are using Bitfinex for example, to be consistent you should adjust fees in Account/Fees and select: *Fees will be taken in the default currency set above* (BTC or USD).
 This way, you will always receive the amount submited in the order.
 
+### Backtesting
+The platform is designed to maximize efficiency in online trading.
+In the design of the backtesting tool, it was privileged to maintain the same structure as that used for real trading, sacrificing performance. The backtesting tool is not ideal for large data, but only for testing small data sets.
+
 ## Contact
 Developed by [CoinFabrik](https://www.coinfabrik.com/). 
 Interested in crypto? You can read our articles [here](https://blog.coinfabrik.com/).

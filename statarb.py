@@ -209,6 +209,9 @@ class StatArb(Algorithm):
             # orderbook1 time
             time1 = self.data_modules[1].data.index[-1]
 
+            print("time0:", time0)
+            print("time1:", time1)
+
             if world_time >= time0 and\
                 world_time >= time1 and\
                 world_time-time0<=self._max_delay_in_data and\

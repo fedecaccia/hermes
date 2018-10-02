@@ -516,15 +516,13 @@ class EmulatedWorld(World):
             # arr = data.index.astype(int)//10**9 # To convert to Unix time
             # arr = pd.to_datetime(data.index).timestamp() # To convert to Unix time
             
-            arr = [x.timestamp() for x in data.index[self.last_idx:]]
+            arr = [x.timestamp() for x in data.index[:]]
 
             world_time = pd.to_datetime(self._time).timestamp() # To convert your search value to Unix time
             idx = np.searchsorted(arr, world_time, side='left') # How many elements smaller
             
             if arr[idx]>world_time and idx>0: # arr[idx]>world_time only is false when arr[idx]==world_time
                 idx -= 1 # minus one to get previous index
-            
-            self.last_idx = idx
             
             if arr[idx]>world_time and idx==0: # initial case, when current data is the first, newer than world_time
                 return None # data is younger than the world_time
