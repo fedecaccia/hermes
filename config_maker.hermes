@@ -19,7 +19,7 @@ algorithms
     max_delay_in_data 5
     usd_amount_to_trade 100
     min_usd_profit 0.1
-    period 30
+    period 50
   end
 end
 

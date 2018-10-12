@@ -88,6 +88,8 @@ class Exchange(ABC):
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
         except RequestTimeout:
             print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
+        except HTTPError:
+            print("WARNING: HTTPError. Bad Gateway for url in exchange: "+self.exchange)
         else:
             trading_balances = {}
             for key, values in res.items():
@@ -136,6 +138,8 @@ class Exchange(ABC):
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
         except RequestTimeout:
             print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
+        except HTTPError:
+            print("WARNING: HTTPError. Bad Gateway for url in exchange: "+self.exchange)
         finally:
             self.last_request_time = time.time()
 
@@ -159,6 +163,8 @@ class Exchange(ABC):
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
         except RequestTimeout:
             print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
+        except HTTPError:
+            print("WARNING: HTTPError. Bad Gateway for url in exchange: "+self.exchange)
         finally:
             self.last_request_time = time.time()
 
@@ -212,6 +218,8 @@ class Exchange(ABC):
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
         except RequestTimeout:
             print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
+        except HTTPError:
+            print("WARNING: HTTPError. Bad Gateway for url in exchange: "+self.exchange)
         finally:
             self.last_request_time = time.time()
             
@@ -289,6 +297,9 @@ class Bitfinex(Exchange):
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
         except RequestTimeout:
             print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
+        except HTTPError:
+            print("WARNING: HTTPError. Bad Gateway for url in exchange: "+self.exchange)
+        
         finally:
             self.last_request_time = time.time()        
         

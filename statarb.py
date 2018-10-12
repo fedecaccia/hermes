@@ -366,7 +366,7 @@ class StatArb(Algorithm):
                             params[asset1] = {
                                 definitions.amount:amount,
                                 definitions.limit:bid1,
-                                definitions.limit:ask1
+                                definitions.last:ask1
                             }
 
                             self.status = {

@@ -69,12 +69,12 @@ algorithms_elements = {
 			},
 		},
 		algo_params: {
-			min_usd_profit:0.1,
-			period:30,
-			usd_amount_to_trade:100,
 			limit_buy_pct:100,
 			limit_sell_pct:100,
 			max_delay_in_data:5,
+			usd_amount_to_trade:100,
+			min_usd_profit:0.1,
+			period:50,
 		},
 	},
 }
@@ -113,7 +113,7 @@ n_request_threads = 2
 
 time_step = one_sec
 virtual_portfolio = {
-	hitbtc:{
+	gateio:{
 		margin:{
 			xtz:{
 				free:9999999,
@@ -151,7 +151,7 @@ virtual_portfolio = {
 			},
 		},
 	},
-	gateio:{
+	hitbtc:{
 		margin:{
 			xtz:{
 				free:9999999,
@@ -194,11 +194,11 @@ virtual_tickers = {
 	btcusd:{
 		last:6300
 	},
-	ethbtc:{
-		last:0.031
-	},
 	ethusd:{
 		last:200
+	},
+	ethbtc:{
+		last:0.031
 	},
 }
 
@@ -214,9 +214,9 @@ virtual_tickers = {
 #######################################################
 
 api_keys_files = {
+	binance: "keys/binance.key",
 	bitfinex: "keys/bitfinex.key",
 	bittrex: "keys/bittrex.key",
-	binance: "keys/binance.key",
 }
 
 
