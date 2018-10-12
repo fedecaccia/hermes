@@ -61,7 +61,8 @@ neobtc = "NEO/BTC"
 adabtc = "ADA/BTC"
 sntbtc = "SNT/BTC"
 trxbtc = "TRX/BTC"
-all_tickers = [btcusd, ethusd, ethbtc, batbtc, neobtc, adabtc, sntbtc, trxbtc]
+xtzbtc = "XTZ/BTC"
+all_tickers = [btcusd, ethusd, ethbtc, batbtc, neobtc, adabtc, sntbtc, trxbtc, xtzbtc]
 
 # Coins definition
 
@@ -74,6 +75,7 @@ neo = "NEO"
 ada = "ADA"
 snt = "SNT"
 trx = "TRX"
+xtz = "XTZ"
 asset_id = "asset_id"
 
 # Other description definitions
@@ -148,6 +150,7 @@ tweets_growth = "tweets_growth"
 min_profit = "min_profit"
 trade_amount_coin = "trade_amount_coin"
 trade_amount_value = "trade_amount_value"
+min_usd_profit = "min_usd_profit"
 
 # Account types
 

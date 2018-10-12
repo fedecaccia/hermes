@@ -140,6 +140,11 @@ class StatArb(Algorithm):
             self._period = algo_params[definitions.period]
         except:
             raise ValueError("Error trying to parse period in algorithm: '"+self.id+"' parameters.")
+        
+        try:
+            self._min_usd_profit = algo_params[definitions.min_usd_profit]
+        except:
+            raise ValueError("Error trying to parse period in algorithm: '"+self.id+"' parameters.")
 
     def _initialize_variables(self):
         
@@ -160,6 +165,68 @@ class StatArb(Algorithm):
         # store to compare next round
         self.time0_prev = datetime.datetime(2000, 1, 1, 0, 0)
         self.time1_prev = datetime.datetime(2000, 1, 1, 0, 0)
+        self.prev_profit = 0
+        self.prev_amount = 0
+
+    def get_weight_val(self, row, side, amount):
+
+        """
+        + Description: Get a weighted value.
+        + Input:
+        - row:
+        - side:
+        - amount:
+        + Output:
+        - price:
+        - params: Dictionary of order parameters.
+        """
+    
+        count = 0
+        price = 0
+
+        if side=="ask":     
+
+            price = row["ask_val_0"]
+            count = row["ask_count_0"]        
+            if count < amount:
+                more_orders = row["ask_count_1"]
+                if count+more_orders<=amount:
+                    new_count = more_orders
+                else:
+                    new_count = amount-count
+                price = (price * count + row["ask_val_1"]*new_count ) / (count+new_count)
+                count += new_count
+
+                if count < amount:
+                    more_orders = row["ask_count_2"]
+                    if count+more_orders>=amount:
+                        new_count = amount-count
+                        price = (price * count + row["ask_val_2"]*new_count ) / (count+new_count)
+                    else:
+                        price = row["ask_weight_val_2"]
+            
+        elif side=="bid":
+            
+            price = row["bid_val_0"]
+            count = row["bid_count_0"]        
+            if count < amount:
+                more_orders = row["bid_count_1"]
+                if count+more_orders<=amount:
+                    new_count = more_orders
+                else:
+                    new_count = amount-count
+                price = (price * count + row["bid_val_1"]*new_count ) / (count+new_count)
+                count += new_count
+
+                if count < amount:
+                    more_orders = row["bid_count_2"]
+                    if count+more_orders>=amount:
+                        new_count = amount-count
+                        price = (price * count + row["bid_val_2"]*new_count ) / (count+new_count)
+                    else:
+                        price = row["bid_weight_val_2"]
+        
+        return price
 
     def evaluate(self):
 
@@ -178,6 +245,7 @@ class StatArb(Algorithm):
         # reinitialize parameters
         params = {asset:{
             definitions.limit:0,
+            definitions.last:0,
             definitions.amount:0
         } for asset in list(self._signals.keys())}
 
@@ -209,37 +277,35 @@ class StatArb(Algorithm):
             # orderbook1 time
             time1 = self.data_modules[1].data.index[-1]
 
-            print("time0:", time0)
-            print("time1:", time1)
-
             if world_time >= time0 and\
                 world_time >= time1 and\
                 world_time-time0<=self._max_delay_in_data and\
                 world_time-time1<=self._max_delay_in_data and\
                 (time0>self.time0_prev and time1>self.time1_prev): # non repeated request
-                print("ok")
 
-                # store to compare next round
+                # store to compare next round so never use them again
                 self.time0_prev = time0
                 self.time1_prev = time1
-
-                bid0 = self.data_modules[0].data.iloc[-1]["bid_val_0"]
-                ask0 = self.data_modules[0].data.iloc[-1]["ask_val_0"]
-
-                bid1 = self.data_modules[1].data.iloc[-1]["bid_val_0"]
-                ask1 = self.data_modules[1].data.iloc[-1]["ask_val_0"]
 
                 # Compute amount to trade
 
                 base = base0
                 quote = quote0
-                aprox_base_price_in_quote = ask0
+                aprox_base_price_in_quote = self.data_modules[0].data.iloc[-1]["ask_val_0"]
                 asset_usd = self.get_usd_base_value(base, quote, aprox_base_price_in_quote)
 
                 if self._usd_amount_to_trade == definitions.full:
                     raise ValueError("ERROR! You can't use full amount in arbitrage!")
                 else:
                     amount = self._usd_amount_to_trade / asset_usd
+
+                # compute prices
+
+                bid0 = self.get_weight_val(self.data_modules[0].data.iloc[-1], "bid", amount)
+                ask0 = self.get_weight_val(self.data_modules[0].data.iloc[-1], "ask", amount)
+
+                bid1 = self.get_weight_val(self.data_modules[1].data.iloc[-1], "bid", amount)
+                ask1 = self.get_weight_val(self.data_modules[1].data.iloc[-1], "ask", amount)
 
                 # Statistical calculations
 
@@ -257,28 +323,25 @@ class StatArb(Algorithm):
                     p_l0_s1_m = np.mean(self.p_l0_s1)
                     p_l1_s0_m = np.mean(self.p_l1_s0)
 
-                    print("asset0:", asset0, "bid0", bid0, "ask0", ask0)
-                    print("asset1:", asset1, "bid1", bid1, "ask1", ask1)
-
-                    print("p_l0_s1_actual", p_l0_s1_actual, "p_l0_s1_m", p_l0_s1_m)
-                    print("p_l1_s0_actual", p_l1_s0_actual, "p_l1_s0_m", p_l1_s0_m)
-
                     # Analyze open positions
 
                     if self._positions_are_closed():
 
-                        if p_l0_s1_actual > -p_l1_s0_m and self._positions_are_closed():
+                        #if p_l0_s1_actual > -p_l1_s0_m:
+                        if p_l0_s1_actual > 0:
                             
                             self._shoot_long_signal(asset0)                
                             params[asset0] = {
                                 definitions.amount:amount,
-                                definitions.limit:bid0
+                                definitions.limit:bid0,
+                                definitions.last:ask0
                             }
 
                             self._shoot_short_signal(asset1)
                             params[asset1] = {
                                 definitions.amount:amount,
-                                definitions.limit:ask1
+                                definitions.limit:ask1,
+                                definitions.last:bid1
                             }
                             
                             self.status = {
@@ -286,20 +349,24 @@ class StatArb(Algorithm):
                                 definitions.short_position: asset1
                             }
 
-                            self.min_profit = p_l1_s0_m
+                            self.prev_profit = p_l0_s1_actual
+                            self.prev_amount = amount
                         
-                        elif p_l1_s0_actual > -p_l0_s1_m and self._positions_are_closed():
+                        #elif p_l1_s0_actual > -p_l0_s1_m:
+                        elif p_l1_s0_actual > 0:
                             
                             self._shoot_short_signal(asset0)
                             params[asset0] = {
                                 definitions.amount:amount,
-                                definitions.limit:ask0
+                                definitions.limit:ask0,
+                                definitions.last:bid0
                             }
 
                             self._shoot_long_signal(asset1)
                             params[asset1] = {
                                 definitions.amount:amount,
-                                definitions.limit:bid1
+                                definitions.limit:bid1,
+                                definitions.limit:ask1
                             }
 
                             self.status = {
@@ -307,23 +374,28 @@ class StatArb(Algorithm):
                                 definitions.short_position: asset1
                             }
 
-                            self.min_profit = p_l0_s1_m
+                            self.prev_profit = p_l1_s0_actual
+                            self.prev_amount = amount
                     
                     # Analyze close positions
                     else:
 
-                        if p_l0_s1_actual > self.min_profit and self._positions_can_be_closed(long_position=asset1, short_position=asset0):
+                        if p_l0_s1_actual + self.prev_profit > 0 and\
+                        self.prev_amount*(p_l0_s1_actual + self.prev_profit) > self._min_usd_profit and\
+                        self._positions_can_be_closed(long_position=asset1, short_position=asset0):
                             
                             self._shoot_long_signal(asset0)                
                             params[asset0] = {
-                                definitions.amount:amount,
-                                definitions.limit:bid0
+                                definitions.amount:self.prev_amount,
+                                definitions.limit:bid0,
+                                definitions.last:ask0
                             }
 
                             self._shoot_short_signal(asset1)
                             params[asset1] = {
-                                definitions.amount:amount,
-                                definitions.limit:ask1
+                                definitions.amount:self.prev_amount,
+                                definitions.limit:ask1,
+                                definitions.last:bid1,
                             }
                             
                             self.status = {
@@ -331,18 +403,22 @@ class StatArb(Algorithm):
                                 definitions.short_position: None
                             }
                         
-                        elif p_l1_s0_actual > self.min_profit and self._positions_can_be_closed(long_position=asset0, short_position=asset1):
-                            
+                        elif p_l1_s0_actual + self.prev_profit > 0 and\
+                        self.prev_amount*(p_l1_s0_actual + self.prev_profit) > self._min_usd_profit and\
+                        self._positions_can_be_closed(long_position=asset0, short_position=asset1):
+
                             self._shoot_short_signal(asset0)
                             params[asset0] = {
-                                definitions.amount:amount,
-                                definitions.limit:ask0
+                                definitions.amount:self.prev_amount,
+                                definitions.limit:ask0,
+                                definitions.last:bid0
                             }
 
                             self._shoot_long_signal(asset1)
                             params[asset1] = {
-                                definitions.amount:amount,
-                                definitions.limit:bid1
+                                definitions.amount:self.prev_amount,
+                                definitions.limit:bid1,
+                                definitions.last:ask1
                             }
 
                             self.status = {

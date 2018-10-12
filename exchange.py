@@ -7,6 +7,7 @@ import pandas as pd
 
 from ccxt.base.errors import DDoSProtection
 from ccxt.base.errors import RequestTimeout
+from urllib.request import HTTPError
 from abc import ABC, abstractmethod
 
 
@@ -182,6 +183,8 @@ class Exchange(ABC):
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
         except RequestTimeout:
             print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
+        except HTTPError:
+            print("WARNING: HTTPError. Bad Gateway for url in exchange: "+self.exchange)
         finally:
             self.last_request_time = time.time()
 

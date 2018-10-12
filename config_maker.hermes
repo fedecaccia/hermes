@@ -4,8 +4,8 @@ data
   data_format csv
   header_format cdm
   elements
-    ethbtc trading binance data/orderbookBinanceETHBTC.csv
-    ethbtc trading bitfinex data/orderbookBitfinexETHBTC.csv
+    xtzbtc trading gateio data/orderbookGateioXTZBTC.csv
+    xtzbtc trading hitbtc data/orderbookHitbtcXTZBTC.csv
   end
 end
 
@@ -17,18 +17,19 @@ algorithms
     limit_buy_pct 100
     limit_sell_pct 100
     max_delay_in_data 5
-    usd_amount_to_trade 50
+    usd_amount_to_trade 100
+    min_usd_profit 0.1
     period 30
   end
 end
 
 strategies
   thresholds 1 -1
-  order_type limit
+  order_type market
 end
 
 general_settings
-  trading_mode backtest
+  trading_mode paper
   n_request_threads 2
   time_step one_sec
   virtual_portfolio infinite
