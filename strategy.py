@@ -105,13 +105,14 @@ class Strategy(object):
         print("\nExecuting strategy id: "+str(self.id))
         self._update_oracle()
         self._check_portfolio_update()
+        # we can't check funds availability here, because yet we don't know if we're buying or selling
         self._restart_valuation()
         self._restart_params()
         self._request_update_in_data_modules()
         self._evaluate_algorithms()
         self._analyze_valuation()
         if self._trading:
-            self._check_orders() # (llama a trade que debe chequear las orders puestas en pilas)
+            self._check_orders()
             self._portfolio_update()
             pass
 
@@ -225,7 +226,9 @@ class Strategy(object):
         -
         """
         
-        print("valuation", self._valuation)
+        print("Checking if funds are available...", self._valuation)
+
+        have_funds = {asset_id:False for asset_id in self._valuation.keys()}
         
         for asset_id, signal in self._valuation.items():
 
@@ -234,33 +237,67 @@ class Strategy(object):
             except:
                 raise ValueError("Bad formulation in algorithm. Amount not returned for asset id: '"+asset_id+"'.")
 
-                    
             if signal >= self._thresholds[asset_id][definitions.long_threshold]:
                 self._is_trading = True
-                print("LONG SIGNAL SHOOTED")
                 
-                self._trading.execute_order(
-                    asset_id=asset_id,
-                    order_type=self._order_type,
-                    side=definitions.buy,
-                    amount=amount,
-                    params=self._params[asset_id]
-                )
+                have_funds[asset_id] = self._trading.check_funds(
+                                            asset_id=asset_id,
+                                            order_type=self._order_type,
+                                            side=definitions.buy,
+                                            amount=amount,
+                                            params=self._params[asset_id]
+                                        )
 
             elif signal <= self._thresholds[asset_id][definitions.short_threshold]:
                 self._is_trading = True
-                print("SHORT SIGNAL SHOOTED")
                     
-                self._trading.execute_order(
-                    asset_id=asset_id,
-                    order_type=self._order_type,
-                    side=definitions.sell,
-                    amount=amount,
-                    params=self._params[asset_id]
-                )
+                have_funds[asset_id] = self._trading.check_funds(
+                                            asset_id=asset_id,
+                                            order_type=self._order_type,
+                                            side=definitions.sell,
+                                            amount=amount,
+                                            params=self._params[asset_id]
+                                        )
+
+        have_funds = np.all(list(have_funds.values()))
+
+        if have_funds and self._is_trading:
+            
+            print("Executing orders...")
+
+            for asset_id, signal in self._valuation.items():       
+                    
+                if signal >= self._thresholds[asset_id][definitions.long_threshold]:
+                    self._is_trading = True
+                    print("LONG SIGNAL SHOOTED")
+                    
+                    self._trading.execute_order(
+                        asset_id=asset_id,
+                        order_type=self._order_type,
+                        side=definitions.buy,
+                        amount=amount,
+                        params=self._params[asset_id]
+                    )
+
+                elif signal <= self._thresholds[asset_id][definitions.short_threshold]:
+                    self._is_trading = True
+                    print("SHORT SIGNAL SHOOTED")
+                        
+                    self._trading.execute_order(
+                        asset_id=asset_id,
+                        order_type=self._order_type,
+                        side=definitions.sell,
+                        amount=amount,
+                        params=self._params[asset_id]
+                    )
+
+        elif not have_funds and self._is_trading:
+            print("WARNING: Algorithm has shooted signals but funds are not enough")
+            # notify to algo that orders are not going to be executed
+            pass
 
     def _check_orders(self):
-        
+
         """
         + Description: Check order status from last trades
         + Input:
@@ -268,7 +305,8 @@ class Strategy(object):
         + Output:
         -
         """
-        pass
+        
+        self._trading.check_orders()
 
     def _portfolio_update(self):
         

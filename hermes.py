@@ -254,7 +254,7 @@ class Hermes(object):
         self.world = None
 
         if self.mode == definitions.backtest:
-            self.order_id_pile = None # sended to trade later
+            self.order_pile = None # sended to trade later
             self.world = EmulatedWorld(self.data_elements,
                                        self.exchanges_names,
                                        self._time_step,
@@ -262,7 +262,7 @@ class Hermes(object):
                                        self._virtual_tickers)
 
         else:            
-            self.order_id_pile = None # sended to trade later
+            self.order_pile = None # sended to trade later
             if self.mode == definitions.paper:
                 self.world = PaperWorld(self.data_elements,
                                        self.exchanges_names,
@@ -270,11 +270,11 @@ class Hermes(object):
                                        self._virtual_portfolio)
             
             else:
-                self.order_id_pile = Queue() # sended to trade later
+                self.order_pile = Queue() # sended to trade later
                 self.world = RealWorld(self.data_elements,
                                        self.exchanges_names,
                                        self.mode,                                       
-                                       self.order_id_pile
+                                       self.order_pile,
                                        config.api_keys_files,
                                        config.uid_files)
 
@@ -420,7 +420,8 @@ class Hermes(object):
             self.portfolio,
             self.request_pile,
             self.request_flag,
-            Lock()
+            Lock(),
+            self.order_pile
         )
         print("\nTrading platform")
         pprint(self.trading)

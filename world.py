@@ -964,20 +964,13 @@ class RealWorld(World):
         - amount: Amount float needed to be filled in order to be complete.
         - order_id: Order id string.
         + Output:
-        -
+        - response: dictionary with order status.
         """
 
         print("Checking order id in: "+exchange)
-        res = self._exchanges[exchange].fetch_order(order_id)
-        filled = float(res[definitions.filled])
-        status = float(res[definitions.status])
-        if filled != amount:
-            print("WARNING! Order incomplete!")
-        if status != definitions.closed:
-            print("WARNING! Status:" + status)
-        print(filled + " of " + amount + "filled")
+        response = self._exchanges[exchange].fetch_order(order_id)
         
-        return status
+        return response
 
 
 class PaperWorld(RealWorld):

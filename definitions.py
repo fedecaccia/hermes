@@ -180,6 +180,7 @@ margin_trading = "margin"
 thresholds = "thresholds"
 long_threshold = "long_threshold"
 short_threshold = "short_threshold"
+signal = "signal"
 signals = "signals"
 long_signal = "long_signal"
 short_signal = "short_signal"
@@ -205,6 +206,7 @@ last = "last"
 
 # Fees
 
+fee = "fee"
 fees = "fees"
 taker = "taker"
 maker = "maker"
@@ -235,6 +237,7 @@ order_id = "id"
 filled = "filled"
 status = "status"
 closed = "closed"
+average = "average"
 
 # Bitfinex margin trading definitions
 

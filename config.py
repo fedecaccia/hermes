@@ -72,7 +72,7 @@ algorithms_elements = {
 			limit_buy_pct:100,
 			limit_sell_pct:100,
 			max_delay_in_data:5,
-			usd_amount_to_trade:1000,
+			usd_amount_to_trade:100,
 			min_usd_profit:0.1,
 			period:1,
 		},
@@ -115,36 +115,36 @@ time_step = one_sec
 virtual_portfolio = {
 	bittrex:{
 		margin:{
-			usd:{
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
-			xrp:{
+			usd:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 		trading:{
-			usd:{
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
-			xrp:{
+			usd:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 		funding:{
-			usd:{
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
-			xrp:{
+			usd:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -153,36 +153,36 @@ virtual_portfolio = {
 	},
 	bitstamp:{
 		margin:{
-			usd:{
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
-			xrp:{
+			usd:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 		trading:{
-			usd:{
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
-			xrp:{
+			usd:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 		funding:{
-			usd:{
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
-			xrp:{
+			usd:{
 				free:9999999,
 				used:0,
 				total:9999999

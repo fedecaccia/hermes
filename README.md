@@ -84,10 +84,13 @@ Under development.
 - [ ] World & DataModule: specify exactly how data should be stored so users can modify it.
 - [x] RealWorld: online private post order requests.
 - [x] ~~Exchange: online private post order requests.~~
-- [ ] **TESTS**.
+- [ ] Tests.
 - [ ] Implement function to save data in data_module. Similar to crypto_monitor.
 - [ ] Implement mode *saving_data* which only saves data.
 - [ ] Implement multiIP.
+- [ ] Price executed, read from order status by Trade, should be comunicated to Algorithm.
+- [ ] Trade: status order, read from order status by Trade, should be comunicated to Algorithm (in case was not executed)
+- [ ] Trade: rejected orders should not be put again in order_pile.
 
 ## Notes
 
