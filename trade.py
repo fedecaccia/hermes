@@ -1,5 +1,6 @@
 import definitions
 
+import time
 import datetime
 
 
@@ -227,7 +228,11 @@ class Trade(object):
         -
         """
 
+        # Workers have finished function evaluation
+        # They were waited in while loop in _call_threads_to_trade()
+
         if self.order_pile:
+            time.sleep(0.5) # wait to complete order
             print("Checking order status...")
             for _ in range(self.order_pile.qsize()):
                 order = self.order_pile.get()
@@ -251,8 +256,11 @@ class Trade(object):
                         " - side: " + side + " - order id:" + order_id + ":" + status)
                         out.write("\n")
 
-                        # cancelled or rejected orders should not be put again in order_pile
-                        self.order_pile.put(order) # put it again to check it later
+                        if status == definitions.canceled:
+                            # algo.update_status()
+                            pass
+                        elif status == definitions.opened:                            
+                            self.order_pile.put(order) # put it again to check it later
                 else:
                     with open(self._real_transactions_file, "a") as out:
                         out.write("\n"+str(self.world.get_time()))
