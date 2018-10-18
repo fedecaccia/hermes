@@ -104,15 +104,15 @@ class Strategy(object):
 
         print("\nExecuting strategy id: "+str(self.id))
         self._update_oracle()
-        self._update_portfolio()
+        self._check_portfolio_update()
         self._restart_valuation()
         self._restart_params()
         self._request_update_in_data_modules()
         self._evaluate_algorithms()
         self._analyze_valuation()
         if self._trading:
-        #   self._check_orders() # (llama a trade que debe chequear las orders puestas en pilas)
-            self._update_balances()
+            self._check_orders() # (llama a trade que debe chequear las orders puestas en pilas)
+            self._portfolio_update()
             pass
 
     def _update_oracle(self):
@@ -127,17 +127,17 @@ class Strategy(object):
         
         self._oracle.update()
 
-    def _update_portfolio(self):
+    def _check_portfolio_update(self):
 
         """
-        + Description: Call portfolio update function who checks if it's necessary to update.
+        + Description: Check if it's needed to update portfolio.
         + Input:
         - 
         + Output:
         -
         """
         
-        self._portfolio.update()
+        self._portfolio.check_update()
 
     def _restart_valuation(self):
 
@@ -259,7 +259,18 @@ class Strategy(object):
                     params=self._params[asset_id]
                 )
 
-    def _update_balances(self):
+    def _check_orders(self):
+        
+        """
+        + Description: Check order status from last trades
+        + Input:
+        - 
+        + Output:
+        -
+        """
+        pass
+
+    def _portfolio_update(self):
         
         """
         + Description: Update balances in portfolio.

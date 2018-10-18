@@ -24,9 +24,10 @@ class Portfolio(object):
 
         self.world = world
         self.exchanges_names = exchanges_names
-        self.balance = {
-            exchange_name: Wallet(world, exchange_name) for exchange_name in exchanges_names
-        }
+        # self.balance = {
+        #     exchange_name: Wallet(world, exchange_name) for exchange_name in exchanges_names
+        # }
+        self.balance = {exchange_name: None for exchange_name in exchanges_names}
         self._last_update = pd.datetime(1970,1,1)
         self._delta_update = datetime.timedelta(minutes=30)
         
@@ -84,11 +85,24 @@ class Portfolio(object):
         -
         """
 
+        for exchange in self.exchanges_names:
+            self.balance[exchange] = self.world.request_balance(exchange)
+
+    def check_update(self):
+
+        """
+        + Description: Check if update is needed.
+        + Input:
+        -
+        + Output:
+        -
+        """
+
         if self.world.get_time() - self._last_update > self._delta_update:
 
             for exchange in self.exchanges_names:
-                self.balance[exchange].update(self.world.request_balance(exchange))
-            
+                self.balance[exchange] = self.world.request_balance(exchange)
+                
             self._last_update = self.world.get_time()
 
     def show(self):

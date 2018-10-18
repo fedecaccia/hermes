@@ -143,7 +143,7 @@ class Algorithm(ABC):
         - usd_price: price of base coin in usd coin.
         """
 
-        if quote==definitions.usd:
+        if quote==definitions.usd or quote==definitions.usdt:
             
             return base_price_in_quote # approximated price
 

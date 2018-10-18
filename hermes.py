@@ -222,7 +222,7 @@ class Hermes(object):
         self._build_algorithms()        
         self._build_portfolio()
         self._build_request_structure()
-        self._build_trading_platform()        
+        self._build_trading_platform()
         self._build_strategies()
 
     def _unique_exchanges(self):
@@ -254,6 +254,7 @@ class Hermes(object):
         self.world = None
 
         if self.mode == definitions.backtest:
+            self.order_id_pile = None # sended to trade later
             self.world = EmulatedWorld(self.data_elements,
                                        self.exchanges_names,
                                        self._time_step,
@@ -261,7 +262,7 @@ class Hermes(object):
                                        self._virtual_tickers)
 
         else:            
-        
+            self.order_id_pile = None # sended to trade later
             if self.mode == definitions.paper:
                 self.world = PaperWorld(self.data_elements,
                                        self.exchanges_names,
@@ -269,10 +270,13 @@ class Hermes(object):
                                        self._virtual_portfolio)
             
             else:
+                self.order_id_pile = Queue() # sended to trade later
                 self.world = RealWorld(self.data_elements,
                                        self.exchanges_names,
                                        self.mode,                                       
-                                       config.api_keys_files)
+                                       self.order_id_pile
+                                       config.api_keys_files,
+                                       config.uid_files)
 
     def _create_oracle(self):
 
@@ -381,6 +385,24 @@ class Hermes(object):
         print("\nPortfolio")
         pprint(self.portfolio.balance)
 
+    def _build_request_structure(self):
+
+        """
+        + Description: build pile and threads to perform parallel request.
+        + Input:
+        -
+        + Output:
+        -
+        """
+        
+        print("\nBuilding request structure")
+        self.request_pile = Queue()
+        self.request_flag = [0]
+        self.request_workers = [RequestWorker(i, self.request_pile, self.request_flag, Lock()) 
+                                for i in range(self.n_request_threads)]
+      
+        _ = list(map(lambda x: x.start(), self.request_workers))
+
     def _build_trading_platform(self):
 
         """
@@ -402,24 +424,6 @@ class Hermes(object):
         )
         print("\nTrading platform")
         pprint(self.trading)
-
-    def _build_request_structure(self):
-
-        """
-        + Description: build pile and threads to perform parallel request.
-        + Input:
-        -
-        + Output:
-        -
-        """
-        
-        print("\nBuilding request structure")
-        self.request_pile = Queue()
-        self.request_flag = [0]
-        self.request_workers = [RequestWorker(i, self.request_pile, self.request_flag, Lock()) 
-                                for i in range(self.n_request_threads)]
-      
-        _ = list(map(lambda x: x.start(), self.request_workers))
 
     def _build_strategies(self):
 

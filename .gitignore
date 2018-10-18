@@ -3,4 +3,5 @@ data/*.csv
 data/*.db
 *.pyc
 keys/*.key
+uid/*.uid
 trades/ini*

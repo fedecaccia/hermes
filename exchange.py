@@ -7,7 +7,7 @@ import pandas as pd
 
 from ccxt.base.errors import DDoSProtection
 from ccxt.base.errors import RequestTimeout
-from urllib.request import HTTPError
+from requests.exceptions import HTTPError
 from abc import ABC, abstractmethod
 
 
@@ -90,6 +90,8 @@ class Exchange(ABC):
             print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
         except HTTPError:
             print("WARNING: HTTPError. Bad Gateway for url in exchange: "+self.exchange)
+        except Exception as e:
+            print(repr(e))
         else:
             trading_balances = {}
             for key, values in res.items():
@@ -140,6 +142,8 @@ class Exchange(ABC):
             print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
         except HTTPError:
             print("WARNING: HTTPError. Bad Gateway for url in exchange: "+self.exchange)
+        except Exception as e:
+            print(repr(e))
         finally:
             self.last_request_time = time.time()
 
@@ -165,6 +169,8 @@ class Exchange(ABC):
             print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
         except HTTPError:
             print("WARNING: HTTPError. Bad Gateway for url in exchange: "+self.exchange)
+        except Exception as e:
+            print(repr(e))
         finally:
             self.last_request_time = time.time()
 
@@ -191,6 +197,9 @@ class Exchange(ABC):
             print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
         except HTTPError:
             print("WARNING: HTTPError. Bad Gateway for url in exchange: "+self.exchange)
+        except Exception as e:
+            print(repr(e))
+            # raise
         finally:
             self.last_request_time = time.time()
 
@@ -220,6 +229,8 @@ class Exchange(ABC):
             print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
         except HTTPError:
             print("WARNING: HTTPError. Bad Gateway for url in exchange: "+self.exchange)
+        except Exception as e:
+            print(repr(e))
         finally:
             self.last_request_time = time.time()
             
@@ -232,6 +243,36 @@ class Exchange(ABC):
     def _wait_rate_limit(self):
         while (time.time() - self.last_request_time)<self.client.rateLimit/1000:
             pass
+
+    def post_trading_order(self, symbol, side, amount, order_type, params):
+        print("Executing order in client:", self.exchange, symbol, side, amount, order_type, params)
+        
+        if order_type == definitions.market:
+            result = self.client.create_order(
+                        symbol=symbol,
+                        type = order_type,
+                        side = side,
+                        amount = amount,
+                        price = None)
+        
+        elif order_type == definitions.limit:
+            result = self.client.create_order(
+                        symbol=symbol,
+                        type = order_type,
+                        side = side,
+                        amount = amount,
+                        price = params[definitions.limit])
+
+        print(result)
+
+        # data to save in order pile, to later check
+        order = {
+            definitions.exchange: self.exchange,
+            definitions.order_id: result[definitions.order_id],
+            definitions.amount: amount
+        }
+
+        return order
 
 
 class Binance(Exchange):
@@ -299,6 +340,8 @@ class Bitfinex(Exchange):
             print("WARNING: RequestTimeout. ERROR rate limit in exchange: "+self.exchange)
         except HTTPError:
             print("WARNING: HTTPError. Bad Gateway for url in exchange: "+self.exchange)
+        except Exception as e:
+            print(repr(e))
         
         finally:
             self.last_request_time = time.time()        
@@ -371,6 +414,34 @@ class Bittrex(Exchange):
         """
 
         super().__init__(exchange, keys)
+
+    def post_trading_order(self, symbol, side, amount, order_type, params):
+        print("Executing order in client:", self.exchange, symbol, side, amount, order_type, params)
+        
+        if order_type == definitions.market:
+            
+            if side==definitions.buy:
+                price = params[definitions.limit]*1.5
+            elif side==definitions.sell:
+                price = params[definitions.limit]*0.5
+
+            result = self.client.create_order(
+                        symbol=symbol,
+                        type = definitions.limit, # Bittrex doesn't have 'market' order types
+                        side = side,
+                        amount = amount,
+                        price = price)
+        
+        elif order_type == definitions.limit:
+            result = self.client.create_order(
+                        symbol=symbol,
+                        type = order_type,
+                        side = side,
+                        amount = amount,
+                        price = params[definitions.limit])
+
+        print(result)
+        return result[definitions.order_id]
 
 
 class Cex(Exchange):

@@ -4,8 +4,8 @@ data
   data_format csv
   header_format cdm
   elements
-    xtzbtc trading gateio data/orderbookGateioXTZBTC.csv
-    xtzbtc trading hitbtc data/orderbookHitbtcXTZBTC.csv
+    xrpusd trading bitstamp orderbookBitstampXRPUSD.csv
+    xrpusd trading bittrex orderbookBittrexXRPUSD.csv
   end
 end
 
@@ -17,9 +17,9 @@ algorithms
     limit_buy_pct 100
     limit_sell_pct 100
     max_delay_in_data 5
-    usd_amount_to_trade 100
+    usd_amount_to_trade 1000
     min_usd_profit 0.1
-    period 50
+    period 1
   end
 end
 
@@ -29,19 +29,19 @@ strategies
 end
 
 general_settings
-  trading_mode paper
+  trading_mode real
   n_request_threads 2
   time_step one_sec
   virtual_portfolio infinite
   virtual_tickers
-    btcusd 6300
-    ethusd 200
-    ethbtc 0.031
+    btcusd 6500
   end
   api_keys_files 
-    binance keys/binance.key
-    bitfinex keys/bitfinex.key
     bittrex keys/bittrex.key
+    bitstamp keys/bitstamp.key
+  end
+  uid_files
+    bitstamp uid/bitstamp.uid
   end
 end
 

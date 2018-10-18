@@ -91,7 +91,27 @@ class World(ABC):
 
         return keys
 
-    def _create_clients(self, exchanges_names, api_keys_files):
+    def _load_uid(self, uid_file):
+
+        """
+        + Description: load exchange uid (required in some exchanges, like Bitstamp).
+        + Input:
+        - uid_file: string file name where uid is located.
+        + Output:
+        - uid: string.
+        """
+
+        try:
+            uid_file = open(uid_file, "r")
+            uid = uid_file.readline()
+            uid_file.close()
+        
+        except:
+            raise ValueError("ERROR: Trying to read uid file: "+uid_file)
+
+        return uid
+
+    def _create_clients(self, exchanges_names, api_keys_files, uid_files):
         
         """
         + Description: create clients which connects whith exchanges using API.
@@ -99,6 +119,7 @@ class World(ABC):
         + Input:
         - exchanges_names: List of strings with exchanges names.
         - api_keys_files: List of api key files in case private connections are needed
+        - uid_files: List of uid files in case private connections are needed (requested by Bitsamp)
         + Output:
         -
         """
@@ -117,6 +138,8 @@ class World(ABC):
                 self._exchanges[exchange] = Bitfinex(exchange, keys)
             
             elif exchange == definitions.bitstamp:
+                uid = self._load_uid(uid_files[exchange])
+                keys[definitions.uid] = uid
                 self._exchanges[exchange] = Bitstamp(exchange, keys)
             
             elif exchange == definitions.bittrex:
@@ -222,7 +245,7 @@ class EmulatedWorld(World):
         self._initialize_time_bounds()
         self._initialize_time()
         self._initialize_virtual_portfolio(virtual_portfolio)
-        self._create_clients(exchanges_names, None)
+        self._create_clients(exchanges_names, None, None)
         self._initialize_fees()
         self.virtual_tickers = virtual_tickers
         self.last_idx = 0
@@ -681,7 +704,14 @@ class RealWorld(World):
     Inherit from World.
     """
 
-    def __init__(self, data_elements, exchanges_names, mode, api_keys_files = None):
+    def __init__(
+        self,
+        data_elements,
+        exchanges_names,
+        mode,
+        order_pile,
+        api_keys_files = None,
+        uid_files = None):
 
         """
         + Description: constructor
@@ -689,14 +719,18 @@ class RealWorld(World):
         - data_elements: Dictionary of data elements.
         - exchanges_names: List of exchange string names.
         - mode: String trading mode.
+        - order_pile: Queue to put order ids to be chequed on future.
         - api_keys_files = List of api key files in case private connections are needed.
+        - uid_files = List of uid files in case private connections are needed
+         (requested by Bitstamp, for example).
         + Output:
         -
         """
 
         super().__init__(data_elements)
 
-        self._create_clients(exchanges_names, api_keys_files)
+        self.order_pile = order_pile
+        self._create_clients(exchanges_names, api_keys_files, uid_files)
         self._initialize_fees()
 
     def is_connected(self):
@@ -914,8 +948,36 @@ class RealWorld(World):
         amount = params[definitions.amount]
         order_type = params[definitions.order_type]
         params = params[definitions.params]
-        
+
         print("Executing order:", symbol, exchange, account, side, amount, order_type, params)
+
+        if account == definitions.trading:
+            order = self._exchanges[exchange].post_trading_order()
+            self.order_pile.put(order)
+
+    def check_order(self, exchange, amount, order_id):
+
+        """
+        + Description: Check specific order status by order id for a particular exchange.
+        + Input:
+        - exchange: Exchange string name.
+        - amount: Amount float needed to be filled in order to be complete.
+        - order_id: Order id string.
+        + Output:
+        -
+        """
+
+        print("Checking order id in: "+exchange)
+        res = self._exchanges[exchange].fetch_order(order_id)
+        filled = float(res[definitions.filled])
+        status = float(res[definitions.status])
+        if filled != amount:
+            print("WARNING! Order incomplete!")
+        if status != definitions.closed:
+            print("WARNING! Status:" + status)
+        print(filled + " of " + amount + "filled")
+        
+        return status
 
 
 class PaperWorld(RealWorld):

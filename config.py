@@ -6,23 +6,23 @@ from definitions import *
 #######################################################
 
 data_elements = {
-	"orderbook_xtzbtc_gateio":{
-		description: xtzbtc,
-		source: gateio,
+	"orderbook_xrpusd_bitstamp":{
+		description: xrpusd,
+		source: bitstamp,
 		data_type: orderbook,
 		timeframe: one_sec,
 		data_format: csv,
 		header_format: cdm,
-		file_name: "data/orderbookGateioXTZBTC.csv",
+		file_name: "orderbookBitstampXRPUSD.csv",
 	},
-	"orderbook_xtzbtc_hitbtc":{
-		description: xtzbtc,
-		source: hitbtc,
+	"orderbook_xrpusd_bittrex":{
+		description: xrpusd,
+		source: bittrex,
 		data_type: orderbook,
 		timeframe: one_sec,
 		data_format: csv,
 		header_format: cdm,
-		file_name: "data/orderbookHitbtcXTZBTC.csv",
+		file_name: "orderbookBittrexXRPUSD.csv",
 	},
 }
 
@@ -31,18 +31,18 @@ data_elements = {
 #######################################################
 
 assets_elements = {
-	"xtzbtc_gateio":{
-		symbol: xtzbtc,
-		base: xtz,
-		quote: btc,
-		exchange: gateio,
+	"xrpusd_bitstamp":{
+		symbol: xrpusd,
+		base: xrp,
+		quote: usd,
+		exchange: bitstamp,
 		account: trading,
 	},
-	"xtzbtc_hitbtc":{
-		symbol: xtzbtc,
-		base: xtz,
-		quote: btc,
-		exchange: hitbtc,
+	"xrpusd_bittrex":{
+		symbol: xrpusd,
+		base: xrp,
+		quote: usd,
+		exchange: bittrex,
 		account: trading,
 	},
 }
@@ -55,15 +55,15 @@ algorithms_elements = {
 	"arbitrage_0":{
 		algorithm: statarb,
 		data_modules_array: [
-			"orderbook_xtzbtc_gateio",
-			"orderbook_xtzbtc_hitbtc"
+			"orderbook_xrpusd_bitstamp",
+			"orderbook_xrpusd_bittrex"
 		],
 		signals: {
-			"xtzbtc_gateio":{
+			"xrpusd_bitstamp":{
 				long_signal:1,
 				short_signal:-1,
 			},
-			"xtzbtc_hitbtc":{
+			"xrpusd_bittrex":{
 				long_signal:1,
 				short_signal:-1,
 			},
@@ -72,9 +72,9 @@ algorithms_elements = {
 			limit_buy_pct:100,
 			limit_sell_pct:100,
 			max_delay_in_data:5,
-			usd_amount_to_trade:100,
+			usd_amount_to_trade:1000,
 			min_usd_profit:0.1,
-			period:50,
+			period:1,
 		},
 	},
 }
@@ -87,11 +87,11 @@ strategies_elements = {
 	"strategy_0":{
 		algorithms_array:["arbitrage_0"],
 		thresholds:{
-			"xtzbtc_gateio":{
+			"xrpusd_bitstamp":{
 				long_threshold:1,
 				short_threshold:-1
 			},
-			"xtzbtc_hitbtc":{
+			"xrpusd_bittrex":{
 				long_threshold:1,
 				short_threshold:-1
 			}
@@ -104,7 +104,7 @@ strategies_elements = {
 #                  GENERAL SETTINGS
 #######################################################
 
-trading_mode = paper
+trading_mode = real
 n_request_threads = 2
 
 #######################################################
@@ -113,76 +113,76 @@ n_request_threads = 2
 
 time_step = one_sec
 virtual_portfolio = {
-	gateio:{
+	bittrex:{
 		margin:{
-			xtz:{
+			usd:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
-			btc:{
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 		trading:{
-			xtz:{
+			usd:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
-			btc:{
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 		funding:{
-			xtz:{
+			usd:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
-			btc:{
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 	},
-	hitbtc:{
+	bitstamp:{
 		margin:{
-			xtz:{
+			usd:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
-			btc:{
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 		trading:{
-			xtz:{
+			usd:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
-			btc:{
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 		funding:{
-			xtz:{
+			usd:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
-			btc:{
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -192,13 +192,7 @@ virtual_portfolio = {
 }
 virtual_tickers = {
 	btcusd:{
-		last:6300
-	},
-	ethusd:{
-		last:200
-	},
-	ethbtc:{
-		last:0.031
+		last:6500
 	},
 }
 
@@ -214,9 +208,11 @@ virtual_tickers = {
 #######################################################
 
 api_keys_files = {
-	binance: "keys/binance.key",
-	bitfinex: "keys/bitfinex.key",
 	bittrex: "keys/bittrex.key",
+	bitstamp: "keys/bitstamp.key",
+}
+uid_files = {
+	bitstamp: "uid/bitstamp.uid",
 }
 
 

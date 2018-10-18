@@ -55,6 +55,7 @@ twitter = "twitter"
 
 btcusd = "BTC/USD"
 ethusd = "ETH/USD"
+ethusdt = "ETH/USDT"
 ethbtc = "ETH/BTC"
 batbtc = "BAT/BTC"
 neobtc = "NEO/BTC"
@@ -62,11 +63,25 @@ adabtc = "ADA/BTC"
 sntbtc = "SNT/BTC"
 trxbtc = "TRX/BTC"
 xtzbtc = "XTZ/BTC"
-all_tickers = [btcusd, ethusd, ethbtc, batbtc, neobtc, adabtc, sntbtc, trxbtc, xtzbtc]
+xrpusd = "XRP/USD"
+all_tickers = [
+    btcusd,
+    ethusd,
+    ethusdt,
+    ethbtc,
+    batbtc,
+    neobtc,
+    adabtc,
+    sntbtc,
+    trxbtc,
+    xtzbtc,
+    xrpusd
+]
 
 # Coins definition
 
 usd = "USD"
+usdt = "USDT"
 eur = "EUR"
 btc = "BTC"
 eth = "ETH"
@@ -76,6 +91,7 @@ ada = "ADA"
 snt = "SNT"
 trx = "TRX"
 xtz = "XTZ"
+xrp = "XRP"
 asset_id = "asset_id"
 
 # Other description definitions
@@ -213,6 +229,13 @@ low = "low"
 close = "close"
 volume = "volume"
 
+# Orders 
+
+order_id = "id"
+filled = "filled"
+status = "status"
+closed = "closed"
+
 # Bitfinex margin trading definitions
 
 bitfinex_leverage = "leverage"
@@ -253,3 +276,4 @@ order_params = "order_params"
 amount = "amount"
 function = "funtcion"
 barrier = "barrier"
+uid = "uid"

@@ -172,6 +172,15 @@ with open(config_input, "r") as infile:
             api_keys_files[line.split()[0]] = "\""+line.split()[1]+"\""
             line = get_next_valid_line(infile)
 
+        elif line.split()[0] == "uid_files":
+
+          line = get_next_valid_line(infile)
+          uid_files = {}
+          while line.split()[0] != "end":
+            
+            uid_files[line.split()[0]] = "\""+line.split()[1]+"\""
+            line = get_next_valid_line(infile)
+
         line = get_next_valid_line(infile)
 
     line = get_next_valid_line(infile)
@@ -344,6 +353,10 @@ outfile.write("#######################################################\n\n")
 outfile.write("api_keys_files = {\n")
 for exchange, key in api_keys_files.items():
   outfile.write("\t"+exchange+": "+key+",\n")
+outfile.write("}\n")
+outfile.write("uid_files = {\n")
+for exchange, uid in uid_files.items():
+  outfile.write("\t"+exchange+": "+uid+",\n")
 outfile.write("}\n")
 outfile.write("\n")
 outfile.write("\n")

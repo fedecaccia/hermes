@@ -9,7 +9,16 @@ class Trade(object):
     Trade: Trading instance which takes care of trading orders.
     """
 
-    def __init__(self, world, oracle, assets, portfolio, request_pile, request_flag, mutex):
+    def __init__(
+        self,
+        world,
+        oracle,
+        assets,
+        portfolio,
+        request_pile,
+        request_flag,
+        mutex,
+        order_pile):
 
         """
         + Description: Constructor.
@@ -21,6 +30,7 @@ class Trade(object):
         - request_pile: A pile where request_workers look functions to evaluate.
         - request_flag: List of 1 flag ([flag]) to indicate how many workers are bussy.
         - mutext: Thread locker.
+        - order_pile: A pile where request_workers have put order ids (real world) or None (other).
         + Output:
         -
         """
@@ -32,6 +42,7 @@ class Trade(object):
         self.request_pile = request_pile
         self.request_flag = request_flag
         self.mutex = mutex
+        self.order_pile = order_pile
         # self._transactions_file = "transactions.dat"
         self._transactions_file = "trades/ini"+str(datetime.datetime.now())+".dat"
 
@@ -56,7 +67,7 @@ class Trade(object):
         base, quote = symbol.split("/")[:2]
         funds_are_available = False
 
-        funds_are_available, amount_to_trade = self._evaluate_funds(side, amount, exchange, account, base, quote)
+        funds_are_available, amount_to_trade = self._evaluate_funds(side, amount, exchange, account, base, quote, params)
 
         if funds_are_available:
 
@@ -71,7 +82,7 @@ class Trade(object):
             print("WARNING: Funds are not enough")
 
 
-    def _evaluate_funds(self, side, amount, exchange, account, base, quote):
+    def _evaluate_funds(self, side, amount, exchange, account, base, quote, params):
 
         """
         + Description: Evaluate if funds are available to trade.
@@ -83,6 +94,7 @@ class Trade(object):
         - account: Account in exchange string name.
         - base: Base currency string name.
         - quote: Quote currency string name.
+        - params: Parameters of asset, like limit and last values.
         + Output:
         - funds_are_available: Bool indicating whether funds are available to trade or not.
         - amount_to_trade: Float amount to buy or to sell.
@@ -103,7 +115,7 @@ class Trade(object):
         elif side == definitions.buy:
 
             quote_in_portfolio = self.portfolio.get_amount_of_asset(exchange, account, quote)
-            base_price = self.oracle.get_price(base, quote)
+            base_price = params[definitions.last]
             max_base_to_buy = quote_in_portfolio / base_price
 
             if amount == definitions.full:                
@@ -155,3 +167,28 @@ class Trade(object):
 
         while self.request_flag[0]>0:
             pass
+
+    def check_orders(self):
+
+        """
+        + Description: Check order status, looking for order ids in order_pile.
+        + Input:
+        -        
+        + Output:
+        -
+        """
+
+        if self.order_pile:
+            print("Checking order status...")
+            for order in self.order_pile.qsize():
+                exchange = order[definitions.exchange]
+                order_id = order[definitions.order_id]
+                amount = order[definitions.amount]
+                status = self.world.check_order(exchange, order_id, amount)
+                if status != definitions.closed:
+                    with open(self._transactions_file, "a") as out:
+                        out.write("\n"+str(self.world.get_time()))
+                        out.write("\n"+exchange + " - order id:" + order_id + ":" + status)
+                        out.write("\n")
+
+            print("Order checking finished")

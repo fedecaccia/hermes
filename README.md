@@ -59,8 +59,8 @@ Under development.
 - [x] ~~config.py: only make alogrithms for identical pairs in arbitrage.~~
 - [ ] World: optimize request data.
 - [ ] Strategy: check margin limits to show warnings.
-- [ ] Strategy: check order status (and wait for that).
-- [ ] World: save order ids.
+- [x] ~~Strategy: check order status (and wait for that).~~
+- [x] ~~World: save order ids~~.
 - [x] ~~DataModule: create pandas dataframe requesting candles.~~
 - [x] ~~DataModule: create pandas dataframe requesting orderbooks.~~
 - [ ] EmulatedWorld: load data from sql.
@@ -70,7 +70,7 @@ Under development.
 - [ ] Algorithms: implement crossing moving average algorithm.
 - [ ] Algorithms: implement crossing moving average with volume algorithm.
 - [x] ~~Algorithms: implement simple virtual transfer idea.~~
-- [ ] Algorithms: implement pair trading.
+- [x] Algorithms: implement pair trading.
 - [ ] DataModule: implement efficient TA calculation (only update new values and not recalculate everything).
 - [x] ~~Trade: Store transactions.~~
 - [ ] Portolio: Compute P&L per asset.
@@ -81,8 +81,9 @@ Under development.
 - [x] ~~RealWorld: online public orderbook requests.~~
 - [x] ~~RealWorld: online public candles requests.~~
 - [x] ~~RealWorld: online public balances requests.~~
-- [ ] World & DataModule: specify eactly how data should be stored so users can modify it.
-- [ ] RealWorld: online private post order requests.
+- [ ] World & DataModule: specify exactly how data should be stored so users can modify it.
+- [x] RealWorld: online private post order requests.
+- [x] ~~Exchange: online private post order requests.~~
 - [ ] **TESTS**.
 - [ ] Implement function to save data in data_module. Similar to crypto_monitor.
 - [ ] Implement mode *saving_data* which only saves data.
