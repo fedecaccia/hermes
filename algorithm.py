@@ -26,13 +26,8 @@ class Algorithm(ABC):
         """
         
         self.id = algo_id
-        self.data_modules = []
-        self.data_modules_ids = []
-
-        for data_module_id, data_module_values in data_modules.items():
-            if data_module_id in algo_values[definitions.data_modules_array]:
-                self.data_modules.append(data_module_values)
-                self.data_modules_ids.append(data_module_id)
+        self.data_modules_ids = [k for k in data_modules.keys() if k in algo_values[definitions.data_modules_array]]
+        self.data_modules = [data_modules[k] for k in self.data_modules_ids]
         self._check_data_modules()
 
         self.assets = {}
