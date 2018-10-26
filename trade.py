@@ -18,8 +18,7 @@ class Trade(object):
         portfolio,
         request_pile,
         request_flag,
-        mutex,
-        order_pile):
+        mutex):
 
         """
         + Description: Constructor.
@@ -31,7 +30,6 @@ class Trade(object):
         - request_pile: A pile where request_workers look functions to evaluate.
         - request_flag: List of 1 flag ([flag]) to indicate how many workers are bussy.
         - mutext: Thread locker.
-        - order_pile: A pile where request_workers have put order ids (real world) or None (other).
         + Output:
         -
         """
@@ -43,13 +41,12 @@ class Trade(object):
         self.request_pile = request_pile
         self.request_flag = request_flag
         self.mutex = mutex
-        self.order_pile = order_pile
         # self._transactions_file = "transactions.dat"
         self._transactions_file = "trades/ini"+str(datetime.datetime.now())+".dat"
         self._real_transactions_file = "trades/tx_ini"+str(datetime.datetime.now())+".dat"
         self._warnings_file = "trades/warnings_ini"+str(datetime.datetime.now())+".dat"
 
-    def check_funds(self, side, amount, exchange, account, base, quote, params):
+    def check_funds(self, side, amount, asset_id, params):
 
         """
         + Description: Evaluate if funds are available to trade.
@@ -57,14 +54,17 @@ class Trade(object):
         - side: "buy" or "sell" string sides.
         - amount: float amount to trade or "full" string.
         In "full" case, the function computes the maximum amount able to trade.
-        - exchange: Exchange string name.
-        - account: Account in exchange string name.
-        - base: Base currency string name.
+        - asset_id: Asset string name (exchange_xxxyyy).
         - quote: Quote currency string name.
         - params: Parameters of asset, like limit and last values.
         + Output:
         - funds_are_available: Bool indicating whether funds are available to trade or not.
         """
+
+        exchange = self.assets[asset_id].exchange
+        account = self.assets[asset_id].account
+        symbol = self.assets[asset_id].symbol
+        base, quote = symbol.split("/")[:2]
 
         if side == definitions.sell:
 
@@ -96,7 +96,7 @@ class Trade(object):
 
         return funds_are_available
 
-    def execute_order(self, asset_id, order_type, side, amount, params):
+    def execute_order(self, asset_id, order_type, side, amount, order_pile, params):
         
         """
         + Description: call trading order in client.
@@ -106,6 +106,8 @@ class Trade(object):
         - side: "buy" or "sell" string sides.
         - amount: float amount to trade or "full" string.
         In "full" case, the function computes the maximum amount able to trade.
+        - order_pile: Queue (RealWorld) or None (other).
+        A pile where request_workers have put order ids (real world) or None (other).
         - params: Dictionary of parameters required to post order.
         + Output:
         -
@@ -121,7 +123,7 @@ class Trade(object):
 
         if funds_are_available:
 
-            self._call_threads_to_trade(asset_id, symbol, exchange, account, side, amount_to_trade, order_type, params)
+            self._call_threads_to_trade(asset_id, symbol, exchange, account, side, amount_to_trade, order_type, order_pile, params)
         
             with open(self._transactions_file, "a") as out:
                 out.write("\n"+str(self.world.get_time()))
@@ -180,7 +182,16 @@ class Trade(object):
 
         return funds_are_available, amount_to_trade
 
-    def _call_threads_to_trade(self, asset_id, symbol, exchange, account, side, amount_to_trade, order_type, params):
+    def _call_threads_to_trade(self,
+                               asset_id,
+                               symbol,
+                               exchange,
+                               account,
+                               side,
+                               amount_to_trade,
+                               order_type,
+                               order_pile,
+                               params):
 
         """
         + Description: Put trade order in a pile where workers collect works.
@@ -191,7 +202,9 @@ class Trade(object):
         - account: Account in exchange string name.
         - side: "buy" or "sell" string sides.
         - amount_to_trade: Float amount to buy or to sell.
-        - order_type: Type of order string name.
+        - order_type: Type of order string name.        
+        - order_pile: Queue (RealWorld) or None (other).
+        A pile where request_workers have put order ids (real world) or None (other).
         - params: Dictionary of parameters required to post order.
         + Output:
         -
@@ -211,66 +224,81 @@ class Trade(object):
                 definitions.side:side,
                 definitions.amount:amount_to_trade,
                 definitions.order_type:order_type,
-                definitions.params:params                
-                }
+                definitions.params:params,
+                definitions.order_pile: order_pile
+                },
             })
 
         while self.request_flag[0]>0:
             pass
 
-    def check_orders(self):
+    def check_orders(self, order_pile):
 
         """
         + Description: Check order status, looking for order ids in order_pile.
         + Input:
-        -        
+        - order_pile: Queue (RealWorld) or None (other).
+        A pile where request_workers have put order ids (real world) or None (other).
         + Output:
         -
         """
 
         # Workers have finished function evaluation
-        # They were waited in while loop in _call_threads_to_trade()
+        # They were waited in while loop in trade._call_threads_to_trade()
 
-        if self.order_pile:
-            time.sleep(0.5) # wait to complete order
+        order_status = set()
+        order_status.add(definitions.strategy_success)
+
+        if order_pile: # only in RealWorld            
+            # don't wait! it will be check next time also
+            # algo will be in "waiting status" so can only request data an update variables
             print("Checking order status...")
-            for _ in range(self.order_pile.qsize()):
-                order = self.order_pile.get()
+            for _ in range(order_pile.qsize()):
+                order = order_pile.get()
                 exchange = order[definitions.exchange]
                 order_id = order[definitions.order_id]
                 amount = order[definitions.amount]
-                response = self.world.check_order(exchange, order_id, amount)
+                response = self.world.check_order(exchange, order_id)
                 
                 filled = float(response[definitions.filled])
-                symbol = float(response[definitions.symbol])
-                side = float(response[definitions.side])
-                status = float(response[definitions.status])
+                symbol = response[definitions.symbol]
+                side = response[definitions.side]
+                status = response[definitions.status]
                 price = float(response[definitions.average])
-                fee = float(response[definitions.fee])
+                fee = response[definitions.fee] # 'fee': {'cost': 3.54e-06, 'currency': 'BTC'}
                 if filled != amount or status != definitions.closed:                    
                     print("WARNING! Order incomplete")
                     with open(self._warnings_file, "a") as out:
                         out.write("\n"+str(self.world.get_time()))
                         out.write("\n"+exchange + " - symbol: " + symbol +\
-                        " - filled: " + filled + " of amount: " + amount +
-                        " - side: " + side + " - order id:" + order_id + ":" + status)
+                        " - filled: " + str(filled) + " of amount: " + str(amount) +
+                        " - side: " + side + " - order id: " + order_id + " - status: " + status)
                         out.write("\n")
 
                         if status == definitions.canceled:
-                            # algo.update_status()
+                            order_status.add(definitions.strategy_abort)
                             pass
-                        elif status == definitions.opened:                            
-                            self.order_pile.put(order) # put it again to check it later
+                        elif status == definitions.opened:
+                            # put it again to check it later
+                            # since queue is FIFO, it will be read only next time
+                            order_pile.put(order)
+                            order_status.add(definitions.strategy_wait)
                 else:
                     with open(self._real_transactions_file, "a") as out:
                         out.write("\n"+str(self.world.get_time()))
                         out.write("\n"+"Transaction complete")
                         out.write("\n exchange: "+exchange)
                         out.write("\n symbol: "+symbol)
-                        out.write("\n amount: "+amount)
+                        out.write("\n amount: "+str(amount))
                         out.write("\n side: "+side)
-                        out.write("\n price: "+price)
-                        out.write("\n fee: "+fee)
+                        out.write("\n price: "+str(price))
+                        out.write("\n fee: "+str(fee))
                         out.write("\n")
-
-            print("Order checking finished")
+                    order_status.add(definitions.strategy_success)
+        
+        if definitions.strategy_abort in order_status:
+            return definitions.strategy_abort
+        elif definitions.strategy_wait in order_status:
+            return definitions.strategy_wait
+        else:            
+            return definitions.strategy_success

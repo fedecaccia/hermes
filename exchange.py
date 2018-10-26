@@ -274,6 +274,18 @@ class Exchange(ABC):
 
         return order
 
+    def get_order_status(self, order_id):
+        
+        """
+        Description: Get order status from exchange.
+        + Input:
+        - order_id: String order id.        
+        + Output:
+        -
+        """
+
+        return self.client.fetch_order(order_id)
+
 
 class Binance(Exchange):
 
@@ -388,7 +400,7 @@ class Bitstamp(Exchange):
         Description: Constructor.
         + Input:
         - exchange: Exchange string name.
-        - keys: Dictionary of 'apiKey' and 'secret' or None object.
+        - keys: Dictionary of 'apiKey', 'secret' and 'uid', or None object.
         + Output:
         -
         """

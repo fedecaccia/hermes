@@ -4,6 +4,7 @@ import time
 import numpy as np
 
 from threading import Barrier
+from queue import Queue
 
 
 class Strategy(object):
@@ -23,7 +24,8 @@ class Strategy(object):
                  data_modules,
                  portfolio,
                  trading,
-                 oracle):
+                 oracle,
+                 mode):
 
         """
         + Description: constructor
@@ -38,6 +40,7 @@ class Strategy(object):
         - portfolio: Portfolio object.
         - trading: Trading platform object.
         - oracle: Oracle object.
+        - mode: String trading mode.
         + Output:
         -
         """
@@ -50,11 +53,17 @@ class Strategy(object):
         self._trading = trading
         self._oracle = oracle
         self._is_trading = False
-        self._valuation = 0
+        self.state = definitions.strategy_success
+        self._valuation = {}
         self._thresholds = strategy_values[definitions.thresholds]
         self._order_type = strategy_values[definitions.order_type]      
         self._set_algorithms(algorithms, strategy_values)
         self._set_data_modules(data_modules)
+        
+        if mode == definitions.real:
+            self.order_pile = Queue()
+        else:
+            self.order_pile = None
 
     def _set_algorithms(self, algorithms, strategy_values):
         
@@ -103,6 +112,9 @@ class Strategy(object):
         """
 
         print("\nExecuting strategy id: "+str(self.id))
+        if self.state == definitions.strategy_abort:
+            print("WARNING: ABORT strategy: " + self.id)
+            return
         self._update_oracle()
         self._check_portfolio_update()
         # we can't check funds availability here, because yet we don't know if we're buying or selling
@@ -111,10 +123,9 @@ class Strategy(object):
         self._request_update_in_data_modules()
         self._evaluate_algorithms()
         self._analyze_valuation()
+        self._check_orders()
         if self._trading:
-            self._check_orders()
             self._portfolio_update()
-            pass
 
     def _update_oracle(self):
 
@@ -229,7 +240,7 @@ class Strategy(object):
         print("Checking if funds are available...", self._valuation)
 
         have_funds = {asset_id:False for asset_id in self._valuation.keys()}
-        
+
         for asset_id, signal in self._valuation.items():
 
             try:
@@ -241,23 +252,21 @@ class Strategy(object):
                 self._is_trading = True
                 
                 have_funds[asset_id] = self._trading.check_funds(
-                                            asset_id=asset_id,
-                                            order_type=self._order_type,
-                                            side=definitions.buy,
-                                            amount=amount,
-                                            params=self._params[asset_id]
+                                            side = definitions.buy,
+                                            amount = amount,
+                                            asset_id = asset_id,
+                                            params = self._params[asset_id]
                                         )
 
             elif signal <= self._thresholds[asset_id][definitions.short_threshold]:
                 self._is_trading = True
                     
                 have_funds[asset_id] = self._trading.check_funds(
-                                            asset_id=asset_id,
-                                            order_type=self._order_type,
-                                            side=definitions.sell,
-                                            amount=amount,
-                                            params=self._params[asset_id]
-                                        )
+                                            side = definitions.sell,
+                                            amount = amount,
+                                            asset_id = asset_id,
+                                            params = self._params[asset_id]
+                                        )                                        
 
         have_funds = np.all(list(have_funds.values()))
 
@@ -276,6 +285,7 @@ class Strategy(object):
                         order_type=self._order_type,
                         side=definitions.buy,
                         amount=amount,
+                        order_pile=self.order_pile,
                         params=self._params[asset_id]
                     )
 
@@ -288,13 +298,15 @@ class Strategy(object):
                         order_type=self._order_type,
                         side=definitions.sell,
                         amount=amount,
+                        order_pile=self.order_pile,
                         params=self._params[asset_id]
                     )
 
         elif not have_funds and self._is_trading:
             print("WARNING: Algorithm has shooted signals but funds are not enough")
             # notify to algo that orders are not going to be executed
-            pass
+            for algorithm in self._algorithms:
+                algorithm.operate_and_confirm_status()
 
     def _check_orders(self):
 
@@ -306,7 +318,18 @@ class Strategy(object):
         -
         """
         
-        self._trading.check_orders()
+        status = self._trading.check_orders(self.order_pile)
+        
+        if status == definitions.strategy_abort:
+            self.state = definitions.strategy_abort
+            print("WARNING: ABORT strategy: " + self.id)    
+        elif status == definitions.strategy_wait:
+            for algorithm in self._algorithms:
+                pass
+        else: # status == definitions.strategy_success
+            for algorithm in self._algorithms:
+                algorithm.operate_and_cancel_status()
+            
 
     def _portfolio_update(self):
         

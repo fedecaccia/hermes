@@ -709,7 +709,6 @@ class RealWorld(World):
         data_elements,
         exchanges_names,
         mode,
-        order_pile,
         api_keys_files = None,
         uid_files = None):
 
@@ -719,7 +718,6 @@ class RealWorld(World):
         - data_elements: Dictionary of data elements.
         - exchanges_names: List of exchange string names.
         - mode: String trading mode.
-        - order_pile: Queue to put order ids to be chequed on future.
         - api_keys_files = List of api key files in case private connections are needed.
         - uid_files = List of uid files in case private connections are needed
          (requested by Bitstamp, for example).
@@ -729,7 +727,6 @@ class RealWorld(World):
 
         super().__init__(data_elements)
 
-        self.order_pile = order_pile
         self._create_clients(exchanges_names, api_keys_files, uid_files)
         self._initialize_fees()
 
@@ -931,44 +928,88 @@ class RealWorld(World):
         
         return self.tickers
 
-    def post_order(self, params):
+    def post_order(self, parameters):
 
         """
         + Description: constructor
         + Input:
-        - params: Dictionary containing order parameters.
+        - parameters: Dictionary containing order parameters.
         + Output:
         -
         """
 
-        symbol = params[definitions.symbol]
-        exchange = params[definitions.exchange]
-        account = params[definitions.account]
-        side = params[definitions.side]
-        amount = params[definitions.amount]
-        order_type = params[definitions.order_type]
-        params = params[definitions.params]
+        symbol = parameters[definitions.symbol]
+        exchange = parameters[definitions.exchange]
+        account = parameters[definitions.account]
+        side = parameters[definitions.side]
+        amount = parameters[definitions.amount]
+        order_type = parameters[definitions.order_type]
+        order_pile = parameters[definitions.order_pile]
+        params = parameters[definitions.params]        
 
         print("Executing order:", symbol, exchange, account, side, amount, order_type, params)
 
         if account == definitions.trading:
             order = self._exchanges[exchange].post_trading_order()
-            self.order_pile.put(order)
+            # order = {
+            #     definitions.exchange: exchange,
+            #     definitions.order_id: "asdasdasdsd",
+            #     definitions.amount: amount
+            # }
+            order_pile.put(order)
 
-    def check_order(self, exchange, amount, order_id):
+    def check_order(self, exchange, order_id):
 
         """
         + Description: Check specific order status by order id for a particular exchange.
         + Input:
         - exchange: Exchange string name.
-        - amount: Amount float needed to be filled in order to be complete.
         - order_id: Order id string.
         + Output:
         - response: dictionary with order status.
         """
 
         print("Checking order id in: "+exchange)
-        response = self._exchanges[exchange].fetch_order(order_id)
+        response = self._exchanges[exchange].get_order_status(order_id)
+
+        # response = {'amount': 20.0,
+        #             'average': 7.099e-05,
+        #             'cost': 0.0014198,
+        #             'datetime': '2018-10-18T14:30:18.743Z',
+        #             'fee': {'cost': 3.54e-06, 'currency': 'BTC'},
+        #             'filled': 20.0,
+        #             'id': 'f36e86f0-6aed-47dc-a2e7-20f55ee3e295',
+        #             'info': {'AccountId': None,
+        #                     'CancelInitiated': False,
+        #                     'Closed': '2018-10-18T14:30:18.79',
+        #                     'CommissionPaid': 3.54e-06,
+        #                     'CommissionReserveRemaining': 0.0,
+        #                     'CommissionReserved': 0.0,
+        #                     'Condition': 'NONE',
+        #                     'ConditionTarget': None,
+        #                     'Exchange': 'BTC-XRP',
+        #                     'ImmediateOrCancel': False,
+        #                     'IsConditional': False,
+        #                     'IsOpen': False,
+        #                     'Limit': 6e-05,
+        #                     'Opened': '2018-10-18T14:30:18.743',
+        #                     'OrderUuid': 'f36e86f0-6aed-47dc-a2e7-20f55ee3e295',
+        #                     'Price': 0.0014198,
+        #                     'PricePerUnit': 7.099e-05,
+        #                     'Quantity': 20.0,
+        #                     'QuantityRemaining': 0.0,
+        #                     'ReserveRemaining': 20.0,
+        #                     'Reserved': 20.0,
+        #                     'Sentinel': '998ae81c-6634-425d-b559-7e995bc8b72e',
+        #                     'Type': 'LIMIT_SELL'},
+        #             'lastTradeTimestamp': 1539873018079,
+        #             'price': 6e-05,
+        #             'remaining': 0.0,
+        #             'side': 'sell',
+        #             'status': 'closed',
+        #             'symbol': 'XRP/BTC',
+        #             'timestamp': 1539873018743,
+        #             'type': 'limit'}
         
         return response
 

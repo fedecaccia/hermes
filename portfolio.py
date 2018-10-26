@@ -1,3 +1,5 @@
+import definitions
+
 from wallet import Wallet
 
 import datetime
@@ -71,9 +73,20 @@ class Portfolio(object):
         - asset: Asset string name.
         + Output:
         - value: Float amount of asset.
-        """    
+        """
 
-        return self.balance[exchange].get_amount_of_asset(account, asset)
+        if account != definitions.margin_trading:
+            try:
+                return self.balance[exchange][account][asset][definitions.free]
+            except:
+                print("WARNING: without funds: "+asset+" in account: "+account+" in: "+exchange)
+                return 0
+        else:
+            try:
+                return self.balance[exchange][definitions.margin_trading][definitions.tradable_balance][asset]
+            except:
+                print("WARNING: without tradable balance for: "+asset+" in margin trading account in: "+exchange)
+                return 0
 
     def update(self):
 

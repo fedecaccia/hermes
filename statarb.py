@@ -158,6 +158,10 @@ class StatArb(Algorithm):
 
         self.p_l0_s1 = np.array(())
         self.p_l1_s0 = np.array(())
+        self.required_status = {
+            definitions.long_position: None,
+            definitions.short_position: None
+        }
         self.status = {
             definitions.long_position: None,
             definitions.short_position: None
@@ -325,7 +329,7 @@ class StatArb(Algorithm):
 
                     # Analyze open positions
 
-                    if self._positions_are_closed():
+                    if self._positions_are_closed() and self._operating:
 
                         # if p_l0_s1_actual > -p_l1_s0_m:
                         if p_l0_s1_actual > 0:
@@ -344,8 +348,9 @@ class StatArb(Algorithm):
                                 definitions.last:bid1
                             }
                             
-                            self.status[definitions.long_position] = asset0
-                            self.status[definitions.short_position] = asset1
+                            self.required_status[definitions.long_position] = asset0
+                            self.required_status[definitions.short_position] = asset1
+                            self._operating = False
 
                             self.prev_profit = p_l0_s1_actual
                             self.prev_amount = amount
@@ -367,14 +372,15 @@ class StatArb(Algorithm):
                                 definitions.last:ask1
                             }
 
-                            self.status[definitions.short_position] = asset0
-                            self.status[definitions.long_position] = asset1
+                            self.required_status[definitions.short_position] = asset0
+                            self.required_status[definitions.long_position] = asset1
+                            self._operating = False
 
                             self.prev_profit = p_l1_s0_actual
                             self.prev_amount = amount
                     
                     # Analyze close positions
-                    else:
+                    elif not self._positions_are_closed() and self._operating:
 
                         if p_l0_s1_actual + self.prev_profit > 0 and\
                         self.prev_amount*(p_l0_s1_actual + self.prev_profit) > self._min_usd_profit and\
@@ -394,8 +400,9 @@ class StatArb(Algorithm):
                                 definitions.last:bid1,
                             }
                             
-                            self.status[definitions.long_position] = None
-                            self.status[definitions.short_position] = None
+                            self.required_status[definitions.long_position] = None
+                            self.required_status[definitions.short_position] = None
+                            self._operating = False
                         
                         elif p_l1_s0_actual + self.prev_profit > 0 and\
                         self.prev_amount*(p_l1_s0_actual + self.prev_profit) > self._min_usd_profit and\
@@ -415,11 +422,32 @@ class StatArb(Algorithm):
                                 definitions.last:ask1
                             }
 
-                            self.status[definitions.long_position] = None
-                            self.status[definitions.short_position] = None
+                            self.required_status[definitions.long_position] = None
+                            self.required_status[definitions.short_position] = None
+                            self._operating = False
                     
                 else:
-                    print("Doing nothing. Not enough data yet...")  
+                    print("Doing nothing. Not enough data yet...")
+        
+        # example
+        
+        # self._shoot_short_signal(asset0)
+        # params[asset0] = {
+        #     definitions.amount:20,
+        #     definitions.limit:ask0,
+        #     definitions.last:bid0
+        # }
+
+        # self._shoot_long_signal(asset1)
+        # params[asset1] = {
+        #     definitions.amount:20,
+        #     definitions.limit:bid1,
+        #     definitions.last:ask1
+        # }
+
+        # self.required_status[definitions.short_position] = asset0
+        # self.required_status[definitions.long_position] = asset1
+        # self._operating = False
 
         return self._signals, params
 
@@ -439,3 +467,34 @@ class StatArb(Algorithm):
             return False
 
         return True
+
+    def operate_and_confirm_status(self):
+
+        """
+        + Description: This function is called from trading module, after confirming posted orders has been executed succesfully.
+        + Input:
+        -      
+        + Output:
+        - 
+        """
+
+        self.status[definitions.short_position] = self.required_status[definitions.short_position]
+        self.status[definitions.long_position] = self.required_status[definitions.long_position]
+
+        self._operating = True
+
+
+    def operate_and_cancel_status(self):
+
+        """
+        + Description: This function is called from trading module, after cancelling posted orders.
+        + Input:
+        -      
+        + Output:
+        - 
+        """
+
+        self.required_status[definitions.short_position] = None
+        self.required_status[definitions.long_position] = None
+
+        self._operating = True

@@ -283,3 +283,9 @@ amount = "amount"
 function = "funtcion"
 barrier = "barrier"
 uid = "uid"
+order_pile = "order_pile"
+
+# trade signals to strategy
+strategy_abort = "abort"
+strategy_success = "success"
+strategy_wait = "wait"

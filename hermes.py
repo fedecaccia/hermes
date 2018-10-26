@@ -254,15 +254,13 @@ class Hermes(object):
         self.world = None
 
         if self.mode == definitions.backtest:
-            self.order_pile = None # sended to trade later
             self.world = EmulatedWorld(self.data_elements,
                                        self.exchanges_names,
                                        self._time_step,
                                        self._virtual_portfolio,
                                        self._virtual_tickers)
 
-        else:            
-            self.order_pile = None # sended to trade later
+        else:
             if self.mode == definitions.paper:
                 self.world = PaperWorld(self.data_elements,
                                        self.exchanges_names,
@@ -270,11 +268,9 @@ class Hermes(object):
                                        self._virtual_portfolio)
             
             else:
-                self.order_pile = Queue() # sended to trade later
                 self.world = RealWorld(self.data_elements,
                                        self.exchanges_names,
-                                       self.mode,                                       
-                                       self.order_pile,
+                                       self.mode,
                                        config.api_keys_files,
                                        config.uid_files)
 
@@ -420,8 +416,7 @@ class Hermes(object):
             self.portfolio,
             self.request_pile,
             self.request_flag,
-            Lock(),
-            self.order_pile
+            Lock()
         )
         print("\nTrading platform")
         pprint(self.trading)
@@ -448,7 +443,8 @@ class Hermes(object):
                                             self.data_modules,
                                             self.portfolio,
                                             self.trading,
-                                            self.oracle)
+                                            self.oracle,
+                                            self.mode)
 
         print("\nStrategies:")
         pprint(self.strategies)

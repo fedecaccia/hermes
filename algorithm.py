@@ -44,6 +44,7 @@ class Algorithm(ABC):
         self._define_signals(algo_values[definitions.signals])
         self._oracle = oracle
         self._fees = self._oracle.fees
+        self._operating = True
 
     def _define_signals(self, signals):
 
