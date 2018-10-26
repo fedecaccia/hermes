@@ -89,8 +89,8 @@ Under development.
 - [ ] Implement mode *saving_data* which only saves data.
 - [ ] Implement multiIP.
 - [ ] Price executed, read from order status by Trade, should be comunicated to Algorithm.
-- [ ] Trade: status order, read from order status by Trade, should be comunicated to Algorithm (in case was not executed)
-- [ ] Trade: rejected orders should not be put again in order_pile.
+- [x] ~~Trade: status order, read from order status by Trade, should be comunicated to Algorithm (in case was not executed)~~
+- [x] ~~Trade: rejected orders should not be put again in order_pile.~~
 - [ ] Algorithm: Set amount depending on exchange requirements (for ex. binance).
 
 ## Notes
