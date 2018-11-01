@@ -5,3 +5,4 @@ data/*.db
 keys/*.key
 uid/*.uid
 trades/ini*
+hermes/*

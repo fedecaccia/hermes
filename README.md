@@ -37,6 +37,7 @@ which installs:
 - [numpy](http://www.numpy.org/)
 - [pandas](https://pandas.pydata.org/)
 - [ta-lib](https://github.com/mrjbq7/ta-lib) (python wrapper)
+- [ccxt](https://github.com/ccxt/ccxt)
 
 ## Quickstart
 Under development.
