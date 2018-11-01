@@ -4,8 +4,12 @@ data
   data_format csv
   header_format cdm
   elements
-    xrpusd trading bitstamp orderbookBitstampXRPUSD.csv
-    xrpusd trading bittrex orderbookBittrexXRPUSD.csv
+    xrpusd trading bitstamp xx
+    xrpusd trading bittrex xx
+    ethbtc trading yobit xxx
+    ethbtc trading huobipro xxx
+    zecbtc trading yobit xxx
+    zecbtc trading bitfinex xxx
   end
 end
 
@@ -39,27 +43,11 @@ general_settings
   api_keys_files 
     bittrex keys/bittrex.key
     bitstamp keys/bitstamp.key
+    yobit keys/yobit.key
+    bitfinex keys/bitfinex.key
+    huobipro keys/huobi.key
   end
   uid_files
     bitstamp uid/bitstamp.uid
   end
 end
-
-ethbtc trading binance data/orderbookBinanceETHBTC.csv
-ethbtc trading bitfinex data/orderbookBitfinexETHBTC.csv
-ethbtc trading bitstamp data/orderbookBitstampETHBTC.csv
-ethbtc trading bittrex data/orderbookBittrexETHBTC.csv
-ethbtc trading cex data/orderbookCexETHBTC.csv
-ethbtc trading coinex data/orderbookCoinexETHBTC.csv
-ethbtc trading exmo data/orderbookExmoETHBTC.csv
-ethbtc trading gatecoin data/orderbookGatecoinETHBTC.csv
-ethbtc trading gateio data/orderbookGateioETHBTC.csv
-ethbtc trading gdax data/orderbookGdaxETHBTC.csv
-ethbtc trading gemini data/orderbookGeminiETHBTC.csv
-ethbtc trading hitbtc data/orderbookHitbtcETHBTC.csv
-ethbtc trading huobipro data/orderbookHuobiproETHBTC.csv
-ethbtc trading kraken data/orderbookKrakenETHBTC.csv
-ethbtc trading kucoin data/orderbookKucoinETHBTC.csv
-ethbtc trading okex data/orderbookOkexETHBTC.csv
-ethbtc trading poloniex data/orderbookPoloniexETHBTC.csv
-ethbtc trading yobit data/orderbookYobitETHBTC.csv

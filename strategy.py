@@ -328,7 +328,7 @@ class Strategy(object):
                 pass
         else: # status == definitions.strategy_success
             for algorithm in self._algorithms:
-                algorithm.operate_and_cancel_status()
+                algorithm.operate_and_confirm_status()
             
 
     def _portfolio_update(self):

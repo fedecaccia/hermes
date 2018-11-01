@@ -64,6 +64,7 @@ sntbtc = "SNT/BTC"
 trxbtc = "TRX/BTC"
 xtzbtc = "XTZ/BTC"
 xrpusd = "XRP/USD"
+zecbtc = "ZECBTC"
 all_tickers = [
     btcusd,
     ethusd,
@@ -75,7 +76,8 @@ all_tickers = [
     sntbtc,
     trxbtc,
     xtzbtc,
-    xrpusd
+    xrpusd,
+    zecbtc
 ]
 
 # Coins definition
@@ -92,6 +94,7 @@ snt = "SNT"
 trx = "TRX"
 xtz = "XTZ"
 xrp = "XRP"
+zec = "ZEC"
 asset_id = "asset_id"
 
 # Other description definitions

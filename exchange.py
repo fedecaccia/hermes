@@ -344,6 +344,7 @@ class Bitfinex(Exchange):
         """
         
         self._wait_rate_limit()
+        margin_balance = None
         try:
             res = self.client.private_post_margin_infos()[0]
         except DDoSProtection:            
@@ -354,27 +355,26 @@ class Bitfinex(Exchange):
             print("WARNING: HTTPError. Bad Gateway for url in exchange: "+self.exchange)
         except Exception as e:
             print(repr(e))
-        
-        finally:
-            self.last_request_time = time.time()        
-        
-        leverage = res[definitions.bitfinex_leverage]
-        # Your net value (the USD value of your trading wallet, including your margin balance, your unrealized P/L and margin funding)
-        net_value = float(res[definitions.bitfinex_net_value]) # USD actual value after discounts
-        # The minimum net value to maintain in your trading wallet, under which all of your positions are fully liquidated
-        required_margin = float(res[definitions.bitfinex_required_margin])
-        # Your tradable balance in USD (the maximum size you can open on leverage for each pair)
-        tradable_balance = {}
-        for margin_limits in res[definitions.bitfinex_margin_limits]:
-            symbol = margin_limits[definitions.bitfinex_on_pair]
-            tradable_balance[symbol] = float(margin_limits[definitions.bitfinex_tradable_balance])
+        else:
+            leverage = res[definitions.bitfinex_leverage]
+            # Your net value (the USD value of your trading wallet, including your margin balance, your unrealized P/L and margin funding)
+            net_value = float(res[definitions.bitfinex_net_value]) # USD actual value after discounts
+            # The minimum net value to maintain in your trading wallet, under which all of your positions are fully liquidated
+            required_margin = float(res[definitions.bitfinex_required_margin])
+            # Your tradable balance in USD (the maximum size you can open on leverage for each pair)
+            tradable_balance = {}
+            for margin_limits in res[definitions.bitfinex_margin_limits]:
+                symbol = margin_limits[definitions.bitfinex_on_pair]
+                tradable_balance[symbol] = float(margin_limits[definitions.bitfinex_tradable_balance])
 
-        margin_balance = {
-            definitions.leverage: leverage,
-            definitions.net_value: net_value,
-            definitions.required_margin: required_margin,
-            definitions.tradable_balance: tradable_balance
-        }
+            margin_balance = {
+                definitions.leverage: leverage,
+                definitions.net_value: net_value,
+                definitions.required_margin: required_margin,
+                definitions.tradable_balance: tradable_balance
+            }
+        finally:
+            self.last_request_time = time.time() 
 
         return margin_balance
 
