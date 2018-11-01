@@ -30,11 +30,8 @@ class Algorithm(ABC):
         self.data_modules = [data_modules[k] for k in self.data_modules_ids]
         self._check_data_modules()
 
-        self.assets = {}
-        for asset_key, asset_values in assets.items():
-            if asset_key in algo_values[definitions.signals].keys():
-                self.assets[asset_key] = asset_values
-                    
+        self.assets = {k:v for k,v in assets.items() if k in algo_values[definitions.signals].keys()}
+        
         self._check_parameters(algo_values)
         self._define_signals(algo_values[definitions.signals])
         self._oracle = oracle
