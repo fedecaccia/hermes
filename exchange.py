@@ -133,9 +133,12 @@ class Exchange(ABC):
         """
         
         tickers = None
-        self._wait_rate_limit()
+        self._wait_rate_limit()        
         try:
-            tickers =  self.client.fetch_tickers()
+            if self.client.has["fetch_tickers"]:
+                tickers =  self.client.fetch_tickers(["BTC/USD"], ["ETH/USD"])
+            else:
+                tickers =  self.client.fetch_ticker("BTC/USD")
         except DDoSProtection:
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
         except RequestTimeout:
@@ -162,7 +165,10 @@ class Exchange(ABC):
         tickers = None
         self.synchronize(barrier)
         try:
-            tickers = self.client.fetch_tickers()
+            if self.client.has["fetch_tickers"]:
+                tickers =  self.client.fetch_tickers(["BTC/USD"], ["ETH/USD"])
+            else:
+                tickers =  self.client.fetch_ticker("BTC/USD")
         except DDoSProtection:
             print("WARNING: DDOS Protection. ERROR rate limit in exchange: "+self.exchange)
         except RequestTimeout:
