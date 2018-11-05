@@ -136,7 +136,7 @@ class Exchange(ABC):
         self._wait_rate_limit()        
         try:
             if self.client.has["fetchTickers"]:
-                tickers =  self.client.fetchTickers(["BTC/USD"], ["ETH/USD"])
+                tickers =  self.client.fetchTickers(["BTC/USD", "ETH/USD"])
             else:
                 tickers =  self.client.fetchTicker("BTC/USD")
         except DDoSProtection:
@@ -166,7 +166,7 @@ class Exchange(ABC):
         self.synchronize(barrier)
         try:
             if self.client.has["fetchTickers"]:
-                tickers =  self.client.fetchTickers(["BTC/USD"], ["ETH/USD"])
+                tickers =  self.client.fetchTickers(["BTC/USD", "ETH/USD"])
             else:
                 tickers =  self.client.fetchTicker("BTC/USD")
         except DDoSProtection:
