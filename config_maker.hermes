@@ -4,8 +4,6 @@ data
   data_format csv
   header_format cdm
   elements
-    xrpusd trading bitstamp xx
-    xrpusd trading bittrex xx
     ethbtc trading yobit xxx
     ethbtc trading huobipro xxx
     zecbtc trading yobit xxx
@@ -51,3 +49,6 @@ general_settings
     bitstamp uid/bitstamp.uid
   end
 end
+
+    xrpusd trading bitstamp xx
+    xrpusd trading bittrex xx

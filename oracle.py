@@ -58,13 +58,7 @@ class Oracle(object):
         try:
             price = self.tickers[symbol][definitions.last]
         except:
-            if quote.upper() == "USD": # look for price in USDT
-                try:
-                    price = self.tickers[symbol+"T"][definitions.last]
-                except:
-                    raise ValueError("Error in oracle trying to retrieve last for symbol: '"+symbol+"T'.")
-            else:
-                raise ValueError("Error in oracle trying to retrieve last for symbol: '"+symbol+"'.")
+            raise ValueError("Error in oracle trying to retrieve last for symbol: '"+symbol+"'.")
         
         return price
 
