@@ -387,6 +387,32 @@ class Bitfinex(Exchange):
         rateLimit = 3000
         while (time.time() - self.last_request_time)<rateLimit/1000:
             pass
+    
+    def post_trading_order(self, symbol, side, amount, order_type, params):
+        print("Executing order in client:", self.exchange, symbol, side, amount, order_type, params)
+        
+        exchange_type = {definitions.order_type: definitions.exchange+" "+order_type} #exchange limit/market"
+
+        if order_type == definitions.market:
+            result = self.client.create_order(
+                        symbol=symbol,
+                        type = order_type,
+                        side = side,
+                        amount = amount,
+                        price = None,
+                        params = exchange_type)
+        
+        elif order_type == definitions.limit:
+            result = self.client.create_order(
+                        symbol=symbol,
+                        type = order_type,
+                        side = side,
+                        amount = amount,
+                        price = params[definitions.limit], 
+                        params = exchange_type)
+
+        print(result)
+        return result[definitions.order_id]
 
 class Bitstamp(Exchange):
 
@@ -439,7 +465,7 @@ class Bittrex(Exchange):
 
             result = self.client.create_order(
                         symbol=symbol,
-                        type = definitions.limit, # Bittrex doesn't have 'market' order types
+                        type = definitions.limit,
                         side = side,
                         amount = amount,
                         price = price)
@@ -734,3 +760,31 @@ class Yobit(Exchange):
         """
 
         super().__init__(exchange, keys)
+
+    def post_trading_order(self, symbol, side, amount, order_type, params):
+        print("Executing order in client:", self.exchange, symbol, side, amount, order_type, params)
+        
+        if order_type == definitions.market:
+            
+            if side==definitions.buy:
+                price = params[definitions.limit]*1.5
+            elif side==definitions.sell:
+                price = params[definitions.limit]*0.5
+
+            result = self.client.create_order(
+                        symbol=symbol,
+                        type = definitions.limit, # Yobit doesn't have 'market' order types
+                        side = side,
+                        amount = amount,
+                        price = price)
+        
+        elif order_type == definitions.limit:
+            result = self.client.create_order(
+                        symbol=symbol,
+                        type = order_type,
+                        side = side,
+                        amount = amount,
+                        price = params[definitions.limit])
+
+        print(result)
+        return result[definitions.order_id]

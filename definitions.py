@@ -287,6 +287,7 @@ function = "funtcion"
 barrier = "barrier"
 uid = "uid"
 order_pile = "order_pile"
+order_type = "type"
 
 # trade signals to strategy
 strategy_abort = "abort"
