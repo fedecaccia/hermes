@@ -950,18 +950,18 @@ class RealWorld(World):
         print("Executing order:", symbol, exchange, account, side, amount, order_type, params)
 
         if account == definitions.trading:
-            order = self._exchanges[exchange].post_trading_order(
+            order_id = self._exchanges[exchange].post_trading_order(
                 symbol,
                 side,
                 amount,
                 order_type,
                 params
             )
-            # order = {
-            #     definitions.exchange: exchange,
-            #     definitions.order_id: "asdasdasdsd",
-            #     definitions.amount: amount
-            # }
+            order = {
+                definitions.exchange: exchange,
+                definitions.order_id: order_id,
+                definitions.amount: amount
+            }
             order_pile.put(order)
 
     def check_order(self, exchange, order_id):
