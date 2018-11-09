@@ -21,7 +21,7 @@ algorithms
     limit_buy_pct 100
     limit_sell_pct 100
     max_delay_in_data 5
-    usd_amount_to_trade 100
+    usd_amount_to_trade 50
     min_usd_profit 0.1
     period 1
   end

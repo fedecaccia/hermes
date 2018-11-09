@@ -133,12 +133,12 @@ algorithms_elements = {
 			},
 		},
 		algo_params: {
-			period:1,
-			max_delay_in_data:5,
-			usd_amount_to_trade:100,
-			min_usd_profit:0.1,
-			limit_sell_pct:100,
 			limit_buy_pct:100,
+			min_usd_profit:0.1,
+			usd_amount_to_trade:50,
+			max_delay_in_data:5,
+			period:1,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_1":{
@@ -158,12 +158,12 @@ algorithms_elements = {
 			},
 		},
 		algo_params: {
-			period:1,
-			max_delay_in_data:5,
-			usd_amount_to_trade:100,
-			min_usd_profit:0.1,
-			limit_sell_pct:100,
 			limit_buy_pct:100,
+			min_usd_profit:0.1,
+			usd_amount_to_trade:50,
+			max_delay_in_data:5,
+			period:1,
+			limit_sell_pct:100,
 		},
 	},
 	"arbitrage_2":{
@@ -183,12 +183,12 @@ algorithms_elements = {
 			},
 		},
 		algo_params: {
-			period:1,
-			max_delay_in_data:5,
-			usd_amount_to_trade:100,
-			min_usd_profit:0.1,
-			limit_sell_pct:100,
 			limit_buy_pct:100,
+			min_usd_profit:0.1,
+			usd_amount_to_trade:50,
+			max_delay_in_data:5,
+			period:1,
+			limit_sell_pct:100,
 		},
 	},
 }
@@ -257,17 +257,12 @@ time_step = one_sec
 virtual_portfolio = {
 	huobipro:{
 		margin:{
-			xrp:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
 			eth:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			zec:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -277,24 +272,24 @@ virtual_portfolio = {
 				used:0,
 				total:9999999
 			},
-			zec:{
+			usd:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 		trading:{
-			xrp:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
 			eth:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			zec:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -304,29 +299,19 @@ virtual_portfolio = {
 				used:0,
 				total:9999999
 			},
-			zec:{
+			usd:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 		funding:{
-			xrp:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
 			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			btc:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -336,11 +321,7 @@ virtual_portfolio = {
 				used:0,
 				total:9999999
 			},
-		},
-	},
-	bitfinex:{
-		margin:{
-			xrp:{
+			btc:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -350,154 +331,7 @@ virtual_portfolio = {
 				used:0,
 				total:9999999
 			},
-			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			btc:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			zec:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-		},
-		trading:{
 			xrp:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			btc:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			zec:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-		},
-		funding:{
-			xrp:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			btc:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			zec:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-		},
-	},
-	kraken:{
-		margin:{
-			xrp:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			btc:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			zec:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-		},
-		trading:{
-			xrp:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			btc:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			zec:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-		},
-		funding:{
-			xrp:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			eth:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			btc:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			zec:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -506,17 +340,12 @@ virtual_portfolio = {
 	},
 	bittrex:{
 		margin:{
-			xrp:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
 			eth:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			zec:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -526,24 +355,24 @@ virtual_portfolio = {
 				used:0,
 				total:9999999
 			},
-			zec:{
+			usd:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 		trading:{
-			xrp:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
 			eth:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			zec:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -553,24 +382,24 @@ virtual_portfolio = {
 				used:0,
 				total:9999999
 			},
-			zec:{
+			usd:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 		funding:{
-			xrp:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
 			eth:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			zec:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -580,7 +409,12 @@ virtual_portfolio = {
 				used:0,
 				total:9999999
 			},
-			zec:{
+			usd:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -589,17 +423,12 @@ virtual_portfolio = {
 	},
 	yobit:{
 		margin:{
-			xrp:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
 			eth:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			zec:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -609,24 +438,24 @@ virtual_portfolio = {
 				used:0,
 				total:9999999
 			},
-			zec:{
+			usd:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 		trading:{
-			xrp:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
 			eth:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			zec:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -636,24 +465,24 @@ virtual_portfolio = {
 				used:0,
 				total:9999999
 			},
-			zec:{
+			usd:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
 			},
 		},
 		funding:{
-			xrp:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
-			usd:{
-				free:9999999,
-				used:0,
-				total:9999999
-			},
 			eth:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			zec:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -663,7 +492,178 @@ virtual_portfolio = {
 				used:0,
 				total:9999999
 			},
+			usd:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			xrp:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+		},
+	},
+	bitfinex:{
+		margin:{
+			eth:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
 			zec:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			btc:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			usd:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			xrp:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+		},
+		trading:{
+			eth:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			zec:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			btc:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			usd:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			xrp:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+		},
+		funding:{
+			eth:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			zec:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			btc:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			usd:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			xrp:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+		},
+	},
+	kraken:{
+		margin:{
+			eth:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			zec:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			btc:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			usd:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			xrp:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+		},
+		trading:{
+			eth:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			zec:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			btc:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			usd:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			xrp:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+		},
+		funding:{
+			eth:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			zec:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			btc:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			usd:{
+				free:9999999,
+				used:0,
+				total:9999999
+			},
+			xrp:{
 				free:9999999,
 				used:0,
 				total:9999999
@@ -690,11 +690,11 @@ virtual_tickers = {
 
 api_keys_files = {
 	huobipro: "keys/huobi.key",
-	bitfinex: "keys/bitfinex.key",
-	kraken: "keys/kraken.key",
-	bitstamp: "keys/bitstamp.key",
 	bittrex: "keys/bittrex.key",
 	yobit: "keys/yobit.key",
+	bitstamp: "keys/bitstamp.key",
+	bitfinex: "keys/bitfinex.key",
+	kraken: "keys/kraken.key",
 }
 uid_files = {
 	bitstamp: "uid/bitstamp.uid",
