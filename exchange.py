@@ -280,15 +280,17 @@ class Exchange(ABC):
 
         return order
 
-    def get_order_status(self, order_id):
+    def get_order_status(self, symbol, order_id):
         
         """
         Description: Get order status from exchange.
         + Input:
-        - order_id: String order id.        
+        - symbol: String symbol, only required in some particular exchanges like Yobit.
+        - order_id: String order id.
         + Output:
         -
         """
+        self._wait_rate_limit()
 
         return self.client.fetch_order(order_id)
 
@@ -794,3 +796,65 @@ class Yobit(Exchange):
 
         print(result)
         return result[definitions.order_id]
+
+    def get_order_status(symbol, order_id):
+
+        """
+        Description: Get order status from Yobit.
+        + Input:
+        - symbol: String symbol, only required in some particular exchanges like Yobit.
+        - order_id: String order id.
+        + Output:
+        -
+        """
+
+        self._wait_rate_limit()
+
+        try:
+            order_response = self.client.fetch_order(order_id)
+            status = order_response[definitions.status]
+        except Exception as e:
+            print("WARNING: Error fetching order in: "+self.exchange)
+            print(e)
+            return None
+
+        self._wait_rate_limit()
+
+        # fetch order doesn't return executed price neither fees (only limit price posted initially)
+        # return self.client.fetch_order(order_id)
+
+        try:
+            history_response = self.client.fetchMyTrades(symbol)
+        except Exception as e:
+            print("WARNING: Error fetching history in: "+self.exchange)
+            print(e)
+            return None
+
+        filled = 0
+        side = history_response[0][definitions.side]
+        price = 0
+        fee = []
+
+        for trade in history_response:
+            if trade[definitions.info][definitions.order_id] == order_id:
+                
+                amount = trade[definitions.info][definitions.amount]
+                rate = trade[definitions.info][definitions.rate]
+                
+                filled += amount
+                price += amount*rate
+
+                fee.append(trade[definitions.fee])
+        
+        price /= filled
+
+        return {definitions.filled: filled,
+                defintitions.symbol: symbol,
+                definitions.side: side,
+                definitions.status: status,
+                definitions.price: price,
+                definitions.fee: fee}
+
+
+
+

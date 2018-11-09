@@ -64,7 +64,7 @@ sntbtc = "SNT/BTC"
 trxbtc = "TRX/BTC"
 xtzbtc = "XTZ/BTC"
 xrpusd = "XRP/USD"
-zecbtc = "ZECBTC"
+zecbtc = "ZEC/BTC"
 all_tickers = [
     btcusd,
     ethusd,
@@ -237,6 +237,7 @@ volume = "volume"
 # Orders 
 
 order_id = "id"
+info = "info"
 filled = "filled"
 status = "status"
 opened = "open"
@@ -244,6 +245,7 @@ closed = "closed"
 canceled = "canceled"
 closed = "closed"
 average = "average"
+price = "price"
 
 # Bitfinex margin trading definitions
 

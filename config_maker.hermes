@@ -8,6 +8,8 @@ data
     ethbtc trading huobipro xxx
     zecbtc trading yobit xxx
     zecbtc trading bitfinex xxx
+    xrpusd trading kraken xxx
+    xrpusd trading bittrex xxx
   end
 end
 
@@ -44,11 +46,9 @@ general_settings
     yobit keys/yobit.key
     bitfinex keys/bitfinex.key
     huobipro keys/huobi.key
+    kraken keys/kraken.key
   end
   uid_files
     bitstamp uid/bitstamp.uid
   end
 end
-
-    xrpusd trading bitstamp xx
-    xrpusd trading bittrex xx

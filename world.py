@@ -960,23 +960,25 @@ class RealWorld(World):
             order = {
                 definitions.exchange: exchange,
                 definitions.order_id: order_id,
-                definitions.amount: amount
+                definitions.amount: amount,
+                definitions.symbol: symbol
             }
             order_pile.put(order)
 
-    def check_order(self, exchange, order_id):
+    def check_order(self, exchange, symbol, order_id):
 
         """
         + Description: Check specific order status by order id for a particular exchange.
         + Input:
         - exchange: Exchange string name.
+        - symbol: String symbol, only required in some particular exchanges like Yobit.
         - order_id: Order id string.
         + Output:
         - response: dictionary with order status.
         """
 
         print("Checking order id in: "+exchange)
-        response = self._exchanges[exchange].get_order_status(order_id)
+        response = self._exchanges[exchange].get_order_status(symbol, order_id)
 
         # response = {'amount': 20.0,
         #             'average': 7.099e-05,
