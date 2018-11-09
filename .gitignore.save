@@ -1,8 +1,0 @@
-log*
-data/*.csv
-data/*.db
-*.pyc
-keys/*.key
-uid/*.uid
-trades/*.dat
-hermes/*
