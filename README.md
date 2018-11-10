@@ -85,7 +85,6 @@ Under development.
 - [ ] World & DataModule: specify exactly how data should be stored so users can modify it.
 - [x] RealWorld: online private post order requests.
 - [x] ~~Exchange: online private post order requests.~~
-- [ ] Tests.
 - [ ] Implement function to save data in data_module. Similar to crypto_monitor.
 - [ ] Implement mode *saving_data* which only saves data.
 - [ ] Implement multiIP.
