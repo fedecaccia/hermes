@@ -259,7 +259,7 @@ class Trade(object):
                 exchange = order[definitions.exchange]
                 order_id = order[definitions.order_id]
                 amount = order[definitions.amount]
-                symbol = order[definitinos.symbol]
+                symbol = order[definitions.symbol]
                 print("Exchange:", exchange, " - order_id:", order_id)
                 try:
                     response = self.world.check_order(exchange, symbol, order_id)
