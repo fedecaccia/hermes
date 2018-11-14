@@ -375,7 +375,7 @@ class Bitfinex(Exchange):
                 definitions.tradable_balance: tradable_balance
             }
         finally:
-            self.last_request_time = time.time() 
+            self.last_request_time = time.time()
 
         return margin_balance
 
@@ -480,6 +480,8 @@ class Bittrex(Exchange):
                         price = params[definitions.limit])
 
         print(result)
+        self.last_request_time = time.time()
+
         return result[definitions.order_id]
 
 
@@ -787,7 +789,9 @@ class Yobit(Exchange):
                         amount = amount,
                         price = params[definitions.limit])
 
-        print(result)
+        print(result)        
+        self.last_request_time = time.time()
+        
         return result[definitions.order_id]
 
     def get_order_status(self, symbol, order_id):
@@ -809,8 +813,11 @@ class Yobit(Exchange):
         except Exception as e:
             print("WARNING: Error fetching order in: "+self.exchange)
             print(e)
+            self.last_request_time = time.time()
             return None
-
+        finally:
+            self.last_request_time = time.time()
+        
         self._wait_rate_limit()
 
         # fetch order doesn't return executed price neither fees (only limit price posted initially)
@@ -821,7 +828,10 @@ class Yobit(Exchange):
         except Exception as e:
             print("WARNING: Error fetching history in: "+self.exchange)
             print(e)
+            self.last_request_time = time.time()
             return None
+        finally:
+            self.last_request_time = time.time()
 
         filled = 0
         side = history_response[0][definitions.side]
@@ -831,8 +841,8 @@ class Yobit(Exchange):
         for trade in history_response:
             if trade[definitions.info][definitions.order_id] == order_id:
                 
-                amount = trade[definitions.info][definitions.amount]
-                rate = trade[definitions.info][definitions.rate]
+                amount = float(trade[definitions.info][definitions.amount])
+                rate = float(trade[definitions.info][definitions.rate])
                 
                 filled += amount
                 price += amount*rate
@@ -842,7 +852,7 @@ class Yobit(Exchange):
         price /= filled
 
         return {definitions.filled: filled,
-                defintitions.symbol: symbol,
+                definitions.symbol: symbol,
                 definitions.side: side,
                 definitions.status: status,
                 definitions.price: price,

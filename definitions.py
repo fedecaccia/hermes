@@ -246,6 +246,7 @@ canceled = "canceled"
 closed = "closed"
 average = "average"
 price = "price"
+rate = "rate"
 
 # Bitfinex margin trading definitions
 

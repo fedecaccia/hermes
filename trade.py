@@ -291,7 +291,8 @@ class Trade(object):
                             order_pile.put(order)
                             order_status.add(definitions.strategy_wait)
                     else:
-                        if filled != amount or status != definitions.closed:                    
+                        rel_tol = 0.001
+                        if abs(filled-amount) >= rel_tol * amount or status != definitions.closed:                 
                             print("WARNING! Order incomplete")
                             with open(self._warnings_file, "a") as out:
                                 out.write("\n"+str(self.world.get_time()))
@@ -308,6 +309,7 @@ class Trade(object):
                                     # since queue is FIFO, it will be read only next time
                                     order_pile.put(order)
                                     order_status.add(definitions.strategy_wait)
+
                         else:
                             with open(self._real_transactions_file, "a") as out:
                                 out.write("\n"+str(self.world.get_time()))
