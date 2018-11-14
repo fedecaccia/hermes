@@ -271,14 +271,7 @@ class Exchange(ABC):
 
         print(result)
 
-        # data to save in order pile, to later check
-        order = {
-            definitions.exchange: self.exchange,
-            definitions.order_id: result[definitions.order_id],
-            definitions.amount: amount
-        }
-
-        return order
+        return result[definitions.order_id]
 
     def get_order_status(self, symbol, order_id):
         
@@ -797,7 +790,7 @@ class Yobit(Exchange):
         print(result)
         return result[definitions.order_id]
 
-    def get_order_status(symbol, order_id):
+    def get_order_status(self, symbol, order_id):
 
         """
         Description: Get order status from Yobit.

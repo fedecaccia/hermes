@@ -267,7 +267,7 @@ class Trade(object):
                     print(e)
                     with open(self._warnings_file, "a") as out:
                         out.write("\n"+str(self.world.get_time()))
-                        out.write("\n"+exchange)
+                        out.write("\n"+"Error checking order in:"+str(exchange))
                         out.write("\n"+str(e))
 
                     order_pile.put(order)
@@ -285,6 +285,7 @@ class Trade(object):
                         print("WARNING! Error reading response")
                         with open(self._warnings_file, "a") as out:
                             out.write("\n"+str(self.world.get_time()))
+                            out.write("\n"+"Error readingoro order in:"+str(exchange))
                             out.write("\n"+str(e))
                             out.write("\n")
                             order_pile.put(order)
