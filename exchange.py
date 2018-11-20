@@ -684,6 +684,20 @@ class Kraken(Exchange):
 
         super().__init__(exchange, keys)
 
+    def _wait_rate_limit(self):
+        # public calls: 1 per sec
+        # private: each api has a counter:
+        #   tier 2: -1 every 3 sec
+        #   tier 3: -1 every 2 sec <-- I'm here
+        #   tier 3: -1 every 1 sec
+        #   calls:  +2 trade history call
+        #           +1 others
+
+        # 'rateLimit': 4000, # once every 4 seconds, 15 times per minute – will work
+        rateLimit = 4000
+        while (time.time() - self.last_request_time)<rateLimit/1000:
+            pass
+
 
 class Kucoin(Exchange):
 
