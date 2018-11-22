@@ -694,7 +694,8 @@ class Kraken(Exchange):
         #           +1 others
 
         # 'rateLimit': 4000, # once every 4 seconds, 15 times per minute – will work
-        rateLimit = 4000
+        # rateLimit = 4000
+        rateLimit = 8000 # double, because it still produces DDOS
         while (time.time() - self.last_request_time)<rateLimit/1000:
             pass
 
