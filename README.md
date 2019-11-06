@@ -117,7 +117,7 @@ In the design of the backtesting tool, it was privileged to maintain the same st
 ## Contact
 Developed by [CoinFabrik](https://www.coinfabrik.com/). 
 Interested in crypto? You can read our articles [here](https://blog.coinfabrik.com/).
-Any questions or suggestions feel free to contact me at federico.caccia@coinfabrik.com.
+Any questions or suggestions feel free to contact me at federicoagustincaccia@gmail.com.
 
 ## Licensing
 Copyright (C) 2018 Federico A. Caccia @ CoinFabrik
